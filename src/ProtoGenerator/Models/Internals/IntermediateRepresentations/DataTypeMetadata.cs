@@ -1,0 +1,78 @@
+﻿using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerator.Utilities.CollectionUtilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
+{
+    /// <inheritdoc cref="IDataTypeMetadata"/>
+    public class DataTypeMetadata : IDataTypeMetadata
+    {
+        /// <inheritdoc/>
+        public Type Type { get; set; }
+
+        /// <inheritdoc cref="IDataTypeMetadata.Fields"/>
+        public List<IFieldMetadata> Fields { get; set; }
+        IEnumerable<IFieldMetadata> IDataTypeMetadata.Fields => Fields;
+
+        /// <inheritdoc cref="IDataTypeMetadata.NestedDataTypes"/>
+        public List<IDataTypeMetadata> NestedDataTypes { get; set; }
+        IEnumerable<IDataTypeMetadata> IDataTypeMetadata.NestedDataTypes => NestedDataTypes;
+
+        /// <inheritdoc cref="IDataTypeMetadata.NestedEnumTypes"/>
+        public List<IEnumMetadata> NestedEnumTypes { get; set; }
+        IEnumerable<IEnumMetadata> IDataTypeMetadata.NestedEnumTypes => NestedEnumTypes;
+
+        #region Constructors
+
+        /// <summary>
+        /// Create new instance of the <see cref="DataTypeMetadata"/> class.
+        /// </summary>
+        public DataTypeMetadata()
+        {
+            Fields = new List<IFieldMetadata>();
+            NestedDataTypes = new List<IDataTypeMetadata>();
+            NestedEnumTypes = new List<IEnumMetadata>();
+        }
+
+        /// <summary>
+        /// Create new instance of the <see cref="DataTypeMetadata"/> class
+        /// which is a copy of the given <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">The object to copy.</param>
+        public DataTypeMetadata(IDataTypeMetadata other)
+        {
+            Type = other.Type;
+            Fields = other.Fields.Select(field => new FieldMetadata(field)).Cast<IFieldMetadata>().ToList();
+            NestedDataTypes = other.NestedDataTypes.Select(typeMetadata => new DataTypeMetadata(typeMetadata)).Cast<IDataTypeMetadata>().ToList();
+            NestedEnumTypes = other.NestedEnumTypes.Select(enumMetadata => new EnumMetadata(enumMetadata)).Cast<IEnumMetadata>().ToList();
+        }
+
+        #endregion Constructors
+
+        #region Object Overrides
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj)
+        {
+            var other = obj as DataTypeMetadata;
+            return other != null
+                   && Type.Equals(other.Type)
+                   && Fields.SequenceEqual(other.Fields)
+                   && NestedDataTypes.SequenceEqual(other.NestedDataTypes)
+                   && NestedEnumTypes.SequenceEqual(other.NestedEnumTypes);
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return (Type,
+                    Fields.CalcHashCode(),
+                    NestedDataTypes.CalcHashCode(),
+                    NestedEnumTypes.CalcHashCode()).GetHashCode();
+        }
+
+        #endregion Object Overrides
+    }
+}
