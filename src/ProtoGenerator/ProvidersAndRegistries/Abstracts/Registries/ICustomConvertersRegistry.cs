@@ -1,7 +1,7 @@
 ﻿using ProtoGenerator.Converters.Abstracts;
 using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
 
-namespace ProtoGenerator.ProvidersAndRegistries.Registries
+namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
 {
     /// <summary>
     /// Registry for custom converters.

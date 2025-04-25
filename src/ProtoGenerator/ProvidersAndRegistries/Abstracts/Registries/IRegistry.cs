@@ -3,7 +3,7 @@ using ProtoGenerator.Mappers.Abstracts;
 using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerator.Strategies.Abstracts;
 
-namespace ProtoGenerator.ProvidersAndRegistries.Registries
+namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
 {
     /// <summary>
     /// Registry for all registrations.

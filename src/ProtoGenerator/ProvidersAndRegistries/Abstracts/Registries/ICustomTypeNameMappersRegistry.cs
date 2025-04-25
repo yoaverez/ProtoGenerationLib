@@ -1,6 +1,6 @@
 ﻿using ProtoGenerator.Mappers.Abstracts;
 
-namespace ProtoGenerator.ProvidersAndRegistries.Registries
+namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
 {
     /// <summary>
     /// Registry for custom type name mappers.

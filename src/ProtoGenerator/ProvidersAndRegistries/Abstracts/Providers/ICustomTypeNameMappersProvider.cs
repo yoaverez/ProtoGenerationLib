@@ -1,7 +1,7 @@
 ﻿using ProtoGenerator.Mappers.Abstracts;
 using System.Collections.Generic;
 
-namespace ProtoGenerator.ProvidersAndRegistries.Providers
+namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers
 {
     /// <summary>
     /// Provider for custom type mappers.

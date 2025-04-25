@@ -1,4 +1,4 @@
-﻿namespace ProtoGenerator.ProvidersAndRegistries.Providers
+﻿namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers
 {
     /// <summary>
     /// Provider that provide all the customizations.

@@ -1,7 +1,7 @@
 ﻿using ProtoGenerator.Strategies.Abstracts;
 using System;
 
-namespace ProtoGenerator.ProvidersAndRegistries.Providers
+namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers
 {
     /// <summary>
     /// Provider of proto naming strategies.

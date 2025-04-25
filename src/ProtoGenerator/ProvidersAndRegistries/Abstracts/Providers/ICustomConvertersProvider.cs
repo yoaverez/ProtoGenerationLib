@@ -3,7 +3,7 @@ using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
 using System.Collections.Generic;
 
-namespace ProtoGenerator.ProvidersAndRegistries.Providers
+namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers
 {
     /// <summary>
     /// Provider for custom converters.

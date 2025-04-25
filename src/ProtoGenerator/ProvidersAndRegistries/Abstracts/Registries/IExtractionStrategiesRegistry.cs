@@ -1,6 +1,6 @@
 ﻿using ProtoGenerator.Strategies.Abstracts;
 
-namespace ProtoGenerator.ProvidersAndRegistries.Registries
+namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
 {
     /// <summary>
     /// Registry for extraction strategies.
