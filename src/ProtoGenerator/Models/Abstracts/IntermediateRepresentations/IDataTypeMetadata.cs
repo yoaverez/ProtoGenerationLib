@@ -28,6 +28,6 @@ namespace ProtoGenerator.Models.Abstracts.IntermediateRepresentations
         /// <summary>
         /// The enum types meta data that are nested in this type.
         /// </summary>
-        IEnumerable<IEnumMetadata> NestedEnumTypes { get; }
+        IEnumerable<IEnumTypeMetadata> NestedEnumTypes { get; }
     }
 }

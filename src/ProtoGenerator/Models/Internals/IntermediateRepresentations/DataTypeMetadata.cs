@@ -21,8 +21,8 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
         IEnumerable<IDataTypeMetadata> IDataTypeMetadata.NestedDataTypes => NestedDataTypes;
 
         /// <inheritdoc cref="IDataTypeMetadata.NestedEnumTypes"/>
-        public List<IEnumMetadata> NestedEnumTypes { get; set; }
-        IEnumerable<IEnumMetadata> IDataTypeMetadata.NestedEnumTypes => NestedEnumTypes;
+        public List<IEnumTypeMetadata> NestedEnumTypes { get; set; }
+        IEnumerable<IEnumTypeMetadata> IDataTypeMetadata.NestedEnumTypes => NestedEnumTypes;
 
         #region Constructors
 
@@ -33,7 +33,7 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
         {
             Fields = new List<IFieldMetadata>();
             NestedDataTypes = new List<IDataTypeMetadata>();
-            NestedEnumTypes = new List<IEnumMetadata>();
+            NestedEnumTypes = new List<IEnumTypeMetadata>();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
             Type = other.Type;
             Fields = other.Fields.Select(field => new FieldMetadata(field)).Cast<IFieldMetadata>().ToList();
             NestedDataTypes = other.NestedDataTypes.Select(typeMetadata => new DataTypeMetadata(typeMetadata)).Cast<IDataTypeMetadata>().ToList();
-            NestedEnumTypes = other.NestedEnumTypes.Select(enumMetadata => new EnumMetadata(enumMetadata)).Cast<IEnumMetadata>().ToList();
+            NestedEnumTypes = other.NestedEnumTypes.Select(enumMetadata => new EnumTypeMetadata(enumMetadata)).Cast<IEnumTypeMetadata>().ToList();
         }
 
         #endregion Constructors

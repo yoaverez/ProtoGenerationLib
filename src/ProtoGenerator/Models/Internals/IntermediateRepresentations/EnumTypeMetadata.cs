@@ -7,31 +7,31 @@ using System.Linq;
 namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
 {
     /// <inheritdoc cref="IEnumMetaData"/>
-    public class EnumMetadata : IEnumMetadata
+    public class EnumTypeMetadata : IEnumTypeMetadata
     {
         /// <inheritdoc/>
         public Type Type { get; set; }
 
-        /// <inheritdoc cref="IEnumMetadata.Values"/>
+        /// <inheritdoc cref="IEnumTypeMetadata.Values"/>
         public List<IEnumValueMetadata> Values { get; set; }
-        IEnumerable<IEnumValueMetadata> IEnumMetadata.Values => Values;
+        IEnumerable<IEnumValueMetadata> IEnumTypeMetadata.Values => Values;
 
         #region Constructors
 
         /// <summary>
-        /// Create new instance of the <see cref="EnumMetadata"/> class.
+        /// Create new instance of the <see cref="EnumTypeMetadata"/> class.
         /// </summary>
-        public EnumMetadata()
+        public EnumTypeMetadata()
         {
             // Noting to do.
         }
 
         /// <summary>
-        /// Create new instance of the <see cref="EnumMetadata"/> class
+        /// Create new instance of the <see cref="EnumTypeMetadata"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The object to copy.</param>
-        public EnumMetadata(IEnumMetadata other)
+        public EnumTypeMetadata(IEnumTypeMetadata other)
         {
             Type = other.Type;
             Values = other.Values.Select(value => new EnumValueMetadata(value)).Cast<IEnumValueMetadata>().ToList();
@@ -44,7 +44,7 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
         /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
-            var other = obj as EnumMetadata;
+            var other = obj as EnumTypeMetadata;
             return other != null
                    && Type.Equals(other.Type)
                    && Values.SequenceEqual(other.Values);
