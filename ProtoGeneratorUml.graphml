@@ -192,7 +192,7 @@
 + IRegistry RegisterContractTypeCustomConverter(ICSharpToIntermediateCustomConverter&lt;IContractTypeMetadata&gt;)
 + IRegistry RegisterEnumTypeCustomConverter(ICSharpToIntermediateCustomConverter&lt;IEnumTypeMetadata&gt;)
 
-+ IRegistry RegisterCustomTypeNameMappers(ITypeNameMapper)
++ IRegistry RegisterCustomTypeNameMapper(ITypeNameMapper)
 
 + IRegistry RegisterMessageStylingStrategy(string strategyName, IProtoStylingStrategy)
 + IRegistry RegisterEnumStylingStrategy(string strategyName, IProtoStylingStrategy)
@@ -4423,7 +4423,7 @@ Repeated<y:LabelModel><y:ErdAttributesNodeLabelModel/></y:LabelModel><y:ModelPar
       <data key="d8" xml:space="preserve"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="-142.16952776445396" sy="-0.0" tx="-94.77968517630268" ty="35.875">
+          <y:Path sx="-142.16952776445396" sy="-0.0" tx="-94.77968517630143" ty="35.875">
             <y:Point x="25962.745154775228" y="-2937.237897687972"/>
             <y:Point x="25962.745154775228" y="-2885.862897687972"/>
             <y:Point x="26025.63499736338" y="-2885.862897687972"/>

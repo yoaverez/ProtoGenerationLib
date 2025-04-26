@@ -30,7 +30,7 @@ namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
         /// <inheritdoc cref="ICustomTypeNameMappersRegistry.RegisterCustomTypeNameMapper(ITypeNameMapper)"/>
-        IRegistry RegisterCustomTypeNameMappers(ITypeNameMapper typeNameMapper);
+        IRegistry RegisterCustomTypeNameMapper(ITypeNameMapper typeNameMapper);
 
         #endregion Custom Type Name Mappers Registry
 
