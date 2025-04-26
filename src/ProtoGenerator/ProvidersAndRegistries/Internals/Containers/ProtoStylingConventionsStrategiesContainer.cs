@@ -65,31 +65,31 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         /// <inheritdoc/>
         public IProtoStylingStrategy GetEnumValueStylingStrategy(string strategyName)
         {
-            return GetStrategy(enumStylingStrategies, strategyName);
+            return GetStrategy(enumValueStylingStrategies, strategyName);
         }
 
         /// <inheritdoc/>
         public IProtoStylingStrategy GetFieldStylingStrategy(string strategyName)
         {
-            return GetStrategy(enumStylingStrategies, strategyName);
+            return GetStrategy(fieldStylingStrategies, strategyName);
         }
 
         /// <inheritdoc/>
         public IProtoStylingStrategy GetMessageStylingStrategy(string strategyName)
         {
-            return GetStrategy(enumStylingStrategies, strategyName);
+            return GetStrategy(messageStylingStrategies, strategyName);
         }
 
         /// <inheritdoc/>
         public IProtoStylingStrategy GetPackageStylingStrategy(string strategyName)
         {
-            return GetStrategy(enumStylingStrategies, strategyName);
+            return GetStrategy(packageStylingStrategies, strategyName);
         }
 
         /// <inheritdoc/>
         public IProtoStylingStrategy GetServiceStylingStrategy(string strategyName)
         {
-            return GetStrategy(enumStylingStrategies, strategyName);
+            return GetStrategy(serviceStylingStrategies, strategyName);
         }
 
         #endregion IProtoStylingConventionsStrategiesProvider Implementation
