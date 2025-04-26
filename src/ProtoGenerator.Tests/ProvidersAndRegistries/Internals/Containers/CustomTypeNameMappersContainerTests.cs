@@ -104,7 +104,7 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         }
 
         [TestMethod]
-        public void RegisterCustomTypeNameMapper_SameMapperExists_GetMappersReturnTheAllmappers()
+        public void RegisterCustomTypeNameMapper_SameMapperExists_GetMappersReturnTheAllMappers()
         {
             // Arrange
             var mapper = new Mock<ITypeNameMapper>();
