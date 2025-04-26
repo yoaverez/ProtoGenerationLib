@@ -1,4 +1,5 @@
 ﻿using ProtoGenerator.Strategies.Abstracts;
+using System;
 
 namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
 {
@@ -14,6 +15,9 @@ namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
         /// </summary>
         /// <param name="strategyName">The name to associate with the <paramref name="strategy"/>.</param>
         /// <param name="strategy">The strategy to register.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when there is already strategy with the given <paramref name="strategyName"/>.
+        /// </exception>
         void RegisterFieldsAndPropertiesExtractionStrategy(string strategyName, IFieldsAndPropertiesExtractionStrategy strategy);
     }
 }

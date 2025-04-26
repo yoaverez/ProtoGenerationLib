@@ -14,15 +14,15 @@ namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
         /// <inheritdoc cref="ICustomConvertersRegistry.RegisterDataTypeCustomConverter(ICSharpToIntermediateCustomConverter{IDataTypeMetadata})"/>
-        IRegistry RegisterDataTypeCustomConverter(ICSharpToIntermediateConverter<IDataTypeMetadata> customConverter);
+        IRegistry RegisterDataTypeCustomConverter(ICSharpToIntermediateCustomConverter<IDataTypeMetadata> customConverter);
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
         /// <inheritdoc cref="ICustomConvertersRegistry.RegisterContractTypeCustomConverter(ICSharpToIntermediateCustomConverter{IContractTypeMetadata})"/>
-        IRegistry RegisterContractTypeCustomConverter(ICSharpToIntermediateConverter<IContractTypeMetadata> customConverter);
+        IRegistry RegisterContractTypeCustomConverter(ICSharpToIntermediateCustomConverter<IContractTypeMetadata> customConverter);
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
         /// <inheritdoc cref="ICustomConvertersRegistry.RegisterEnumTypeCustomConverter(ICSharpToIntermediateCustomConverter{IEnumTypeMetadata})"/>
-        IRegistry RegisterEnumTypeCustomConverter(ICSharpToIntermediateConverter<IEnumTypeMetadata> customConverter);
+        IRegistry RegisterEnumTypeCustomConverter(ICSharpToIntermediateCustomConverter<IEnumTypeMetadata> customConverter);
 
         #endregion Custom Converters Registry
 
@@ -90,11 +90,11 @@ namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
         /// <inheritdoc cref="INumberingStrategiesRegistry.RegisterFieldNumberingStrategy(string, IFieldNumberingStrategy)"/>
-        IRegistry RegisterFieldNumberingStrategy(IFieldNumberingStrategy strategy);
+        IRegistry RegisterFieldNumberingStrategy(string strategyName, IFieldNumberingStrategy strategy);
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
         /// <inheritdoc cref="INumberingStrategiesRegistry.RegisterEnumValueNumberingStrategy(string, IEnumValueNumberingStrategy)"/>
-        IRegistry RegisterEnumValueNumberingStrategy(IEnumValueNumberingStrategy strategy);
+        IRegistry RegisterEnumValueNumberingStrategy(string strategyName, IEnumValueNumberingStrategy strategy);
 
         #endregion Numbering Strategies Registry
     }

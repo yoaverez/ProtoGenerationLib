@@ -1,0 +1,319 @@
+﻿using ProtoGenerator.Converters.Abstracts;
+using ProtoGenerator.Extractors.Abstracts;
+using ProtoGenerator.Mappers.Abstracts;
+using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries;
+using ProtoGenerator.Strategies.Abstracts;
+using System.Collections.Generic;
+
+namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
+{
+    /// <summary>
+    /// Container for all the services. i.e. container that contains all
+    /// the customizations.
+    /// </summary>
+    public class ServicesContainer : IRegistry, IProvider
+    {
+        /// <inheritdoc cref="CustomConvertersContainer"/>
+        private CustomConvertersContainer customConvertersContainer;
+
+        /// <inheritdoc cref="CustomTypeNameMappersContainer"/>
+        private CustomTypeNameMappersContainer customTypeNameMappersContainer;
+
+        /// <inheritdoc cref="ProtoStylingConventionsStrategiesContainer"/>
+        private ProtoStylingConventionsStrategiesContainer protoStylingConventionsStrategiesContainer;
+
+        /// <inheritdoc cref="ProtoNamingStrategiesContainer"/>
+        private ProtoNamingStrategiesContainer protoNamingStrategiesContainer;
+
+        /// <inheritdoc cref="NumberingStrategiesContainer"/>
+        private NumberingStrategiesContainer numberingStrategiesContainer;
+
+        /// <inheritdoc cref="ExtractionStrategiesContainer"/>
+        private ExtractionStrategiesContainer extractionStrategiesContainer;
+
+        /// <summary>
+        /// Create new instance of the <see cref="ServicesContainer"/> class.
+        /// </summary>
+        public ServicesContainer()
+        {
+            customConvertersContainer = new CustomConvertersContainer();
+            customTypeNameMappersContainer = new CustomTypeNameMappersContainer();
+            protoStylingConventionsStrategiesContainer = new ProtoStylingConventionsStrategiesContainer();
+            protoNamingStrategiesContainer = new ProtoNamingStrategiesContainer();
+            numberingStrategiesContainer = new NumberingStrategiesContainer();
+            extractionStrategiesContainer = new ExtractionStrategiesContainer();
+        }
+
+        #region IProvider Implementation
+
+        #region ICustomConvertersProvider Implementation
+
+        /// <inheritdoc/>
+        public IEnumerable<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> GetContractTypeCustomConverters()
+        {
+            return customConvertersContainer.GetContractTypeCustomConverters();
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> GetDataTypeCustomConverters()
+        {
+            return customConvertersContainer.GetDataTypeCustomConverters();
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>> GetEnumTypeCustomConverters()
+        {
+            return customConvertersContainer.GetEnumTypeCustomConverters();
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<ITypesExtractor> GetCustomTypesExtractors()
+        {
+            return customConvertersContainer.GetCustomTypesExtractors();
+        }
+
+        #endregion ICustomConvertersProvider Implementation
+
+        #region ICustomTypeNameMappersProvider Implementation
+
+        /// <inheritdoc/>
+        public IEnumerable<ITypeNameMapper> GetCustomTypeNameMappers()
+        {
+            return customTypeNameMappersContainer.GetCustomTypeNameMappers();
+        }
+
+        #endregion ICustomTypeNameMappersProvider Implementation
+
+        #region IProtoStylingConventionsStrategiesProvider Implementation
+
+        /// <inheritdoc/>
+        public IProtoStylingStrategy GetEnumStylingStrategy(string strategyName)
+        {
+            return protoStylingConventionsStrategiesContainer.GetEnumStylingStrategy(strategyName);
+        }
+
+        /// <inheritdoc/>
+        public IProtoStylingStrategy GetEnumValueStylingStrategy(string strategyName)
+        {
+            return protoStylingConventionsStrategiesContainer.GetEnumValueStylingStrategy(strategyName);
+        }
+
+        /// <inheritdoc/>
+        public IProtoStylingStrategy GetFieldStylingStrategy(string strategyName)
+        {
+            return protoStylingConventionsStrategiesContainer.GetFieldStylingStrategy(strategyName);
+        }
+
+        /// <inheritdoc/>
+        public IProtoStylingStrategy GetMessageStylingStrategy(string strategyName)
+        {
+            return protoStylingConventionsStrategiesContainer.GetMessageStylingStrategy(strategyName);
+        }
+
+        /// <inheritdoc/>
+        public IProtoStylingStrategy GetPackageStylingStrategy(string strategyName)
+        {
+            return protoStylingConventionsStrategiesContainer.GetPackageStylingStrategy(strategyName);
+        }
+
+        /// <inheritdoc/>
+        public IProtoStylingStrategy GetServiceStylingStrategy(string strategyName)
+        {
+            return protoStylingConventionsStrategiesContainer.GetServiceStylingStrategy(strategyName);
+        }
+
+        #endregion IProtoStylingConventionsStrategiesProvider Implementation
+
+        #region INumberingStrategiesProvider Implementation
+
+        /// <inheritdoc/>
+        public IEnumValueNumberingStrategy GetEnumValueNumberingStrategy(string strategyName)
+        {
+            return numberingStrategiesContainer.GetEnumValueNumberingStrategy(strategyName);
+        }
+
+        /// <inheritdoc/>
+        public IFieldNumberingStrategy GetFieldNumberingStrategy(string strategyName)
+        {
+            return numberingStrategiesContainer.GetFieldNumberingStrategy(strategyName);
+        }
+
+        #endregion INumberingStrategiesProvider Implementation
+
+        #region IExtractionStrategiesProvider Implementation
+
+        /// <inheritdoc/>
+        public IFieldsAndPropertiesExtractionStrategy GetFieldsAndPropertiesExtractionStrategy(string strategyName)
+        {
+            return extractionStrategiesContainer.GetFieldsAndPropertiesExtractionStrategy(strategyName);
+        }
+
+        #endregion IExtractionStrategiesProvider Implementation
+
+        #region IProtoNamingStrategiesProvider Implementation
+
+        /// <inheritdoc/>
+        public IFileNamingStrategy GetFileNamingStrategy(string strategyName)
+        {
+            return protoNamingStrategiesContainer.GetFileNamingStrategy(strategyName);
+        }
+
+        /// <inheritdoc/>
+        public IPackageNamingStrategy GetPackageNamingStrategy(string strategyName)
+        {
+            return protoNamingStrategiesContainer.GetPackageNamingStrategy(strategyName);
+        }
+
+        /// <inheritdoc/>
+        public ITypeNamingStrategy GetTypeNamingStrategy(string strategyName)
+        {
+            return protoNamingStrategiesContainer.GetTypeNamingStrategy(strategyName);
+        }
+
+        #endregion IProtoNamingStrategiesProvider Implementation
+
+        #endregion IProvider Implementation
+
+        #region IRegistry Implementation
+
+        #region ICustomConvertersRegistry Implementation
+
+        /// <inheritdoc/>
+        public IRegistry RegisterContractTypeCustomConverter(ICSharpToIntermediateCustomConverter<IContractTypeMetadata> customConverter)
+        {
+            customConvertersContainer.RegisterContractTypeCustomConverter(customConverter);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterDataTypeCustomConverter(ICSharpToIntermediateCustomConverter<IDataTypeMetadata> customConverter)
+        {
+            customConvertersContainer.RegisterDataTypeCustomConverter(customConverter);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterEnumTypeCustomConverter(ICSharpToIntermediateCustomConverter<IEnumTypeMetadata> customConverter)
+        {
+            customConvertersContainer.RegisterEnumTypeCustomConverter(customConverter);
+            return this;
+        }
+
+        #endregion ICustomConvertersRegistry Implementation
+
+        #region ICustomTypeNameMappersRegistry Implementation
+
+        /// <inheritdoc/>
+        public IRegistry RegisterCustomTypeNameMappers(ITypeNameMapper typeNameMapper)
+        {
+            customTypeNameMappersContainer.RegisterCustomTypeNameMapper(typeNameMapper);
+            return this;
+        }
+
+        #endregion ICustomTypeNameMappersRegistry Implementation
+
+        #region IProtoStylingConventionsStrategiesRegistry Implementation
+
+        /// <inheritdoc/>
+        public IRegistry RegisterEnumStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
+        {
+            protoStylingConventionsStrategiesContainer.RegisterEnumStylingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterEnumValueStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
+        {
+            protoStylingConventionsStrategiesContainer.RegisterEnumValueStylingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterFieldStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
+        {
+            protoStylingConventionsStrategiesContainer.RegisterFieldStylingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterMessageStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
+        {
+            protoStylingConventionsStrategiesContainer.RegisterMessageStylingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterPackageStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
+        {
+            protoStylingConventionsStrategiesContainer.RegisterPackageStylingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterServiceStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
+        {
+            protoStylingConventionsStrategiesContainer.RegisterServiceStylingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        #endregion IProtoStylingConventionsStrategiesRegistry Implementation
+
+        #region INumberingStrategiesRegistry Implementation
+
+        /// <inheritdoc/>
+        public IRegistry RegisterEnumValueNumberingStrategy(string strategyName, IEnumValueNumberingStrategy strategy)
+        {
+            numberingStrategiesContainer.RegisterEnumValueNumberingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterFieldNumberingStrategy(string strategyName, IFieldNumberingStrategy strategy)
+        {
+            numberingStrategiesContainer.RegisterFieldNumberingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        #endregion INumberingStrategiesRegistry Implementation
+
+        #region IExtractionStrategiesRegistry Implementation
+
+        /// <inheritdoc/>
+        public IRegistry RegisterFieldsAndPropertiesExtractionStrategy(string strategyName, IFieldsAndPropertiesExtractionStrategy strategy)
+        {
+            extractionStrategiesContainer.RegisterFieldsAndPropertiesExtractionStrategy(strategyName, strategy);
+            return this;
+        }
+
+        #endregion IExtractionStrategiesRegistry Implementation
+
+        #region IProtoNamingStrategiesRegistry Implementation
+
+        /// <inheritdoc/>
+        public IRegistry RegisterFileNamingStrategy(string strategyName, IFileNamingStrategy strategy)
+        {
+            protoNamingStrategiesContainer.RegisterFileNamingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterPackageNamingStrategy(string strategyName, IPackageNamingStrategy strategy)
+        {
+            protoNamingStrategiesContainer.RegisterPackageNamingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterTypeNamingStrategy(string strategyName, ITypeNamingStrategy strategy)
+        {
+            protoNamingStrategiesContainer.RegisterTypeNamingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        #endregion IProtoNamingStrategiesRegistry Implementation
+
+        #endregion IRegistry Implementation
+    }
+}
