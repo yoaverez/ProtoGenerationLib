@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoGenerator", "ProtoGenerator\ProtoGenerator.csproj", "{EE94F52F-9674-4755-A2B1-D1739384BE1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoGenerator", "ProtoGenerator\ProtoGenerator.csproj", "{EE94F52F-9674-4755-A2B1-D1739384BE1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoGenerator.Tests", "ProtoGenerator.Tests\ProtoGenerator.Tests.csproj", "{E0780541-6696-4EBB-B2CE-20AF9864A45F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{EE94F52F-9674-4755-A2B1-D1739384BE1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE94F52F-9674-4755-A2B1-D1739384BE1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE94F52F-9674-4755-A2B1-D1739384BE1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0780541-6696-4EBB-B2CE-20AF9864A45F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0780541-6696-4EBB-B2CE-20AF9864A45F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0780541-6696-4EBB-B2CE-20AF9864A45F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0780541-6696-4EBB-B2CE-20AF9864A45F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
