@@ -20,6 +20,6 @@ namespace ProtoGenerator.Strategies.Abstracts
         /// All the fields and properties infos from the given <paramref name="type"/>
         /// that are compatible with the given <paramref name="analysisOptions"/>.
         /// </returns>
-        IEnumerable<MemberInfo> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions);
+        IEnumerable<(Type Type, string Name)> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions);
     }
 }
