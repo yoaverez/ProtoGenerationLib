@@ -871,6 +871,56 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
 
         #endregion IProtoNamingStrategiesProvider Tests
 
+        #region IParameterListNamingStrategiesProvider Tests
+
+        #region GetParameterListNamingStrategy Tests
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetParameterListNamingStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Act
+            container.GetParameterListNamingStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetParameterListNamingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Arrange
+            var strategy = new Mock<IParameterListNamingStrategy>();
+            container.RegisterParameterListNamingStrategy("a", strategy.Object);
+
+            // Act
+            container.GetParameterListNamingStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        public void GetParameterListNamingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IParameterListNamingStrategy>().Object;
+            container.RegisterParameterListNamingStrategy("a", expectedStrategy);
+
+            // Act
+            var actualStrategy = container.GetParameterListNamingStrategy("a");
+
+            // Assert
+            Assert.AreSame(expectedStrategy, actualStrategy);
+        }
+
+        #endregion GetParameterListNamingStrategy Tests
+
+        #endregion IParameterListNamingStrategiesProvider Tests
+
         #endregion IProvider Tests
 
         #region IRegistry Tests
@@ -1605,6 +1655,47 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         #endregion RegisterTypeNamingStrategy Tests
 
         #endregion IProtoNamingStrategiesRegistry Tests
+
+        #region IParameterListNamingStrategiesRegistry Tests
+
+        #region RegisterParameterListNamingStrategy Tests
+
+        [TestMethod]
+        public void RegisterParameterListNamingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IParameterListNamingStrategy>().Object;
+            var strategyName = "a";
+
+            // Act
+            var registry = container.RegisterParameterListNamingStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            var actualStrategy = container.GetParameterListNamingStrategy(strategyName);
+            Assert.AreSame(expectedStrategy, actualStrategy);
+            Assert.AreSame(container, registry);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterParameterListNamingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IParameterListNamingStrategy>().Object;
+            var strategyName = "a";
+            container.RegisterParameterListNamingStrategy(strategyName, expectedStrategy);
+
+            // Act
+            container.RegisterParameterListNamingStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        #endregion RegisterParameterListNamingStrategy Tests
+
+        #endregion IParameterListNamingStrategiesRegistry Tests
 
         #endregion IRegistry Tests
     }

@@ -8,7 +8,8 @@
                                  INumberingStrategiesProvider,
                                  IProtoNamingStrategiesProvider,
                                  IProtoStylingConventionsStrategiesProvider,
-                                 IExtractionStrategiesProvider
+                                 IExtractionStrategiesProvider,
+                                 IParameterListNamingStrategiesProvider
 
     {
         // Noting to do.

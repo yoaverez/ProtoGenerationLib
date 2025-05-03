@@ -33,6 +33,9 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         /// <inheritdoc cref="ExtractionStrategiesContainer"/>
         private ExtractionStrategiesContainer extractionStrategiesContainer;
 
+        /// <inheritdoc cref="ParameterListNamingStrategiesContainer"/>
+        private ParameterListNamingStrategiesContainer parameterListNamingStrategiesContainer;
+
         /// <summary>
         /// Create new instance of the <see cref="ServicesContainer"/> class.
         /// </summary>
@@ -44,6 +47,7 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
             protoNamingStrategiesContainer = new ProtoNamingStrategiesContainer();
             numberingStrategiesContainer = new NumberingStrategiesContainer();
             extractionStrategiesContainer = new ExtractionStrategiesContainer();
+            parameterListNamingStrategiesContainer = new ParameterListNamingStrategiesContainer();
         }
 
         #region IProvider Implementation
@@ -173,6 +177,16 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         }
 
         #endregion IProtoNamingStrategiesProvider Implementation
+
+        #region IParameterListNamingStrategiesProvider Implementation
+
+        /// <inheritdoc/>
+        public IParameterListNamingStrategy GetParameterListNamingStrategy(string strategyName)
+        {
+            return parameterListNamingStrategiesContainer.GetParameterListNamingStrategy(strategyName);
+        }
+
+        #endregion IParameterListNamingStrategiesProvider Implementation
 
         #endregion IProvider Implementation
 
@@ -313,6 +327,17 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         }
 
         #endregion IProtoNamingStrategiesRegistry Implementation
+
+        #region IParameterListNamingStrategiesRegistry Implementation
+
+        /// <inheritdoc/>
+        public IRegistry RegisterParameterListNamingStrategy(string strategyName, IParameterListNamingStrategy strategy)
+        {
+            parameterListNamingStrategiesContainer.RegisterParameterListNamingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        #endregion IParameterListNamingStrategiesRegistry Implementation
 
         #endregion IRegistry Implementation
     }

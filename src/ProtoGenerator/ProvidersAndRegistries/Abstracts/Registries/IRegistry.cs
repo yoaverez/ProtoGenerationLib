@@ -97,5 +97,13 @@ namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
         IRegistry RegisterEnumValueNumberingStrategy(string strategyName, IEnumValueNumberingStrategy strategy);
 
         #endregion Numbering Strategies Registry
+
+        #region Parameters List Naming Strategies Registry
+
+        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
+        /// <inheritdoc cref="IParameterListNamingStrategiesRegistry.RegisterParameterListNamingStrategy(string, IParameterListNamingStrategy)"/>
+        IRegistry RegisterParameterListNamingStrategy(string strategyName, IParameterListNamingStrategy strategy);
+
+        #endregion Parameters List Naming Strategies Registry
     }
 }
