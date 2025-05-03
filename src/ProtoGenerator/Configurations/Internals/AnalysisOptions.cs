@@ -1,4 +1,5 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
+using System;
 
 namespace ProtoGenerator.Configurations.Internals
 {
@@ -16,5 +17,11 @@ namespace ProtoGenerator.Configurations.Internals
 
         /// <inheritdoc/>
         public string FieldsAndPropertiesExtractionStrategy { get; set; }
+
+        /// <inheritdoc/>
+        public Type IgnoreFieldOrPropertyAttribute { get; set; }
+
+        /// <inheritdoc/>
+        public Type DataTypeConstructorAttribute { get; set; }
     }
 }

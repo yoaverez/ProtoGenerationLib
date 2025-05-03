@@ -1,4 +1,6 @@
-﻿namespace ProtoGenerator.Configurations.Abstracts
+﻿using System;
+
+namespace ProtoGenerator.Configurations.Abstracts
 {
     /// <summary>
     /// Options for the csharp types analysis.
@@ -27,5 +29,18 @@
         /// The name of the strategy for extracting fields from csharp types.
         /// </summary>
         string FieldsAndPropertiesExtractionStrategy { get; }
+
+        /// <summary>
+        /// The type of the attribute that ask to ignore some
+        /// fields or properties
+        /// </summary>
+        Type IgnoreFieldOrPropertyAttribute { get; }
+
+        /// <summary>
+        /// The type of the constructor attribute that tells that
+        /// the constructor contains all the wanted fields
+        /// and properties of the type.
+        /// </summary>
+        Type DataTypeConstructorAttribute { get; }
     }
 }
