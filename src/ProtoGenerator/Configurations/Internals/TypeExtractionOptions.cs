@@ -8,5 +8,8 @@ namespace ProtoGenerator.Configurations.Internals
         /// <inheritdoc cref="Internals.AnalysisOptions"/>
         public AnalysisOptions AnalysisOptions { get; set; }
         IAnalysisOptions ITypeExtractionOptions.AnalysisOptions => AnalysisOptions;
+
+        /// <inheritdoc/>
+        public string ParameterListNamingStrategy { get; set; }
     }
 }

@@ -7,5 +7,10 @@
     {
         /// <inheritdoc cref="IAnalysisOptions"/>
         IAnalysisOptions AnalysisOptions { get; }
+
+        /// <summary>
+        /// The name of the parameter list naming strategy.
+        /// </summary>
+        string ParameterListNamingStrategy { get; }
     }
 }
