@@ -79,5 +79,39 @@ namespace ProtoGenerator.Utilities.TypeUtilities
             // Return the Inherited property value.
             return usage.Inherited;
         }
+
+        /// <summary>
+        /// Extract all the public methods of the given <paramref name="type"/>
+        /// that have the attribute type of the given <paramref name="attributeType"/>.
+        /// </summary>
+        /// <param name="type">The type whose methods to extract.</param>
+        /// <param name="attributeType">The type of the attribute of the wanted methods.</param>
+        /// <returns>
+        /// All the public methods of the given <paramref name="type"/>
+        /// that have the attribute type of the given <paramref name="attributeType"/>.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the given <paramref name="attributeType"/>
+        /// is not an <see cref="Attribute"/>
+        /// </exception>
+        public static IEnumerable<MethodInfo> ExtractMethods(this Type type, Type attributeType)
+        {
+            if (!typeof(Attribute).IsAssignableFrom(attributeType))
+                throw new ArgumentException("Type must be an Attribute", nameof(attributeType));
+
+            // Find all the methods of the given type.
+            var allMethods = new HashSet<MethodInfo>();
+
+            // Since interface attributes is not inherit we need to take all the interfaces methods.
+            var implementedInterfaces = type.GetAllImplementedInterfaces();
+            allMethods.AddRange(implementedInterfaces.SelectMany(interfaceType => interfaceType.GetMethods()));
+
+            // Add all the methods of the current type.
+            allMethods.AddRange(type.GetMethods());
+
+            // Filter all the methods with the given attribute.
+            var filteredMethods = allMethods.Where(method => method.IsDefined(attributeType, attributeType.IsAttributeInherited()));
+            return filteredMethods;
+        }
     }
 }
