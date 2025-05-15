@@ -33,8 +33,8 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         /// <inheritdoc cref="ExtractionStrategiesContainer"/>
         private ExtractionStrategiesContainer extractionStrategiesContainer;
 
-        /// <inheritdoc cref="ParameterListNamingStrategiesContainer"/>
-        private ParameterListNamingStrategiesContainer parameterListNamingStrategiesContainer;
+        /// <inheritdoc cref="NewTypeNamingStrategiesContainer"/>
+        private NewTypeNamingStrategiesContainer newTypeNamingStrategiesContainer;
 
         /// <summary>
         /// Create new instance of the <see cref="ServicesContainer"/> class.
@@ -47,7 +47,7 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
             protoNamingStrategiesContainer = new ProtoNamingStrategiesContainer();
             numberingStrategiesContainer = new NumberingStrategiesContainer();
             extractionStrategiesContainer = new ExtractionStrategiesContainer();
-            parameterListNamingStrategiesContainer = new ParameterListNamingStrategiesContainer();
+            newTypeNamingStrategiesContainer = new NewTypeNamingStrategiesContainer();
         }
 
         #region IProvider Implementation
@@ -178,15 +178,21 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
 
         #endregion IProtoNamingStrategiesProvider Implementation
 
-        #region IParameterListNamingStrategiesProvider Implementation
+        #region INewTypeNamingStrategiesProvider Implementation
 
         /// <inheritdoc/>
         public IParameterListNamingStrategy GetParameterListNamingStrategy(string strategyName)
         {
-            return parameterListNamingStrategiesContainer.GetParameterListNamingStrategy(strategyName);
+            return newTypeNamingStrategiesContainer.GetParameterListNamingStrategy(strategyName);
         }
 
-        #endregion IParameterListNamingStrategiesProvider Implementation
+        /// <inheritdoc/>
+        public INewTypeNamingStrategy GetNewTypeNamingStrategy(string strategyName)
+        {
+            return newTypeNamingStrategiesContainer.GetNewTypeNamingStrategy(strategyName);
+        }
+
+        #endregion INewTypeNamingStrategiesProvider Implementation
 
         #endregion IProvider Implementation
 
@@ -328,16 +334,23 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
 
         #endregion IProtoNamingStrategiesRegistry Implementation
 
-        #region IParameterListNamingStrategiesRegistry Implementation
+        #region INewTypeNamingStrategiesRegistry Implementation
 
         /// <inheritdoc/>
         public IRegistry RegisterParameterListNamingStrategy(string strategyName, IParameterListNamingStrategy strategy)
         {
-            parameterListNamingStrategiesContainer.RegisterParameterListNamingStrategy(strategyName, strategy);
+            newTypeNamingStrategiesContainer.RegisterParameterListNamingStrategy(strategyName, strategy);
             return this;
         }
 
-        #endregion IParameterListNamingStrategiesRegistry Implementation
+        /// <inheritdoc/>
+        public IRegistry RegisterNewTypeNamingStrategy(string strategyName, INewTypeNamingStrategy strategy)
+        {
+            newTypeNamingStrategiesContainer.RegisterNewTypeNamingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        #endregion INewTypeNamingStrategiesRegistry Implementation
 
         #endregion IRegistry Implementation
     }

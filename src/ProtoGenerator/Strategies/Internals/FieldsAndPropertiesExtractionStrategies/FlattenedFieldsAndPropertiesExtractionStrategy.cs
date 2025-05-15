@@ -1,5 +1,4 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
-using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Constants;
 using ProtoGenerator.Strategies.Abstracts;
 using ProtoGenerator.Utilities.CollectionUtilities;

@@ -101,7 +101,7 @@ namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
         #region Parameters List Naming Strategies Registry
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="IParameterListNamingStrategiesRegistry.RegisterParameterListNamingStrategy(string, IParameterListNamingStrategy)"/>
+        /// <inheritdoc cref="INewTypeNamingStrategiesRegistry.RegisterParameterListNamingStrategy(string, IParameterListNamingStrategy)"/>
         IRegistry RegisterParameterListNamingStrategy(string strategyName, IParameterListNamingStrategy strategy);
 
         #endregion Parameters List Naming Strategies Registry

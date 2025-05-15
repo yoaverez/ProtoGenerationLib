@@ -9,7 +9,7 @@
                                  IProtoNamingStrategiesProvider,
                                  IProtoStylingConventionsStrategiesProvider,
                                  IExtractionStrategiesProvider,
-                                 IParameterListNamingStrategiesProvider
+                                 INewTypeNamingStrategiesProvider
 
     {
         // Noting to do.

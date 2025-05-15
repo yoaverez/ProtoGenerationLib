@@ -1,5 +1,7 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
+using ProtoGenerator.Constants;
 using ProtoGenerator.Extractors.Abstracts;
+using ProtoGenerator.Extractors.Internals.TypesExtractors;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerator.Utilities.CollectionUtilities;
 using System;
@@ -24,17 +26,23 @@ namespace ProtoGenerator.Extractors.Internals
         private IEnumerable<ITypesExtractor> defaultTypesExtractors;
 
         /// <summary>
+        /// A mapping between csharp well known types to proto well known types.
+        /// </summary>
+        private IDictionary<Type, string> wellKnownTypes;
+
+        /// <summary>
         /// Create new instance of the <see cref="ProtoTypesExtractor"/> class.
         /// </summary>
-        /// <param name="customConvertersProvider"><inheritdoc cref="customConvertersProvider" path="/node()"/></param>
-        /// <param name="extractionStrategiesProvider">The provider of extraction strategies.</param>
+        /// <param name="componentsProvider">A provider of the proto generator customizations.</param>
         /// <param name="defaultTypesExtractors"><inheritdoc cref="defaultTypesExtractors" path="/node()"/></param>
-        public ProtoTypesExtractor(ICustomConvertersProvider customConvertersProvider,
-                                   IExtractionStrategiesProvider extractionStrategiesProvider,
-                                   IEnumerable<ITypesExtractor> defaultTypesExtractors)
+        /// <param name="wellKnownTypes"><inheritdoc cref="wellKnownTypes" path="/node()"/></param>
+        public ProtoTypesExtractor(IProvider componentsProvider,
+                                   IEnumerable<ITypesExtractor>? defaultTypesExtractors = null,
+                                   IDictionary<Type, string>? wellKnownTypes = null)
         {
-            this.customConvertersProvider = customConvertersProvider;
-            this.defaultTypesExtractors = defaultTypesExtractors;
+            this.customConvertersProvider = componentsProvider;
+            this.defaultTypesExtractors = defaultTypesExtractors ?? DefaultTypesExtractorsCreator.CreateStructuralTypesExtractors(componentsProvider);
+            this.wellKnownTypes = wellKnownTypes ?? WellKnownTypesConstants.WellKnownTypes;
         }
 
         /// <inheritdoc/>
@@ -58,6 +66,12 @@ namespace ProtoGenerator.Extractors.Internals
                                                     IEnumerable<ITypesExtractor> typesExtractors,
                                                     HashSet<Type> alreadyCheckedTypes)
         {
+            // There is no reason to create a new proto type from a known types.
+            if (wellKnownTypes.ContainsKey(type))
+            {
+                return new HashSet<Type>();
+            }
+
             var types = new HashSet<Type> { type };
             foreach (var typesExtractor in typesExtractors)
             {

@@ -12,5 +12,10 @@
         /// The name of the parameter list naming strategy.
         /// </summary>
         string ParameterListNamingStrategy { get; }
+
+        /// <summary>
+        /// The name of the new type naming strategy.
+        /// </summary>
+        string NewTypeNamingStrategy { get; }
     }
 }

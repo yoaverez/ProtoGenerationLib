@@ -11,5 +11,8 @@ namespace ProtoGenerator.Configurations.Internals
 
         /// <inheritdoc/>
         public string ParameterListNamingStrategy { get; set; }
+
+        /// <inheritdoc/>
+        public string NewTypeNamingStrategy { get; set; }
     }
 }
