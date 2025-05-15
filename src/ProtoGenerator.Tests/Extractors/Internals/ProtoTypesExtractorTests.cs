@@ -10,9 +10,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals
     [TestClass]
     public class ProtoTypesExtractorTests
     {
-        private Mock<ICustomConvertersProvider> mockICustomConvertersProvider;
-
-        private Mock<IExtractionStrategiesProvider> mockIExtractionStrategiesProvider;
+        private Mock<IProvider> mockIProvider;
 
         private static TypeExtractionOptions typeExtractionOptions;
 
@@ -25,8 +23,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals
         [TestInitialize]
         public void TestInitialize()
         {
-            mockICustomConvertersProvider = new Mock<ICustomConvertersProvider>();
-            mockIExtractionStrategiesProvider = new Mock<IExtractionStrategiesProvider>();
+            mockIProvider = new Mock<IProvider>();
         }
 
         [ExpectedException(typeof(ArgumentException))]
@@ -34,8 +31,8 @@ namespace ProtoGenerator.Tests.Extractors.Internals
         public void ExtractProtoTypes_TypeCouldNotBeHandled_ThrowsArgumentException()
         {
             // Arrange
-            mockICustomConvertersProvider.Setup(customConvertersProvider => customConvertersProvider.GetCustomTypesExtractors())
-                                         .Returns(new List<ITypesExtractor>());
+            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
+                         .Returns(new List<ITypesExtractor>());
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>());
 
             // Act
@@ -43,6 +40,25 @@ namespace ProtoGenerator.Tests.Extractors.Internals
 
             // Assert
             // Noting to do. The ExpectedException attribute will assert the test.
+        }
+
+        [TestMethod]
+        public void ExtractProtoTypes_TypeIsAWellKnownType_ReturnEmptyEnumerable()
+        {
+            // Arrange
+            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
+                         .Returns(new List<ITypesExtractor>());
+
+            var mockExtractor = new Mock<ITypesExtractor>();
+            var expectedTypes = new List<ITypesExtractor>();
+
+            var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockExtractor.Object }, useDefaultWellKnownTypes: true);
+
+            // Act
+            var actualTypes = protoTypesExtractor.ExtractProtoTypes(typeof(int), typeExtractionOptions).ToList();
+
+            // Assert
+            CollectionAssert.AreEqual(expectedTypes, actualTypes);
         }
 
         [TestMethod]
@@ -63,10 +79,10 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             mockDefaultExtractor.Setup(defaultExtractor => defaultExtractor.CanHandle(It.IsAny<Type>()))
                                 .Returns(true);
             mockDefaultExtractor.Setup(defaultExtractor => defaultExtractor.ExtractUsedTypes(It.IsAny<Type>(), It.IsAny<ITypeExtractionOptions>()))
-                               .Returns(new List<Type>());
+                                .Returns(new List<Type>());
 
-            mockICustomConvertersProvider.Setup(customConvertersProvider => customConvertersProvider.GetCustomTypesExtractors())
-                                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
+            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
+                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
 
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockDefaultExtractor.Object });
 
@@ -91,8 +107,8 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.IsAny<Type>(), It.IsAny<ITypeExtractionOptions>()))
                                .Returns(expectedResult.ToList());
 
-            mockICustomConvertersProvider.Setup(customConvertersProvider => customConvertersProvider.GetCustomTypesExtractors())
-                                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
+            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
+                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
 
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>());
 
@@ -131,8 +147,8 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => !mockedTypes.Contains(type)), It.IsAny<ITypeExtractionOptions>()))
                                .Returns(new List<Type>());
 
-            mockICustomConvertersProvider.Setup(customConvertersProvider => customConvertersProvider.GetCustomTypesExtractors())
-                                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
+            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
+                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
 
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>());
 
@@ -143,9 +159,14 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             CollectionAssert.AreEquivalent(expectedResult, actualResult);
         }
 
-        private ProtoTypesExtractor CreateProtoTypesExtractor(IEnumerable<ITypesExtractor> typesExtractors)
+        private ProtoTypesExtractor CreateProtoTypesExtractor(IEnumerable<ITypesExtractor> typesExtractors, bool useDefaultWellKnownTypes = false)
         {
-            return new ProtoTypesExtractor(mockICustomConvertersProvider.Object, mockIExtractionStrategiesProvider.Object, typesExtractors);
+            IDictionary<Type, string>? wellKnownTypes = null;
+            if (!useDefaultWellKnownTypes)
+            {
+                wellKnownTypes = new Dictionary<Type, string>();
+            }
+            return new ProtoTypesExtractor(mockIProvider.Object, typesExtractors, wellKnownTypes);
         }
     }
 }

@@ -5,17 +5,17 @@ using ProtoGenerator.Strategies.Abstracts;
 namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
 {
     [TestClass]
-    public class ParameterListNamingStrategiesContainerTests
+    public class NewTypeNamingStrategiesContainerTests
     {
-        private ParameterListNamingStrategiesContainer container;
+        private NewTypeNamingStrategiesContainer container;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            container = new ParameterListNamingStrategiesContainer();
+            container = new NewTypeNamingStrategiesContainer();
         }
 
-        #region IParameterListNamingStrategiesProvider Tests
+        #region INewTypeNamingStrategiesProvider Tests
 
         #region GetParameterListNamingStrategy Tests
 
@@ -63,9 +63,55 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
 
         #endregion GetParameterListNamingStrategy Tests
 
-        #endregion IParameterListNamingStrategiesProvider Tests
+        #region GetNewTypeNamingStrategy Tests
 
-        #region IParameterListNamingStrategiesRegistry Tests
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetNewTypeNamingStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Act
+            container.GetNewTypeNamingStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetNewTypeNamingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Arrange
+            var strategy = new Mock<INewTypeNamingStrategy>();
+            container.RegisterNewTypeNamingStrategy("a", strategy.Object);
+
+            // Act
+            container.GetNewTypeNamingStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        public void GetNewTypeNamingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<INewTypeNamingStrategy>().Object;
+            container.RegisterNewTypeNamingStrategy("a", expectedStrategy);
+
+            // Act
+            var actualStrategy = container.GetNewTypeNamingStrategy("a");
+
+            // Assert
+            Assert.AreSame(expectedStrategy, actualStrategy);
+        }
+
+        #endregion GetNewTypeNamingStrategy Tests
+
+        #endregion INewTypeNamingStrategiesProvider Tests
+
+        #region INewTypeNamingStrategiesRegistry Tests
 
         #region RegisterParameterListNamingStrategy Tests
 
@@ -103,6 +149,42 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
 
         #endregion RegisterParameterListNamingStrategy Tests
 
-        #endregion IParameterListNamingStrategiesRegistry Tests
+        #region RegisterNewTypeNamingStrategy Tests
+
+        [TestMethod]
+        public void RegisterNewTypeNamingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<INewTypeNamingStrategy>().Object;
+            var strategyName = "a";
+
+            // Act
+            container.RegisterNewTypeNamingStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            var actualStrategy = container.GetNewTypeNamingStrategy(strategyName);
+            Assert.AreSame(expectedStrategy, actualStrategy);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterNewTypeNamingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<INewTypeNamingStrategy>().Object;
+            var strategyName = "a";
+            container.RegisterNewTypeNamingStrategy(strategyName, expectedStrategy);
+
+            // Act
+            container.RegisterNewTypeNamingStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        #endregion RegisterNewTypeNamingStrategy Tests
+
+        #endregion INewTypeNamingStrategiesRegistry Tests
     }
 }
