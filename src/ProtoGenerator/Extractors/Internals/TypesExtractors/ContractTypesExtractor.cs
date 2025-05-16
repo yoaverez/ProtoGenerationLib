@@ -31,7 +31,8 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         /// <inheritdoc/>
         public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
-            return type.IsDefined(typeof(ProtoServiceAttribute), typeof(ProtoServiceAttribute).IsAttributeInherited());
+            var protoServiceAttribute = typeExtractionOptions.AnalysisOptions.ProtoServiceAttribute;
+            return type.IsDefined(protoServiceAttribute, protoServiceAttribute.IsAttributeInherited());
         }
 
         /// <inheritdoc/>
@@ -39,7 +40,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         {
             var parameterListNamingStrategy = parameterListNamingStrategiesProvider.GetParameterListNamingStrategy(typeExtractionOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
             var types = new HashSet<Type>();
-            var methods = type.ExtractMethods(typeof(ProtoRpcAttribute));
+            var methods = type.ExtractMethods(typeExtractionOptions.AnalysisOptions.ProtoRpcAttribute);
 
             foreach (var method in methods)
             {

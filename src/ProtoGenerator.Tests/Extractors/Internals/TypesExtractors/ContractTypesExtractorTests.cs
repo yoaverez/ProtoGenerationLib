@@ -1,4 +1,5 @@
 ﻿using Moq;
+using ProtoGenerator.Attributes;
 using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Extractors.Internals.TypesExtractors;
@@ -45,6 +46,11 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
             extractionOptions = new ProtoGeneratorConfiguration
             {
                 NewTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions(),
+                AnalysisOptions = new AnalysisOptions
+                {
+                    ProtoServiceAttribute = typeof(ProtoServiceAttribute),
+                    ProtoRpcAttribute = typeof(ProtoRpcAttribute),
+                }
             };
         }
 
