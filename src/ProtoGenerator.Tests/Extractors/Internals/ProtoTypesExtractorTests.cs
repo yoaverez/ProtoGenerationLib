@@ -70,13 +70,13 @@ namespace ProtoGenerator.Tests.Extractors.Internals
                 typeof(int), typeof(bool)
             };
             var mockCustomExtractor = new Mock<ITypesExtractor>();
-            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>()))
+            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>(), It.IsAny<ITypeExtractionOptions>()))
                                .Returns(true);
             mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.IsAny<Type>(), It.IsAny<ITypeExtractionOptions>()))
                                .Returns(expectedResult.ToList());
 
             var mockDefaultExtractor = new Mock<ITypesExtractor>();
-            mockDefaultExtractor.Setup(defaultExtractor => defaultExtractor.CanHandle(It.IsAny<Type>()))
+            mockDefaultExtractor.Setup(defaultExtractor => defaultExtractor.CanHandle(It.IsAny<Type>(), typeExtractionOptions))
                                 .Returns(true);
             mockDefaultExtractor.Setup(defaultExtractor => defaultExtractor.ExtractUsedTypes(It.IsAny<Type>(), It.IsAny<ITypeExtractionOptions>()))
                                 .Returns(new List<Type>());
@@ -102,7 +102,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals
                 typeof(int)
             };
             var mockCustomExtractor = new Mock<ITypesExtractor>();
-            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>()))
+            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>(), typeExtractionOptions))
                                .Returns(true);
             mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.IsAny<Type>(), It.IsAny<ITypeExtractionOptions>()))
                                .Returns(expectedResult.ToList());
@@ -128,7 +128,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals
                 typeof(int), typeof(bool), typeof(object), typeof(double), typeof(float)
             };
             var mockCustomExtractor = new Mock<ITypesExtractor>();
-            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>()))
+            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>(), typeExtractionOptions))
                                .Returns(true);
             // Mock for int.
             mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => type.Equals(typeof(int))), It.IsAny<ITypeExtractionOptions>()))

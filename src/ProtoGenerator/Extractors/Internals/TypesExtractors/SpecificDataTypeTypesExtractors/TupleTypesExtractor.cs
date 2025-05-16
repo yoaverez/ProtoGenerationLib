@@ -33,7 +33,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTy
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type)
+        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
             return type.IsValueTuple() || type.IsTuple();
         }

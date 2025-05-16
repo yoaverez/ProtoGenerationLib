@@ -42,7 +42,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
         public void CanHandle_TypeCanNotBeHandled_ReturnFalse(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.CanHandle_TypeCanNotBeHandled_ReturnFalse(extractor, type);
+            TypesExtractorsCommonTests.CanHandle_TypeCanNotBeHandled_ReturnFalse(extractor, type, extractionOptions);
         }
 
         [DynamicData(nameof(GetTypesThatCanBeHandled), DynamicDataSourceType.Method)]
@@ -50,7 +50,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
         public void CanHandle_TypeCanBeHandled_ReturnTrue(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.CanHandle_TypeCanBeHandled_ReturnTrue(extractor, type);
+            TypesExtractorsCommonTests.CanHandle_TypeCanBeHandled_ReturnTrue(extractor, type, extractionOptions);
         }
 
         #endregion CanHandle Tests
@@ -167,10 +167,10 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
             var mockExtractor = new Mock<ITypesExtractor>();
 
             // Setup the CanHandle method.
-            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => type.Equals(canHandleType))))
+            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => type.Equals(canHandleType)), It.IsAny<ITypeExtractionOptions>()))
                          .Callback(() => actualFlow.Add(string.Format(canHandleFormattedString, canHandleType.Name, true)))
                          .Returns(true);
-            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => !type.Equals(canHandleType))))
+            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => !type.Equals(canHandleType)), It.IsAny<ITypeExtractionOptions>()))
                          .Callback(() => actualFlow.Add(string.Format(canHandleFormattedString, canHandleType.Name, false)))
                          .Returns(false);
 

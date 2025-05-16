@@ -11,7 +11,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
     public class EnumTypesExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
-        public override bool CanHandle(Type type)
+        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
             return type.IsEnum;
         }

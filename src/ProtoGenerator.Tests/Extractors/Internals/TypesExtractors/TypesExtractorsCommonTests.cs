@@ -10,19 +10,19 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
     {
         #region CanHandle Tests
 
-        public static void CanHandle_TypeCanNotBeHandled_ReturnFalse(ITypesExtractor extractor, Type type)
+        public static void CanHandle_TypeCanNotBeHandled_ReturnFalse(ITypesExtractor extractor, Type type, ITypeExtractionOptions typeExtractionOptions)
         {
             // Act
-            var returnValue = extractor.CanHandle(type);
+            var returnValue = extractor.CanHandle(type, typeExtractionOptions);
 
             // Assert
             Assert.IsFalse(returnValue);
         }
 
-        public static void CanHandle_TypeCanBeHandled_ReturnTrue(ITypesExtractor extractor, Type type)
+        public static void CanHandle_TypeCanBeHandled_ReturnTrue(ITypesExtractor extractor, Type type, ITypeExtractionOptions typeExtractionOptions)
         {
             // Act
-            var returnValue = extractor.CanHandle(type);
+            var returnValue = extractor.CanHandle(type, typeExtractionOptions);
 
             // Assert
             Assert.IsTrue(returnValue);

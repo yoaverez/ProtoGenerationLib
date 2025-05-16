@@ -38,7 +38,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.SpecificData
         public void CanHandle_TypeCanNotBeHandled_ReturnFalse(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.CanHandle_TypeCanNotBeHandled_ReturnFalse(extractor, type);
+            TypesExtractorsCommonTests.CanHandle_TypeCanNotBeHandled_ReturnFalse(extractor, type, extractionOptions);
         }
 
         [DynamicData(nameof(GetTypesThatCanBeHandled), DynamicDataSourceType.Method)]
@@ -46,7 +46,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.SpecificData
         public void CanHandle_TypeCanBeHandled_ReturnTrue(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.CanHandle_TypeCanBeHandled_ReturnTrue(extractor, type);
+            TypesExtractorsCommonTests.CanHandle_TypeCanBeHandled_ReturnTrue(extractor, type, extractionOptions);
         }
 
         #endregion CanHandle Tests

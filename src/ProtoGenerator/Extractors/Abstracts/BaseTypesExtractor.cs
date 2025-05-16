@@ -12,7 +12,7 @@ namespace ProtoGenerator.Extractors.Abstracts
         /// <inheritdoc/>
         public IEnumerable<Type> ExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
-            if (CanHandle(type))
+            if (CanHandle(type, typeExtractionOptions))
             {
                 return BaseExtractUsedTypes(type, typeExtractionOptions);
             }
@@ -23,7 +23,7 @@ namespace ProtoGenerator.Extractors.Abstracts
         }
 
         /// <inheritdoc/>
-        public abstract bool CanHandle(Type type);
+        public abstract bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions);
 
         /// <inheritdoc cref="ITypesExtractor.ExtractUsedTypes(Type, ITypeExtractionOptions)" path="/summary"/>
         /// <inheritdoc cref="ITypesExtractor.ExtractUsedTypes(Type, ITypeExtractionOptions)" path="/param"/>

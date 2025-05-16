@@ -75,7 +75,7 @@ namespace ProtoGenerator.Extractors.Internals
             var types = new HashSet<Type> { type };
             foreach (var typesExtractor in typesExtractors)
             {
-                if (typesExtractor.CanHandle(type))
+                if (typesExtractor.CanHandle(type, typeExtractionOptions))
                 {
                     var usedTypes = typesExtractor.ExtractUsedTypes(type, typeExtractionOptions);
                     alreadyCheckedTypes.Add(type);

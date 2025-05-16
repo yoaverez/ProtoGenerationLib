@@ -33,7 +33,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTy
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type)
+        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
             return true;
         }
@@ -52,7 +52,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTy
             {
                 foreach (var wrapperElementTypesExtractor in wrapperElementTypesExtractors)
                 {
-                    if (wrapperElementTypesExtractor.CanHandle(fieldType))
+                    if (wrapperElementTypesExtractor.CanHandle(fieldType, typeExtractionOptions))
                     {
                         var elementTypes = wrapperElementTypesExtractor.ExtractUsedTypes(fieldType, typeExtractionOptions);
 

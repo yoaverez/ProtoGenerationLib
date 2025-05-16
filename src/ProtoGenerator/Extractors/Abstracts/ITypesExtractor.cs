@@ -14,11 +14,12 @@ namespace ProtoGenerator.Extractors.Abstracts
         /// by the this extractor.
         /// </summary>
         /// <param name="type">The type to check.</param>
+        /// <param name="typeExtractionOptions">The options for the extraction.</param>
         /// <returns>
         /// <see langword="true"/> if the given <paramref name="type"/>
         /// can be handled by this extractor otherwise <see langword="false"/>.
         /// </returns>
-        bool CanHandle(Type type);
+        bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions);
 
         /// <summary>
         /// Extract all the types that are used by the given <paramref name="type"/>.

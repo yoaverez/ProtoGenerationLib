@@ -33,7 +33,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type)
+        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
             return !type.IsEnum;
         }
@@ -43,7 +43,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         {
             foreach(var extractor in dataTypesExtractors)
             {
-                if (extractor.CanHandle(type))
+                if (extractor.CanHandle(type, typeExtractionOptions))
                 {
                     return extractor.ExtractUsedTypes(type, typeExtractionOptions);
                 }

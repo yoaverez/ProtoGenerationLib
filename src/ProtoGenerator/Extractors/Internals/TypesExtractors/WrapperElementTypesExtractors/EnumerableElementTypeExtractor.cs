@@ -12,7 +12,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.WrapperElementType
     public class EnumerableElementTypeExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
-        public override bool CanHandle(Type type)
+        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
             return type.IsEnumerableType();
         }
