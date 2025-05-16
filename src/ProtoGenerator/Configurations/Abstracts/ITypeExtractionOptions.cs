@@ -3,19 +3,8 @@
     /// <summary>
     /// Options for csharp types extraction.
     /// </summary>
-    public interface ITypeExtractionOptions
+    public interface ITypeExtractionOptions : ICommonOptions
     {
-        /// <inheritdoc cref="IAnalysisOptions"/>
-        IAnalysisOptions AnalysisOptions { get; }
-
-        /// <summary>
-        /// The name of the parameter list naming strategy.
-        /// </summary>
-        string ParameterListNamingStrategy { get; }
-
-        /// <summary>
-        /// The name of the new type naming strategy.
-        /// </summary>
-        string NewTypeNamingStrategy { get; }
+        // Currently noting to do.
     }
 }

@@ -37,7 +37,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         /// <inheritdoc/>
         protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
-            var parameterListNamingStrategy = parameterListNamingStrategiesProvider.GetParameterListNamingStrategy(typeExtractionOptions.ParameterListNamingStrategy);
+            var parameterListNamingStrategy = parameterListNamingStrategiesProvider.GetParameterListNamingStrategy(typeExtractionOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
             var types = new HashSet<Type>();
             var methods = type.ExtractMethods(typeof(ProtoRpcAttribute));
 

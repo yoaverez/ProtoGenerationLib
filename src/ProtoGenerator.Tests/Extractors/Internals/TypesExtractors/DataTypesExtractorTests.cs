@@ -12,7 +12,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
     {
         private DataTypesExtractor extractor;
 
-        private TypeExtractionOptions extractionOptions;
+        private ITypeExtractionOptions extractionOptions;
 
         private List<string> actualFlow;
 
@@ -32,7 +32,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
                 CreateExtractorsMock(typeof(char), actualFlow),
             };
             extractor = new DataTypesExtractor(dataTypesExtractors);
-            extractionOptions = new TypeExtractionOptions();
+            extractionOptions = new ProtoGeneratorConfiguration();
         }
 
         #region CanHandle Tests

@@ -1,4 +1,5 @@
-﻿using ProtoGenerator.Configurations.Internals;
+﻿using ProtoGenerator.Configurations.Abstracts;
+using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Extractors.Internals.TypesExtractors;
 using ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.DummyTypes;
 
@@ -9,13 +10,13 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
     {
         private static EnumTypesExtractor extractor;
 
-        private static TypeExtractionOptions extractionOptions;
+        private static ITypeExtractionOptions extractionOptions;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
             extractor = new EnumTypesExtractor();
-            extractionOptions = new TypeExtractionOptions();
+            extractionOptions = new ProtoGeneratorConfiguration();
         }
 
         #region CanHandle Tests

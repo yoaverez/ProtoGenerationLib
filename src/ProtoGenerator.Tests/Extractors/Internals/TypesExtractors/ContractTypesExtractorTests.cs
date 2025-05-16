@@ -1,4 +1,5 @@
 ﻿using Moq;
+using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Extractors.Internals.TypesExtractors;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
@@ -14,7 +15,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
     {
         private static ContractTypesExtractor extractor;
 
-        private static TypeExtractionOptions extractionOptions;
+        private static ITypeExtractionOptions extractionOptions;
 
         private static Mock<INewTypeNamingStrategiesProvider> mockINewTypeNamingStrategiesProvider;
 
@@ -41,7 +42,10 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
                                                 .Returns(mockStrategy.Object);
 
             extractor = new ContractTypesExtractor(mockINewTypeNamingStrategiesProvider.Object);
-            extractionOptions = new TypeExtractionOptions();
+            extractionOptions = new ProtoGeneratorConfiguration
+            {
+                NewTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions(),
+            };
         }
 
         #region CanHandle Tests

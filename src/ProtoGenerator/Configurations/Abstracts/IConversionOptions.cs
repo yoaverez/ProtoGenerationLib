@@ -3,7 +3,7 @@
     /// <summary>
     /// Options for conversion operations.
     /// </summary>
-    public interface IConversionOptions
+    public interface IConversionOptions : ICommonOptions
     {
         /// <inheritdoc cref="IProtoStylingConventionsStrategiesOptions"/>
         IProtoStylingConventionsStrategiesOptions ProtoStylingConventionsStrategiesOptions { get; }
@@ -13,8 +13,5 @@
 
         /// <inheritdoc cref="INumberingStrategiesOptions"/>
         INumberingStrategiesOptions NumberingStrategiesOptions { get; }
-
-        /// <inheritdoc cref="IAnalysisOptions"/>
-        IAnalysisOptions AnalysisOptions { get; }
     }
 }

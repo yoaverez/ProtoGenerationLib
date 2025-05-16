@@ -3,12 +3,8 @@
     /// <summary>
     /// The proto generator configurations.
     /// </summary>
-    public interface IProtoGeneratorConfiguration
+    public interface IProtoGeneratorConfiguration : ITypeExtractionOptions, IConversionOptions
     {
-        /// <inheritdoc cref="IConversionOptions"/>
-        IConversionOptions ConversionOptions { get; }
-
-        /// <inheritdoc cref="ITypeExtractionOptions"/>
-        ITypeExtractionOptions TypeExtractionOptions { get; }
+        // Noting to do.
     }
 }

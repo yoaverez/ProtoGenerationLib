@@ -1,4 +1,5 @@
 ﻿using Moq;
+using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors;
 using ProtoGenerator.Strategies.Abstracts;
@@ -10,7 +11,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.WrapperEleme
     {
         private ArrayElementTypeExtractor extractor;
 
-        private TypeExtractionOptions extractionOptions;
+        private ITypeExtractionOptions extractionOptions;
 
         private Mock<INewTypeNamingStrategy> mockINewTypeNamingStrategy;
 

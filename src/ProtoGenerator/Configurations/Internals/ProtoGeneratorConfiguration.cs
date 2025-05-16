@@ -5,12 +5,24 @@ namespace ProtoGenerator.Configurations.Internals
     /// <inheritdoc cref="IProtoGeneratorConfiguration"/>
     public class ProtoGeneratorConfiguration : IProtoGeneratorConfiguration
     {
-        /// <inheritdoc cref="Internals.ConversionOptions"/>
-        public ConversionOptions ConversionOptions { get; set; }
-        IConversionOptions IProtoGeneratorConfiguration.ConversionOptions => ConversionOptions;
+        /// <inheritdoc cref="IProtoStylingConventionsStrategiesOptions"/>
+        public ProtoStylingConventionsStrategiesOptions ProtoStylingConventionsStrategiesOptions { get; set; }
+        IProtoStylingConventionsStrategiesOptions IConversionOptions.ProtoStylingConventionsStrategiesOptions => ProtoStylingConventionsStrategiesOptions;
 
-        /// <inheritdoc cref="Internals.TypeExtractionOptions"/>
-        public TypeExtractionOptions TypeExtractionOptions { get; set; }
-        ITypeExtractionOptions IProtoGeneratorConfiguration.TypeExtractionOptions => TypeExtractionOptions;
+        /// <inheritdoc cref="IProtoNamingStrategiesOptions"/>
+        public ProtoNamingStrategiesOptions ProtoNamingStrategiesOptions { get; set; }
+        IProtoNamingStrategiesOptions IConversionOptions.ProtoNamingStrategiesOptions => ProtoNamingStrategiesOptions;
+
+        /// <inheritdoc cref="INumberingStrategiesOptions"/>
+        public NumberingStrategiesOptions NumberingStrategiesOptions { get; set; }
+        INumberingStrategiesOptions IConversionOptions.NumberingStrategiesOptions => NumberingStrategiesOptions;
+
+        /// <inheritdoc cref="IAnalysisOptions"/>
+        public AnalysisOptions AnalysisOptions { get; set; }
+        IAnalysisOptions ICommonOptions.AnalysisOptions => AnalysisOptions;
+
+        /// <inheritdoc cref="INewTypeNamingStrategiesOptions"/>
+        public NewTypeNamingStrategiesOptions NewTypeNamingStrategiesOptions { get; set; }
+        INewTypeNamingStrategiesOptions ICommonOptions.NewTypeNamingStrategiesOptions => NewTypeNamingStrategiesOptions;
     }
 }

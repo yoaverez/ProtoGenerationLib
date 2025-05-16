@@ -1,4 +1,5 @@
 ﻿using Moq;
+using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
@@ -11,16 +12,19 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.SpecificData
     {
         private ArrayTypesExtractor extractor;
 
-        private TypeExtractionOptions extractionOptions;
+        private ITypeExtractionOptions extractionOptions;
 
         private Mock<INewTypeNamingStrategy> mockINewTypeNamingStrategy;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            extractionOptions = new TypeExtractionOptions()
+            extractionOptions = new ProtoGeneratorConfiguration()
             {
-                NewTypeNamingStrategy = "a"
+                NewTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions
+                {
+                    NewTypeNamingStrategy = "a"
+                }
             };
 
             mockINewTypeNamingStrategy = new Mock<INewTypeNamingStrategy>();
