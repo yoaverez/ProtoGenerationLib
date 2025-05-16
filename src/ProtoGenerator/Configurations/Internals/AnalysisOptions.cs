@@ -23,5 +23,11 @@ namespace ProtoGenerator.Configurations.Internals
 
         /// <inheritdoc/>
         public Type DataTypeConstructorAttribute { get; set; }
+
+        /// <inheritdoc/>
+        public Type ProtoServiceAttribute { get; set; }
+
+        /// <inheritdoc/>
+        public Type ProtoRpcAttribute { get; set; }
     }
 }

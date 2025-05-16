@@ -32,7 +32,7 @@ namespace ProtoGenerator.Configurations.Abstracts
 
         /// <summary>
         /// The type of the attribute that ask to ignore some
-        /// fields or properties
+        /// fields or properties.
         /// </summary>
         Type IgnoreFieldOrPropertyAttribute { get; }
 
@@ -42,5 +42,17 @@ namespace ProtoGenerator.Configurations.Abstracts
         /// and properties of the type.
         /// </summary>
         Type DataTypeConstructorAttribute { get; }
+
+        /// <summary>
+        /// The type of the attribute that tells that the class/interface/struct
+        /// represents a proto service.
+        /// </summary>
+        Type ProtoServiceAttribute { get; }
+
+        /// <summary>
+        /// The type of the attribute that tells that the method
+        /// represents a proto rpc method.
+        /// </summary>
+        Type ProtoRpcAttribute { get; }
     }
 }
