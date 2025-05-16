@@ -2,6 +2,7 @@
 using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.Mappers.Abstracts;
 using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerator.ProvidersAndRegistries.Abstracts;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries;
 using ProtoGenerator.Strategies.Abstracts;
@@ -13,7 +14,7 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
     /// Container for all the services. i.e. container that contains all
     /// the customizations.
     /// </summary>
-    public class ServicesContainer : IRegistry, IProvider
+    public class ServicesContainer : IProviderAndRegister
     {
         /// <inheritdoc cref="CustomConvertersContainer"/>
         private CustomConvertersContainer customConvertersContainer;
