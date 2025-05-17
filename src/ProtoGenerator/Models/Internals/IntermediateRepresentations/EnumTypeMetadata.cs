@@ -27,6 +27,17 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
         }
 
         /// <summary>
+        /// Create new instance of the <see cref="EnumTypeMetadata"/> class.
+        /// </summary>
+        /// <param name="type"><inheritdoc cref="Type" path="/node()"/></param>
+        /// <param name="values"><inheritdoc cref="Values" path="/node()"/></param>
+        public EnumTypeMetadata(Type type, List<IEnumValueMetadata> values)
+        {
+            Type = type;
+            Values = values;
+        }
+
+        /// <summary>
         /// Create new instance of the <see cref="EnumTypeMetadata"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
@@ -47,7 +58,11 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
             var other = obj as EnumTypeMetadata;
             return other != null
                    && Type.Equals(other.Type)
-                   && Values.SequenceEqual(other.Values);
+
+                   // Since Enum.GetValues and Enum.GetName returns the
+                   // items sorted by the binary values, the order does not equals to
+                   // the order of declaration in the cs file.
+                   && Values.SequenceEquivalence(other.Values);
         }
 
         /// <inheritdoc/>

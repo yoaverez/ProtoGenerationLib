@@ -33,6 +33,21 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
         /// <summary>
         /// Create new instance of the <see cref="MethodMetadata"/> class.
         /// </summary>
+        /// <param name="methodInfo"><inheritdoc cref="MethodInfo" path="/node()"/></param>
+        /// <param name="returnType"><inheritdoc cref="ReturnType" path="/node()"/></param>
+        /// <param name="parameters"><inheritdoc cref="Parameters" path="/node()"/></param>
+        public MethodMetadata(MethodInfo methodInfo, Type returnType, IEnumerable<IMethodParameterMetadata> parameters) : this(methodInfo)
+        {
+            MethodInfo = methodInfo;
+            ReturnType = returnType;
+            Parameters = parameters.ToList();
+        }
+
+
+
+        /// <summary>
+        /// Create new instance of the <see cref="MethodMetadata"/> class.
+        /// </summary>
         /// <param name="methodInfo">The method info to create the <see cref="MethodMetadata"/> from.</param>
         public MethodMetadata(MethodInfo methodInfo)
         {

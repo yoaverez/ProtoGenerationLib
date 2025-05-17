@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ProtoGenerator.Utilities.CollectionUtilities
 {
@@ -53,6 +54,52 @@ namespace ProtoGenerator.Utilities.CollectionUtilities
             {
                 set.Add(item);
             }
+        }
+
+        /// <summary>
+        /// Checks if two sequences are equivalent i.e have the same items
+        /// but not necessarily in the same order.
+        /// </summary>
+        /// <typeparam name="T">The type of the collections items.</typeparam>
+        /// <param name="collection1">The first collection.</param>
+        /// <param name="collection2">The second collection.</param>
+        /// <returns>
+        /// <see langword="true"/> if both collections have the same items
+        /// (not necessarily in the same order) otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool SequenceEquivalence<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2)
+        {
+            if(collection1 is null && collection2 is null)
+                return true;
+
+            if(collection1 is null || collection2 is null)
+                return false;
+
+            if(ReferenceEquals(collection1, collection2))
+                return true;
+
+            if (collection1.Count() != collection2.Count())
+                return false;
+
+            var dictionary1 = collection1.ToDictionary(item => EqualityComparer<T>.Default.GetHashCode(item), item => item);
+            var dictionary2 = collection2.ToDictionary(item => EqualityComparer<T>.Default.GetHashCode(item), item => item);
+
+            foreach (var hashcode in dictionary1.Keys)
+            {
+                if (!dictionary2.ContainsKey(hashcode))
+                {
+                    return false;
+                }
+                else
+                {
+                    // If the items with the same hash code does not equals, return false.
+                    if (!EqualityComparer<T>.Default.Equals(dictionary1[hashcode], dictionary2[hashcode]))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

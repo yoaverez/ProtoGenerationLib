@@ -37,6 +37,23 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
         }
 
         /// <summary>
+        /// Create new instance of the <see cref="DataTypeMetadata"/> class.
+        /// </summary>
+        /// <param name="type"><inheritdoc cref="Type" path="/node()"/></param>
+        /// <param name="fields"><inheritdoc cref="Fields" path="/node()"/></param>
+        /// <param name="nestedDataTypes"><inheritdoc cref="NestedDataTypes" path="/node()"/></param>
+        /// <param name="nestedEnumTypes"><inheritdoc cref="NestedEnumTypes" path="/node()"/></param>
+        public DataTypeMetadata(Type type, IEnumerable<IFieldMetadata> fields, IEnumerable<IDataTypeMetadata> nestedDataTypes, IEnumerable<IEnumTypeMetadata> nestedEnumTypes)
+        {
+            Type = type;
+            Fields = fields.ToList();
+            NestedDataTypes = nestedDataTypes.ToList();
+            NestedEnumTypes = nestedEnumTypes.ToList();
+        }
+
+
+
+        /// <summary>
         /// Create new instance of the <see cref="DataTypeMetadata"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>

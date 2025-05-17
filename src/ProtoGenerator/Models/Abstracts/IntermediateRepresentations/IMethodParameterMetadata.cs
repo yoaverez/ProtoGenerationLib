@@ -15,7 +15,6 @@ namespace ProtoGenerator.Models.Abstracts.IntermediateRepresentations
         /// <summary>
         /// The name of the parameter.
         /// </summary>
-        /// <remarks>The name can be null in a method declaration.</remarks>
-        string? Name { get; }
+        string Name { get; }
     }
 }

@@ -27,6 +27,17 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
         }
 
         /// <summary>
+        /// Create new instance of the <see cref="ContractTypeMetadata"/> class.
+        /// </summary>
+        /// <param name="type"><inheritdoc cref="Type" path="/node()"/></param>
+        /// <param name="methods"><inheritdoc cref="Methods" path="/node()"/></param>
+        public ContractTypeMetadata(Type type, IEnumerable<IMethodMetadata> methods)
+        {
+            Type = type;
+            Methods = methods.ToList();
+        }
+
+        /// <summary>
         /// Create new instance of the <see cref="ContractTypeMetadata"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>

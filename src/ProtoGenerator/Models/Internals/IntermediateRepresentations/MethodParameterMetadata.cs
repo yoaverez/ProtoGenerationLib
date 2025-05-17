@@ -11,7 +11,7 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
         public Type Type { get; set; }
 
         /// <inheritdoc/>
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         #region Constructors
 
@@ -21,6 +21,17 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
         public MethodParameterMetadata()
         {
             // Noting to do.
+        }
+
+        /// <summary>
+        /// Create new instance of the <see cref="MethodParameterMetadata"/> class.
+        /// </summary>
+        /// <param name="type"><inheritdoc cref="Type" path="/node()"/></param>
+        /// <param name="name"><inheritdoc cref="Name" path="/node()"/></param>
+        public MethodParameterMetadata(Type type, string name)
+        {
+            Type = type;
+            Name = name;
         }
 
         /// <summary>
@@ -54,7 +65,7 @@ namespace ProtoGenerator.Models.Internals.IntermediateRepresentations
             var other = obj as MethodParameterMetadata;
             return other != null
                    && Type.Equals(other.Type)
-                   && (Name is not null && Name.Equals(other.Name) || Name is null && other.Name is null);
+                   && Name.Equals(other.Name);
         }
 
         /// <inheritdoc/>
