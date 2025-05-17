@@ -10,7 +10,7 @@ namespace ProtoGenerator.Attributes
     /// If this attribute target a property, the backfield that csharp generates automatically,
     /// will also be ignored.
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class ProtoIgnoreAttribute : Attribute
     {
     }
