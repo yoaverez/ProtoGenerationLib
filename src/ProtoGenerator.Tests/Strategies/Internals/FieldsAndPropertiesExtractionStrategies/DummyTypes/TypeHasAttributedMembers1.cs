@@ -2,7 +2,7 @@
 
 namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies.DummyTypes
 {
-    public class TypeHasAttributedMembers1
+    internal class TypeHasAttributedMembers1
     {
         [OptionalDataMember]
         public int Prop1 { get; set; }
