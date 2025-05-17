@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Reflection;
+using System.Collections.Generic;
 
 namespace ProtoGenerator.Models.Abstracts.IntermediateRepresentations
 {
@@ -9,14 +9,19 @@ namespace ProtoGenerator.Models.Abstracts.IntermediateRepresentations
     public interface IFieldMetadata
     {
         /// <summary>
-        /// The info of the field or property.
-        /// </summary>
-        MemberInfo MemberInfo { get; }
-
-        /// <summary>
         /// The type of the field.
         /// </summary>
-        Type FieldType { get; }
+        Type Type { get; }
+
+        /// <summary>
+        /// The name of the field.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// The attributes of the field.
+        /// </summary>
+        IEnumerable<Attribute> Attributes { get; }
 
         /// <summary>
         /// The type that declares this field.

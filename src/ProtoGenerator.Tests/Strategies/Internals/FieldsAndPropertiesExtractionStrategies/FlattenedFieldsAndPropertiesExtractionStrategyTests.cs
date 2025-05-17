@@ -1,7 +1,9 @@
 ﻿using ProtoGenerator.Attributes;
 using ProtoGenerator.Configurations.Internals;
+using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrategies;
 using ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies.DummyTypes;
+using static ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.TypesExtractorsUtils;
 
 namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
 {
@@ -24,7 +26,7 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsOnlyEmptyMembers);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
-            var expectedMembers = new List<(Type, string)>();
+            var expectedMembers = new List<IFieldMetadata>();
 
             // Act + Assert
             ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers);
@@ -40,9 +42,11 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsASecondDegreeMembers);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(bool), "A"), (typeof(string), "Str"), (typeof(string), "Name")
+                CreateFieldMetaData(typeof(bool), "A", type),
+                CreateFieldMetaData(typeof(string), "Str", type),
+                CreateFieldMetaData(typeof(string), "Name", type),
             };
 
             // Act + Assert
@@ -55,9 +59,12 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsASecondDegreeMembers);
             var analysisOptions = CreateAnalysisOptions(true, false, false);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(bool), "A"), (typeof(string), "Str"), (typeof(string), "Name"), (typeof(int), "publicField")
+                CreateFieldMetaData(typeof(bool), "A", type),
+                CreateFieldMetaData(typeof(string), "Str", type),
+                CreateFieldMetaData(typeof(string), "Name", type),
+                CreateFieldMetaData(typeof(int), "publicField", type),
             };
 
             // Act + Assert
@@ -70,9 +77,12 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsASecondDegreeMembers);
             var analysisOptions = CreateAnalysisOptions(false, true, false);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(bool), "A"), (typeof(string), "Str"), (typeof(string), "Name"), (typeof(int), "PublicStaticProp")
+                CreateFieldMetaData(typeof(bool), "A", type),
+                CreateFieldMetaData(typeof(string), "Str", type),
+                CreateFieldMetaData(typeof(string), "Name", type),
+                CreateFieldMetaData(typeof(int), "PublicStaticProp", type),
             };
 
             // Act + Assert
@@ -85,9 +95,12 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsASecondDegreeMembers);
             var analysisOptions = CreateAnalysisOptions(false, false, true);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(bool), "A"), (typeof(string), "Str"), (typeof(string), "Name"), (typeof(int), "PrivateProp")
+                CreateFieldMetaData(typeof(bool), "A", type),
+                CreateFieldMetaData(typeof(string), "Str", type),
+                CreateFieldMetaData(typeof(string), "Name", type),
+                CreateFieldMetaData(typeof(int), "PrivateProp", type),
             };
 
             // Act + Assert
@@ -100,9 +113,13 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsASecondDegreeMembers);
             var analysisOptions = CreateAnalysisOptions(true, true, false);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(bool), "A"), (typeof(string), "Str"), (typeof(string), "Name"), (typeof(int), "publicField"), (typeof(int), "PublicStaticProp")
+                CreateFieldMetaData(typeof(bool), "A", type),
+                CreateFieldMetaData(typeof(string), "Str", type),
+                CreateFieldMetaData(typeof(string), "Name", type),
+                CreateFieldMetaData(typeof(int), "publicField", type),
+                CreateFieldMetaData(typeof(int), "PublicStaticProp", type),
             };
 
             // Act + Assert
@@ -115,10 +132,16 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsASecondDegreeMembers);
             var analysisOptions = CreateAnalysisOptions(true, false, true);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(bool), "A"), (typeof(string), "Str"), (typeof(string), "Name"), (typeof(int), "publicField"),
-                (typeof(int), "PrivateProp"), (typeof(int), "privateField"), (typeof(int), "protectedField"), (typeof(int), "_publicStaticProp")
+                CreateFieldMetaData(typeof(bool), "A", type),
+                CreateFieldMetaData(typeof(string), "Str", type),
+                CreateFieldMetaData(typeof(string), "Name", type),
+                CreateFieldMetaData(typeof(int), "publicField", type),
+                CreateFieldMetaData(typeof(int), "PrivateProp", type),
+                CreateFieldMetaData(typeof(int), "privateField", type),
+                CreateFieldMetaData(typeof(int), "protectedField", type),
+                CreateFieldMetaData(typeof(int), "_publicStaticProp", type),
             };
 
             // Act + Assert
@@ -131,10 +154,14 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsASecondDegreeMembers);
             var analysisOptions = CreateAnalysisOptions(false, true, true);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(bool), "A"), (typeof(string), "Str"), (typeof(string), "Name"),
-                (typeof(int), "PrivateProp"), (typeof(int), "PublicStaticProp"), (typeof(int), "PrivateStaticProp")
+                CreateFieldMetaData(typeof(bool), "A", type),
+                CreateFieldMetaData(typeof(string), "Str", type),
+                CreateFieldMetaData(typeof(string), "Name", type),
+                CreateFieldMetaData(typeof(int), "PrivateProp", type),
+                CreateFieldMetaData(typeof(int), "PublicStaticProp", type),
+                CreateFieldMetaData(typeof(int), "PrivateStaticProp", type),
             };
 
             // Act + Assert
@@ -147,11 +174,17 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsASecondDegreeMembers);
             var analysisOptions = CreateAnalysisOptions(true, true, true);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(bool), "A"), (typeof(string), "Str"), (typeof(string), "Name"),
-                (typeof(int), "PrivateProp"), (typeof(int), "PublicStaticProp"), (typeof(int), "PrivateStaticProp"),
-                (typeof(int), "publicField"), (typeof(int), "privateField"), (typeof(int), "protectedField")
+                CreateFieldMetaData(typeof(bool), "A", type),
+                CreateFieldMetaData(typeof(string), "Str", type),
+                CreateFieldMetaData(typeof(string), "Name", type),
+                CreateFieldMetaData(typeof(int), "PrivateProp", type),
+                CreateFieldMetaData(typeof(int), "PublicStaticProp", type),
+                CreateFieldMetaData(typeof(int), "PrivateStaticProp", type),
+                CreateFieldMetaData(typeof(int), "publicField", type),
+                CreateFieldMetaData(typeof(int), "privateField", type),
+                CreateFieldMetaData(typeof(int), "protectedField", type),
             };
 
             // Act + Assert
@@ -168,9 +201,10 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeWithConstructorAttribute);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "a"), (typeof(bool), "b"),
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
             };
 
             // Act + Assert
@@ -183,9 +217,10 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeWithConstructorAttribute2);
             var analysisOptions = CreateAnalysisOptions(false, false, true);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "a"), (typeof(bool), "b"),
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
             };
 
             // Act + Assert
@@ -202,9 +237,9 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeContainsIgnoreMembers);
             var analysisOptions = CreateAnalysisOptions(true, true, true);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(bool), "d"),
+                CreateFieldMetaData(typeof(bool), "d", type),
             };
 
             // Act + Assert
@@ -221,10 +256,10 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(RecursiveType);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "Value"),
-                (typeof(RecursiveType), "Next"),
+                CreateFieldMetaData(typeof(int), "Value", type),
+                CreateFieldMetaData(typeof(RecursiveType), "Next", type),
             };
 
             // Act + Assert
@@ -233,7 +268,30 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
 
         #endregion RecursiveType Tests
 
-        private void ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(Type type, AnalysisOptions analysisOptions, List<(Type, string)> expectedMembers)
+        #region TypeHasAttributedMembers Tests
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_TypeHasAttributedMembers_ExtractedCorrectFieldsAndProperties()
+        {
+            // Arrange
+            var type = typeof(TypeHasAttributedMembers2);
+            var analysisOptions = CreateAnalysisOptions(true, false, false);
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetaData(typeof(int), "Prop1", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
+                CreateFieldMetaData(typeof(int), "field1", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
+                CreateFieldMetaData(typeof(int), "field2", type),
+                CreateFieldMetaData(typeof(int), "Prop2", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
+                CreateFieldMetaData(typeof(int), "field3", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
+            };
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers);
+        }
+
+        #endregion TypeHasAttributedMembers Tests
+
+        private void ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(Type type, AnalysisOptions analysisOptions, List<IFieldMetadata> expectedMembers)
         {
             // Act
             var actualMembers = strategy.ExtractFieldsAndProperties(type, analysisOptions).ToList();

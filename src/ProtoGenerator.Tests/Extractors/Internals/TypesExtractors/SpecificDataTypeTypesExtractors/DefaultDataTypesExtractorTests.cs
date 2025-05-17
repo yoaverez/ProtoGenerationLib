@@ -3,9 +3,12 @@ using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors;
+using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerator.Models.Internals.IntermediateRepresentations;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerator.Strategies.Abstracts;
 using ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.DummyTypes;
+using static ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.TypesExtractorsUtils;
 
 namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors
 {
@@ -49,7 +52,11 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.SpecificData
             mockIFieldsAndPropertiesExtractionStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>();
             mockIFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(It.IsAny<Type>(), It.IsAny<IAnalysisOptions>()))
                                                       .Callback(() => actualFlow.Add(extractFieldsAndPropertiesString))
-                                                      .Returns((Type type, IAnalysisOptions analysisOptions) => new List<(Type Type, string Name)> { (type, "a"), (typeof(DefaultDataTypesExtractor), "b") });
+                                                      .Returns((Type type, IAnalysisOptions analysisOptions) => new List<IFieldMetadata>
+                                                      {
+                                                          CreateFieldMetaData(type, "a", type),
+                                                          CreateFieldMetaData(typeof(DefaultDataTypesExtractor), "b", type)
+                                                      });
 
             var mockIExtractionStrategiesProvider = new Mock<IExtractionStrategiesProvider>();
             mockIExtractionStrategiesProvider.Setup(provider => provider.GetFieldsAndPropertiesExtractionStrategy(It.IsAny<string>()))

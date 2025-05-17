@@ -1,4 +1,6 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
+using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerator.Models.Internals.IntermediateRepresentations;
 using ProtoGenerator.Strategies.Abstracts;
 using ProtoGenerator.Utilities;
 using ProtoGenerator.Utilities.CollectionUtilities;
@@ -6,6 +8,7 @@ using ProtoGenerator.Utilities.TypeUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using static ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrategies.FieldsAndPropertiesExtractionStrategiesUtils;
 
 namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
@@ -32,9 +35,9 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
         }
 
         /// <inheritdoc/>
-        public IEnumerable<(Type Type, string Name)> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions)
+        public IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions)
         {
-            var fieldsAndProps = new List<(Type Type, string Name)>();
+            var fieldsAndProps = new List<IFieldMetadata>();
             if (TryGetFieldsAndPropertiesFromConstructor(type, analysisOptions.DataTypeConstructorAttribute, out var constructorFields))
             {
                 // There is a constructor tell tells all the
@@ -47,7 +50,13 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
                 var baseTypes = GetNoneEmptyBaseType(type, analysisOptions, out var baseTypeMembersNames);
 
                 // Convert the base types to members i.e. type and name.
-                var baseTypesAsMembers = baseTypes.Select(baseType => (baseType, baseType.Name.ToUpperCamelCase())).ToList<(Type Type, string Name)>();
+                var baseTypesAsMembers = baseTypes.Select(baseType => new FieldMetadata
+                 (
+                    type: baseType,
+                    name: baseType.Name.ToUpperCamelCase(),
+                    attributes: CustomAttributeExtensions.GetCustomAttributes(baseType, inherit: true),
+                    declaringType : type
+                 )).Cast<IFieldMetadata>().ToList();
 
                 // Ignore all names of members that are contained in the base type.
                 var namesToIgnore = baseTypeMembersNames.SelectMany(GetPotentialDuplicateMemberNames).ToHashSet();
@@ -68,6 +77,10 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
                 {
                     if (!namesToIgnore.Contains(member.Name))
                     {
+                        var newMember = new FieldMetadata(member)
+                        {
+                            DeclaringType = type
+                        };
                         fieldsAndProps.Add(member);
                     }
                 }

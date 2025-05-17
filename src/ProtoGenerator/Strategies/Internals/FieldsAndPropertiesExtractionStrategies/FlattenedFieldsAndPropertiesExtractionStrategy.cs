@@ -1,5 +1,7 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Constants;
+using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerator.Models.Internals.IntermediateRepresentations;
 using ProtoGenerator.Strategies.Abstracts;
 using ProtoGenerator.Utilities.CollectionUtilities;
 using ProtoGenerator.Utilities.TypeUtilities;
@@ -18,7 +20,7 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
     public class FlattenedFieldsAndPropertiesExtractionStrategy : IFieldsAndPropertiesExtractionStrategy
     {
         /// <inheritdoc/>
-        public IEnumerable<(Type Type, string Name)> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions)
+        public IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions)
         {
             return ExtractFieldsAndProperties(type, analysisOptions, new Dictionary<Type, bool> { [type] = false });
         }
@@ -28,9 +30,9 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
         /// This is used to insure that recursive types won't loop forever.
         /// </param>
         /// <inheritdoc cref="ExtractFieldsAndProperties(Type, IAnalysisOptions)"/>
-        private IEnumerable<(Type Type, string Name)> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions, Dictionary<Type, bool> alreadyCheckedIsEmpty)
+        private IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions, Dictionary<Type, bool> alreadyCheckedIsEmpty)
         {
-            var fieldsAndProps = new List<(Type Type, string Name)>();
+            var fieldsAndProps = new List<IFieldMetadata>();
             if (TryGetFieldsAndPropertiesFromConstructor(type, analysisOptions.DataTypeConstructorAttribute, out var constructorFields))
             {
                 // There is a constructor tell tells all the
@@ -42,7 +44,7 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
                 var bindingFlags = CreateBindingFlags(analysisOptions);
                 var namesToIgnore = new HashSet<string>();
                 var props = ExtractProperties(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, namesToIgnore);
-                IEnumerable<(Type Type, string Name)> fields = new List<(Type Type, string Name)>();
+                IEnumerable<IFieldMetadata> fields = new List<IFieldMetadata>();
                 if (analysisOptions.IncludeFields)
                 {
                     fields = ExtractFields(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, namesToIgnore);
@@ -67,11 +69,11 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
         /// <param name="bindingFlags">Binding flags to extract the wanted properties.</param>
         /// <param name="ignoreAttribute">The type of the attribute that says to ignore properties.</param>
         /// <param name="namesToIgnore">Names of properties to ignore.</param>
-        /// <returns>An enumerable of tuples that represents the properties meta datas.</returns>
-        private IEnumerable<(Type Type, string Name)> ExtractProperties(Type type, BindingFlags bindingFlags, Type ignoreAttribute, HashSet<string> namesToIgnore)
+        /// <returns>An enumerable of fields meta datas.</returns>
+        private IEnumerable<IFieldMetadata> ExtractProperties(Type type, BindingFlags bindingFlags, Type ignoreAttribute, HashSet<string> namesToIgnore)
         {
             bindingFlags |= BindingFlags.DeclaredOnly;
-            var properties = new List<(Type Type, string Name)>();
+            var properties = new List<IFieldMetadata>();
 
             var implementedInterfaces = type.GetAllImplementedInterfaces();
             foreach (var implementedInterface in implementedInterfaces)
@@ -83,7 +85,13 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
                     {
                         if (!namesToIgnore.Contains(prop.Name))
                         {
-                            properties.Add((prop.PropertyType, prop.Name));
+                            properties.Add(new FieldMetadata
+                            (
+                                type: prop.PropertyType,
+                                name: prop.Name,
+                                attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
+                                declaringType: type
+                            ));
                             namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(prop.Name));
                         }
                     }
@@ -102,7 +110,13 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
                 {
                     if (!namesToIgnore.Contains(prop.Name))
                     {
-                        properties.Add((prop.PropertyType, prop.Name));
+                        properties.Add(new FieldMetadata
+                        (
+                            type: prop.PropertyType,
+                            name: prop.Name,
+                            attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
+                            declaringType: type
+                        ));
                         namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(prop.Name));
                     }
                 }
@@ -116,7 +130,7 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
             if (type.TryGetBase(out var baseType))
             {
                 var baseProps = ExtractProperties(baseType, bindingFlags, ignoreAttribute, namesToIgnore);
-                properties.AddRange(baseProps);
+                properties.AddRange(baseProps.Select(baseProp => new FieldMetadata(baseProp) { DeclaringType = type}).Cast<IFieldMetadata>().ToList());
             }
             return properties;
         }
@@ -129,11 +143,11 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
         /// <param name="bindingFlags">Binding flags to extract the wanted fields.</param>
         /// <param name="ignoreAttribute">The type of the attribute that says to ignore fields.</param>
         /// <param name="namesToIgnore">Names of fields to ignore.</param>
-        /// <returns>An enumerable of tuples that represents the fields meta datas.</returns>
-        private IEnumerable<(Type Type, string Name)> ExtractFields(Type type, BindingFlags bindingFlags, Type ignoreAttribute, HashSet<string> namesToIgnore)
+        /// <returns>An enumerable fields meta datas.</returns>
+        private IEnumerable<IFieldMetadata> ExtractFields(Type type, BindingFlags bindingFlags, Type ignoreAttribute, HashSet<string> namesToIgnore)
         {
             bindingFlags |= BindingFlags.DeclaredOnly;
-            var fields = new List<(Type Type, string Name)>();
+            var fields = new List<IFieldMetadata>();
 
             foreach (var field in type.GetFields(bindingFlags).OrderBy(fieldInfo => !fieldInfo.IsPublic))
             {
@@ -142,7 +156,13 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
                 {
                     if (!namesToIgnore.Contains(field.Name))
                     {
-                        fields.Add((field.FieldType, field.Name));
+                        fields.Add(new FieldMetadata
+                            (
+                                type: field.FieldType,
+                                name: field.Name,
+                                attributes: CustomAttributeExtensions.GetCustomAttributes(field, true).ToList(),
+                                declaringType: type
+                            ));
                         namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(field.Name));
                     }
                 }
@@ -151,7 +171,7 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
             if (type.TryGetBase(out var baseType))
             {
                 var baseFields = ExtractFields(baseType, bindingFlags, ignoreAttribute, namesToIgnore);
-                fields.AddRange(baseFields);
+                fields.AddRange(baseFields.Select(baseField => new FieldMetadata(baseField) { DeclaringType = type }).Cast<IFieldMetadata>().ToList());
             }
 
             return fields;
@@ -164,9 +184,9 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
         /// <param name="fieldsAndProps">The fields and properties to remove items from.</param>
         /// <param name="analysisOptions">The analysis options.</param>
         /// <param name="alreadyCheckedIsEmpty">Types that was already checked if they are empty.</param>
-        private void RemoveAllEmptyMembers(List<(Type Type, string Name)> fieldsAndProps, IAnalysisOptions analysisOptions, Dictionary<Type, bool> alreadyCheckedIsEmpty)
+        private void RemoveAllEmptyMembers(List<IFieldMetadata> fieldsAndProps, IAnalysisOptions analysisOptions, Dictionary<Type, bool> alreadyCheckedIsEmpty)
         {
-            var typesToCheck = fieldsAndProps.Select(member => member.Type)
+            var typesToCheck = fieldsAndProps.Select(memberMetadata => memberMetadata.Type)
                                              .Where(memberType => !alreadyCheckedIsEmpty.ContainsKey(memberType))
                                              .ToHashSet();
 

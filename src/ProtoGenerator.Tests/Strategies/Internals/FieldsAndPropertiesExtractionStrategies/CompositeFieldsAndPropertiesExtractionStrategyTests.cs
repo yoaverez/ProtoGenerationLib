@@ -2,9 +2,11 @@
 using ProtoGenerator.Attributes;
 using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Configurations.Internals;
+using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerator.Strategies.Abstracts;
 using ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrategies;
 using ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies.DummyTypes;
+using static ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.TypesExtractorsUtils;
 
 namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
 {
@@ -28,9 +30,10 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeWithoutBaseType);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "a"), (typeof(bool), "b")
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
             };
 
             mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.IsAny<Type>(), It.IsAny<IAnalysisOptions>()))
@@ -47,14 +50,15 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             // Arrange
             var type = typeof(TypeWithBaseType);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "a"), (typeof(bool), "b")
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
             };
 
             // Mock the base type.
             mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>()))
-                                 .Returns(new List<(Type, string)>());
+                                 .Returns(new List<IFieldMetadata>());
 
             // Mock the rest of the types.
             mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => !type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>()))
@@ -72,20 +76,25 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             var type = typeof(TypeWithBaseType);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
 
-            var baseMembers = new List<(Type, string)>
+            var baseMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "a"), (typeof(bool), "b")
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
             };
 
-            var allMembers = new List<(Type, string)>
+            var allMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "a"), (typeof(bool), "b"),
-                (typeof(int), "c"), (typeof(bool), "d")
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetaData(typeof(int), "c", type),
+                CreateFieldMetaData(typeof(bool), "d", type),
             };
 
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(TypeWithoutBaseType), nameof(TypeWithoutBaseType)), (typeof(int), "c"), (typeof(bool), "d")
+                CreateFieldMetaData(typeof(TypeWithoutBaseType), nameof(TypeWithoutBaseType), type),
+                CreateFieldMetaData(typeof(int), "c", type),
+                CreateFieldMetaData(typeof(bool), "d", type),
             };
 
             // Mock the base type.
@@ -108,20 +117,25 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             var type = typeof(TypeWithBaseTypeChain);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
 
-            var baseMembers = new List<(Type, string)>
+            var baseMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "a"), (typeof(bool), "b")
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
             };
 
-            var allMembers = new List<(Type, string)>
+            var allMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "a"), (typeof(bool), "b"),
-                (typeof(int), "c"), (typeof(bool), "d")
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetaData(typeof(int), "c", type),
+                CreateFieldMetaData(typeof(bool), "d", type),
             };
 
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(TypeWithBaseType), nameof(TypeWithBaseType)), (typeof(int), "c"), (typeof(bool), "d")
+                CreateFieldMetaData(typeof(TypeWithBaseType), nameof(TypeWithBaseType), type),
+                CreateFieldMetaData(typeof(int), "c", type),
+                CreateFieldMetaData(typeof(bool), "d", type),
             };
 
             // Mock the base type.
@@ -144,19 +158,22 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
             var type = typeof(TypeWithConstructorAttribute);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
 
-            var baseMembers = new List<(Type, string)>
+            var baseMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "d"), (typeof(bool), "e")
+                CreateFieldMetaData(typeof(int), "d", type),
+                CreateFieldMetaData(typeof(bool), "e", type),
             };
 
-            var allMembers = new List<(Type, string)>
+            var allMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "C"), (typeof(int), "garbage"),
+                CreateFieldMetaData(typeof(int), "C", type),
+                CreateFieldMetaData(typeof(bool), "garbage", type),
             };
 
-            var expectedMembers = new List<(Type, string)>
+            var expectedMembers = new List<IFieldMetadata>
             {
-                (typeof(int), "a"), (typeof(bool), "b")
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
             };
 
             // Mock the base type.
@@ -174,7 +191,7 @@ namespace ProtoGenerator.Tests.Strategies.Internals.FieldsAndPropertiesExtractio
 
         #region Auxiliary Methods
 
-        private void ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(Type type, AnalysisOptions analysisOptions, List<(Type, string)> expectedMembers)
+        private void ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(Type type, AnalysisOptions analysisOptions, List<IFieldMetadata> expectedMembers)
         {
             // Act
             var actualMembers = strategy.ExtractFieldsAndProperties(type, analysisOptions).ToList();

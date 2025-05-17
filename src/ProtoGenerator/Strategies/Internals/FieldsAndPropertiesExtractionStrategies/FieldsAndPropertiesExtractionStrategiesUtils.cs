@@ -1,10 +1,13 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
+using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerator.Models.Internals.IntermediateRepresentations;
 using ProtoGenerator.Utilities;
 using ProtoGenerator.Utilities.TypeUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
 {
@@ -88,15 +91,22 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
         /// </returns>
         public static bool TryGetFieldsAndPropertiesFromConstructor(Type type,
                                                                     Type constructorAttribute,
-                                                                    out IEnumerable<(Type Type, string Name)> fieldsAndProps)
+                                                                    out IEnumerable<IFieldMetadata> fieldsAndProps)
         {
             var bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-            fieldsAndProps = new List<(Type Type, string Name)>();
+            fieldsAndProps = new List<IFieldMetadata>();
             foreach (var ctor in type.GetConstructors(bindingFlags))
             {
                 if (ctor.IsDefined(constructorAttribute, constructorAttribute.IsAttributeInherited()))
                 {
-                    fieldsAndProps = ctor.GetParameters().Select(param => (param.ParameterType, param.Name)).ToArray();
+                    var ctorParameters = ctor.GetParameters();
+                    fieldsAndProps = ctorParameters.Select(param => new FieldMetadata(
+                            type: param.ParameterType,
+                            name: param.Name,
+                            attributes: CustomAttributeExtensions.GetCustomAttributes(param, inherit: true).ToList(),
+                            declaringType: type
+                        )
+                    ).ToArray();
                     return true;
                 }
             }
