@@ -1,9 +1,9 @@
 ﻿using Moq;
 using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.Extractors.Internals.TypesExtractors;
-using ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors;
 using ProtoGenerator.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerator.Replacers.Internals.TypeReplacers;
 
 namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
 {
@@ -55,7 +55,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
         public void CreateDefaultDataTypeTypesExtractors_NumberOfExtractorsIsCorrect()
         {
             // Arrange
-            var expectedNumberOfExtractors = 6;
+            var expectedNumberOfExtractors = 1;
 
             // Act
             var actualExtractors = DefaultTypesExtractorsCreator.CreateDefaultDataTypeTypesExtractors(mockIProvider.Object);
@@ -63,20 +63,6 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
             // Assert
             var actualNumberOfExtractors = actualExtractors.Count();
             Assert.AreEqual(expectedNumberOfExtractors, actualNumberOfExtractors);
-        }
-
-        [DataRow(typeof(ArrayTypesExtractor), typeof(EnumerableTypesExtractor))]
-        [DataRow(typeof(DictionaryTypesExtractor), typeof(EnumerableTypesExtractor))]
-        [TestMethod]
-        public void CreateDefaultDataTypeTypesExtractors_Extractor1IsBeforeExtractor2(Type extractor1Type, Type extractor2Type)
-        {
-            // Act
-            var actualExtractors = DefaultTypesExtractorsCreator.CreateDefaultDataTypeTypesExtractors(mockIProvider.Object);
-
-            // Assert
-            var extractor1Location = GetExtractorIndex(actualExtractors, extractor1Type);
-            var extractor2Location = GetExtractorIndex(actualExtractors, extractor2Type);
-            Assert.IsTrue(extractor1Location < extractor2Location);
         }
 
         [TestMethod]

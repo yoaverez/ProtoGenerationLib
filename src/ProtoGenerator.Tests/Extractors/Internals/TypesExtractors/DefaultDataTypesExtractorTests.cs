@@ -2,15 +2,13 @@
 using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Extractors.Abstracts;
-using ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors;
+using ProtoGenerator.Extractors.Internals.TypesExtractors;
 using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerator.Models.Internals.IntermediateRepresentations;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerator.Strategies.Abstracts;
-using ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.DummyTypes;
 using static ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.TypesExtractorsUtils;
 
-namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors
+namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
 {
     [TestClass]
     public class DefaultDataTypesExtractorTests

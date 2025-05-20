@@ -1,17 +1,16 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
-using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerator.Replacers.Abstracts;
 using ProtoGenerator.Utilities.TypeUtilities;
-using System.Collections.Generic;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
-namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors
+namespace ProtoGenerator.Replacers.Internals.TypeReplacers
 {
     /// <summary>
-    /// Extractor of used types for tuple types.
+    /// Replacer for tuple types.
     /// </summary>
-    public class TupleTypesExtractor : BaseTypesExtractor
+    public class TupleTypeReplacer : ITypeReplacer
     {
         /// <summary>
         /// A provider for new type naming strategies.
@@ -24,29 +23,32 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTy
         private const string BASE_ITEM_NAME = "item";
 
         /// <summary>
-        /// Create new instance of the <see cref="TupleTypesExtractor"/> class.
+        /// Create new instance of the <see cref="TupleTypeReplacer"/> class.
         /// </summary>
         /// <param name="newTypeNamingStrategiesProvider"><inheritdoc cref="newTypeNamingStrategiesProvider" path="/node()"/></param>
-        public TupleTypesExtractor(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
+        public TupleTypeReplacer(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
         {
             this.newTypeNamingStrategiesProvider = newTypeNamingStrategiesProvider;
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public bool CanReplaceType(Type type)
         {
             return type.IsValueTuple() || type.IsTuple();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public Type ReplaceType(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
+            if (!CanReplaceType(type))
+                throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a tuple and can not be replaced by the {nameof(TupleTypeReplacer)}.");
+
             var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(typeExtractionOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
 
             var props = GetItems(type);
             var newType = TypeCreator.CreateDataType(newTypeName, props);
-            return new Type[] { newType }.Concat(props.Select(pair => pair.Type)).ToArray();
+            return newType;
         }
 
         /// <summary>

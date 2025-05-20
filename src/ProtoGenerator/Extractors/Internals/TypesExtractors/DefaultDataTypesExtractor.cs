@@ -6,8 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors
+namespace ProtoGenerator.Extractors.Internals.TypesExtractors
 {
+    /// <summary>
+    /// A general extractor that can extract used types for all the possible data types.
+    /// </summary>
     public class DefaultDataTypesExtractor : BaseTypesExtractor
     {
         /// <summary>

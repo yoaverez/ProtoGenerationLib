@@ -1,16 +1,16 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
-using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerator.Replacers.Abstracts;
 using ProtoGenerator.Utilities.TypeUtilities;
 using System;
 using System.Collections.Generic;
 
-namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors
+namespace ProtoGenerator.Replacers.Internals.TypeReplacers
 {
     /// <summary>
-    /// Extractor of used types for array types.
+    /// Replacer for array types.
     /// </summary>
-    public class ArrayTypesExtractor : BaseTypesExtractor
+    public class ArrayTypeReplacer : ITypeReplacer
     {
         /// <summary>
         /// A provider for new type naming strategies.
@@ -18,27 +18,29 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTy
         private INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider;
 
         /// <summary>
-        /// Create new instance of the <see cref="ArrayTypesExtractor"/> class.
+        /// Create new instance of the <see cref="ArrayTypeReplacer"/> class.
         /// </summary>
         /// <param name="newTypeNamingStrategiesProvider"><inheritdoc cref="newTypeNamingStrategiesProvider" path="/node()"/></param>
-        public ArrayTypesExtractor(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
+        public ArrayTypeReplacer(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
         {
             this.newTypeNamingStrategiesProvider = newTypeNamingStrategiesProvider;
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public bool CanReplaceType(Type type)
         {
             return type.IsArray;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public Type ReplaceType(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
+            if (!CanReplaceType(type))
+                throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not an array and can not be replaced by the {nameof(ArrayTypeReplacer)}.");
+
             var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(typeExtractionOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
 
-            var elementType = type.GetArrayElementType();
             Type newType;
             if (type.IsSingleDimensionalArray())
             {
@@ -49,10 +51,11 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTy
             // Multi dimensional array or a jagged array.
             else
             {
+                var elementType = type.GetArrayElementType();
                 newType = TypeCreator.CreateArrayType(elementType, newTypeName);
             }
 
-            return new Type[] { newType, elementType };
+            return newType;
         }
     }
 }

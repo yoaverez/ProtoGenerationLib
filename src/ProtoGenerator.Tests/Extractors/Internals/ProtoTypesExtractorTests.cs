@@ -4,6 +4,7 @@ using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.Extractors.Internals;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerator.Replacers.Abstracts;
 
 namespace ProtoGenerator.Tests.Extractors.Internals
 {
@@ -43,22 +44,68 @@ namespace ProtoGenerator.Tests.Extractors.Internals
         }
 
         [TestMethod]
-        public void ExtractProtoTypes_TypeIsAWellKnownType_ReturnEmptyEnumerable()
+        public void ExtractProtoTypes_TypeIsAWellKnownType_ReturnTheWellKnownType()
         {
             // Arrange
+            var testedType = typeof(int);
             mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
                          .Returns(new List<ITypesExtractor>());
 
             var mockExtractor = new Mock<ITypesExtractor>();
-            var expectedTypes = new List<ITypesExtractor>();
 
-            var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockExtractor.Object }, useDefaultWellKnownTypes: true);
+            var expectedTypes = new List<Type> { testedType };
+
+            var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockExtractor.Object }, wellKnownTypes: new Dictionary<Type, string> { [testedType] = testedType.Name });
 
             // Act
-            var actualTypes = protoTypesExtractor.ExtractProtoTypes(typeof(int), typeExtractionOptions).ToList();
+            var actualTypes = protoTypesExtractor.ExtractProtoTypes(testedType, typeExtractionOptions).ToList();
 
             // Assert
             CollectionAssert.AreEqual(expectedTypes, actualTypes);
+        }
+
+        [TestMethod]
+        public void ExtractProtoTypes_TypeCanBeReplaced_ReturnTheReplacedTypeAlongWithAllItsUsedTypes()
+        {
+            // Arrange
+            var testedType = typeof(int);
+            var replacingType = typeof(uint);
+            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
+                         .Returns(new List<ITypesExtractor>());
+
+            var mockReplacer = new Mock<ITypeReplacer>();
+            mockReplacer.Setup(extractor => extractor.CanReplaceType(It.Is<Type>(x => x.Equals(testedType))))
+                        .Returns(true);
+            mockReplacer.Setup(extractor => extractor.CanReplaceType(It.Is<Type>(x => !x.Equals(testedType))))
+                        .Returns(false);
+            mockReplacer.Setup(extractor => extractor.ReplaceType(It.Is<Type>(x => x.Equals(testedType)), It.IsAny<ITypeExtractionOptions>()))
+                        .Returns(replacingType);
+
+            var mockExtractor = new Mock<ITypesExtractor>();
+            mockExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => x.Equals(replacingType)), It.IsAny<ITypeExtractionOptions>()))
+                         .Returns(true);
+            mockExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => !x.Equals(replacingType)), It.IsAny<ITypeExtractionOptions>()))
+                         .Returns(false);
+            mockExtractor.Setup(extractor => extractor.ExtractUsedTypes(It.IsAny<Type>(), It.IsAny<ITypeExtractionOptions>())).
+                Returns(new List<Type> { typeof(bool), typeof(object) });
+
+            var wellKnownTypes = new Dictionary<Type, string>
+            {
+                [typeof(bool)] = typeof(bool).Name,
+                [typeof(object)] = typeof(object).Name,
+                [replacingType] = replacingType.Name,
+            };
+            var expectedTypes = new List<Type> { replacingType, typeof(bool), typeof(object) };
+
+            var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockExtractor.Object },
+                                                                new List<ITypeReplacer> { mockReplacer.Object },
+                                                                wellKnownTypes);
+
+            // Act
+            var actualTypes = protoTypesExtractor.ExtractProtoTypes(testedType, typeExtractionOptions).ToList();
+
+            // Assert
+            CollectionAssert.AreEquivalent(expectedTypes, actualTypes);
         }
 
         [TestMethod]
@@ -159,14 +206,14 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             CollectionAssert.AreEquivalent(expectedResult, actualResult);
         }
 
-        private ProtoTypesExtractor CreateProtoTypesExtractor(IEnumerable<ITypesExtractor> typesExtractors, bool useDefaultWellKnownTypes = false)
+        private ProtoTypesExtractor CreateProtoTypesExtractor(IEnumerable<ITypesExtractor> typesExtractors,
+                                                              IEnumerable<ITypeReplacer>? typeReplacers = null,
+                                                              IReadOnlyDictionary<Type, string>? wellKnownTypes = null)
         {
-            IDictionary<Type, string>? wellKnownTypes = null;
-            if (!useDefaultWellKnownTypes)
-            {
-                wellKnownTypes = new Dictionary<Type, string>();
-            }
-            return new ProtoTypesExtractor(mockIProvider.Object, typesExtractors, wellKnownTypes);
+            return new ProtoTypesExtractor(mockIProvider.Object,
+                                           typesExtractors,
+                                           typeReplacers ?? new List<ITypeReplacer>(),
+                                           wellKnownTypes ?? new Dictionary<Type, string>());
         }
     }
 }

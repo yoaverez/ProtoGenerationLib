@@ -1,5 +1,4 @@
 ﻿using ProtoGenerator.Extractors.Abstracts;
-using ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors;
 using ProtoGenerator.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using System.Collections.Generic;
@@ -31,7 +30,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         }
 
         /// <summary>
-        /// Create the default types extractors to for the extraction of used types
+        /// Create the default types extractors for the extraction of used types
         /// in a data-type type.
         /// </summary>
         /// <param name="componentsProvider">The components provider.</param>
@@ -43,22 +42,12 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         {
             return new ITypesExtractor[]
             {
-                // Not that the order of the extractors is important.
-                // Specific type extractors should be located before
-                // less specific type extractors.
-                // e.g Dictionary extractor should be located before Enumerable extractor
-                // since dictionary is also enumerable.
-                new NullableTypesExtractor(componentsProvider),
-                new TupleTypesExtractor(componentsProvider),
-                new ArrayTypesExtractor(componentsProvider),
-                new DictionaryTypesExtractor(componentsProvider),
-                new EnumerableTypesExtractor(componentsProvider),
                 new DefaultDataTypesExtractor(componentsProvider, CreateDefaultWrapperElementTypesExtractors()),
             };
         }
 
         /// <summary>
-        /// Create the default types extractors to for the extraction of elements
+        /// Create the default types extractors for the extraction of elements
         /// types of a wrapper type.
         /// </summary>
         /// <returns>
@@ -69,7 +58,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         {
             return new ITypesExtractor[]
             {
-                // Not that the order of the extractors is important.
+                // Note that the order of the extractors is important.
                 // Specific type extractors should be located before
                 // less specific type extractors.
                 // e.g Dictionary extractor should be located before Enumerable extractor

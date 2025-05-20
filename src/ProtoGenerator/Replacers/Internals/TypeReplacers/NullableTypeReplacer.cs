@@ -1,16 +1,16 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
-using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerator.Utilities.TypeUtilities;
 using System.Collections.Generic;
 using System;
+using ProtoGenerator.Replacers.Abstracts;
 
-namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors
+namespace ProtoGenerator.Replacers.Internals.TypeReplacers
 {
     /// <summary>
-    /// Extractor of used types for nullable types.
+    /// Replacer for nullable types.
     /// </summary>
-    public class NullableTypesExtractor : BaseTypesExtractor
+    public class NullableTypeReplacer : ITypeReplacer
     {
         /// <summary>
         /// A provider for new type naming strategies.
@@ -18,30 +18,32 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTy
         private INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider;
 
         /// <summary>
-        /// Create new instance of the <see cref="NullableTypesExtractor"/> class.
+        /// Create new instance of the <see cref="NullableTypeReplacer"/> class.
         /// </summary>
         /// <param name="newTypeNamingStrategiesProvider"><inheritdoc cref="newTypeNamingStrategiesProvider" path="/node()"/></param>
-        public NullableTypesExtractor(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
+        public NullableTypeReplacer(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
         {
             this.newTypeNamingStrategiesProvider = newTypeNamingStrategiesProvider;
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public bool CanReplaceType(Type type)
         {
             return type.IsNullable();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public Type ReplaceType(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
+            if (!CanReplaceType(type))
+                throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not nullable type and can not be replaced by the {nameof(NullableTypeReplacer)}.");
+
             var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(typeExtractionOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
 
-            type.TryGetElementOfNullableType(out var elementType);
             var props = new List<(Type, string)> { (type, "value") };
             var newType = TypeCreator.CreateDataType(newTypeName, props);
-            return new Type[] { newType, elementType };
+            return newType;
         }
     }
 }

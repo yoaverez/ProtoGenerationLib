@@ -3,6 +3,8 @@ using ProtoGenerator.Constants;
 using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.Extractors.Internals.TypesExtractors;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerator.Replacers.Abstracts;
+using ProtoGenerator.Replacers.Internals;
 using ProtoGenerator.Utilities.CollectionUtilities;
 using System;
 using System.Collections.Generic;
@@ -26,9 +28,15 @@ namespace ProtoGenerator.Extractors.Internals
         private IEnumerable<ITypesExtractor> defaultTypesExtractors;
 
         /// <summary>
+        /// The type replacers for replacing types that can be regular proto
+        /// messages such as enumerables.
+        /// </summary>
+        private IEnumerable<ITypeReplacer> typeReplacers;
+
+        /// <summary>
         /// A mapping between csharp well known types to proto well known types.
         /// </summary>
-        private IDictionary<Type, string> wellKnownTypes;
+        private IReadOnlyDictionary<Type, string> wellKnownTypes;
 
         /// <summary>
         /// Create new instance of the <see cref="ProtoTypesExtractor"/> class.
@@ -38,10 +46,12 @@ namespace ProtoGenerator.Extractors.Internals
         /// <param name="wellKnownTypes"><inheritdoc cref="wellKnownTypes" path="/node()"/></param>
         public ProtoTypesExtractor(IProvider componentsProvider,
                                    IEnumerable<ITypesExtractor>? defaultTypesExtractors = null,
-                                   IDictionary<Type, string>? wellKnownTypes = null)
+                                   IEnumerable<ITypeReplacer>? typeReplacers = null,
+                                   IReadOnlyDictionary<Type, string>? wellKnownTypes = null)
         {
             this.customConvertersProvider = componentsProvider;
             this.defaultTypesExtractors = defaultTypesExtractors ?? DefaultTypesExtractorsCreator.CreateStructuralTypesExtractors(componentsProvider);
+            this.typeReplacers = typeReplacers ?? DefaultTypeReplacersCreator.CreateDefaultTypeReplacers(componentsProvider);
             this.wellKnownTypes = wellKnownTypes ?? WellKnownTypesConstants.WellKnownTypes;
         }
 
@@ -51,7 +61,7 @@ namespace ProtoGenerator.Extractors.Internals
             var customTypesExtractors = customConvertersProvider.GetCustomTypesExtractors();
             var typeExtractors = customTypesExtractors.Concat(defaultTypesExtractors).ToArray();
 
-            return ExtractProtoTypes(type, typeExtractionOptions, typeExtractors, new HashSet<Type>());
+            return ExtractProtoTypes(type, typeExtractionOptions, typeExtractors, typeReplacers, new HashSet<Type>());
         }
 
         /// <param name="typesExtractors">The types extractors.</param>
@@ -64,12 +74,26 @@ namespace ProtoGenerator.Extractors.Internals
         private IEnumerable<Type> ExtractProtoTypes(Type type,
                                                     ITypeExtractionOptions typeExtractionOptions,
                                                     IEnumerable<ITypesExtractor> typesExtractors,
+                                                    IEnumerable<ITypeReplacer> typeReplacers,
                                                     HashSet<Type> alreadyCheckedTypes)
         {
             // There is no reason to create a new proto type from a known types.
             if (wellKnownTypes.ContainsKey(type))
             {
-                return new HashSet<Type>();
+                // There is no need to check well known types.
+                alreadyCheckedTypes.Add(type);
+                return new HashSet<Type> { type };
+            }
+
+            foreach (var typeReplacer in typeReplacers)
+            {
+                // Check if the type can be replaced,
+                // if so then replace it.
+                if (typeReplacer.CanReplaceType(type))
+                {
+                    type = typeReplacer.ReplaceType(type, typeExtractionOptions);
+                    break;
+                }
             }
 
             var types = new HashSet<Type> { type };
@@ -84,7 +108,7 @@ namespace ProtoGenerator.Extractors.Internals
                         if (!alreadyCheckedTypes.Contains(usedType))
                         {
                             alreadyCheckedTypes.Add(usedType);
-                            types.AddRange(ExtractProtoTypes(usedType, typeExtractionOptions, typesExtractors, alreadyCheckedTypes));
+                            types.AddRange(ExtractProtoTypes(usedType, typeExtractionOptions, typesExtractors, typeReplacers, alreadyCheckedTypes));
                         }
                     }
                     return types;

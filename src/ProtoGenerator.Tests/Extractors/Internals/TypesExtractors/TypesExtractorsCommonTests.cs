@@ -59,15 +59,6 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
             CollectionAssert.AreEquivalent(expectedUsedTypes.ToList(), actualUsedTypes.ToList());
         }
 
-        public static void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(ITypesExtractor extractor, Type type, ITypeExtractionOptions typeExtractionOptions, IEnumerable<string> expectedUsedTypes)
-        {
-            // Act
-            var actualUsedTypes = extractor.ExtractUsedTypes(type, typeExtractionOptions);
-
-            // Assert
-            CollectionAssert.AreEquivalent(expectedUsedTypes.ToList(), actualUsedTypes.Select(t => t.Name).ToList());
-        }
-
         #endregion ExtractUsedTypes Tests
     }
 }

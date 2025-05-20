@@ -1,16 +1,16 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
-using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerator.Utilities.TypeUtilities;
 using System.Collections.Generic;
 using System;
+using ProtoGenerator.Replacers.Abstracts;
 
-namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTypesExtractors
+namespace ProtoGenerator.Replacers.Internals.TypeReplacers
 {
     /// <summary>
-    /// Extractor of used types for enumerable types.
+    /// Replacer for enumerable types.
     /// </summary>
-    public class EnumerableTypesExtractor : BaseTypesExtractor
+    public class EnumerableTypeReplacer : ITypeReplacer
     {
         /// <summary>
         /// A provider for new type naming strategies.
@@ -18,30 +18,32 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.SpecificDataTypeTy
         private INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider;
 
         /// <summary>
-        /// Create new instance of the <see cref="EnumerableTypesExtractor"/> class.
+        /// Create new instance of the <see cref="EnumerableTypeReplacer"/> class.
         /// </summary>
         /// <param name="newTypeNamingStrategiesProvider"><inheritdoc cref="newTypeNamingStrategiesProvider" path="/node()"/></param>
-        public EnumerableTypesExtractor(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
+        public EnumerableTypeReplacer(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
         {
             this.newTypeNamingStrategiesProvider = newTypeNamingStrategiesProvider;
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public bool CanReplaceType(Type type)
         {
             return type.IsEnumerableType();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public Type ReplaceType(Type type, ITypeExtractionOptions typeExtractionOptions)
         {
+            if (!CanReplaceType(type))
+                throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not an enumerable and can not be replaced by the {nameof(EnumerableTypeReplacer)}.");
+
             var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(typeExtractionOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
 
-            type.TryGetElementOfEnumerableType(out var elementType);
             var props = new List<(Type, string)> { (type, "items") };
             var newType = TypeCreator.CreateDataType(newTypeName, props);
-            return new Type[] { newType, elementType };
+            return newType;
         }
     }
 }
