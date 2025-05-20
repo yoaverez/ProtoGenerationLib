@@ -21,6 +21,11 @@ namespace ProtoGenerator.Utilities.TypeUtilities
         private const string DYNAMIC_TYPE_MODULE_NAME = "DynamicModule";
 
         /// <summary>
+        /// The namespace name of the newly created types.
+        /// </summary>
+        private const string NAMESPACE_NAME = "ProtoGenerator.DynamicTypes";
+
+        /// <summary>
         /// A builder that can create type builders.
         /// </summary>
         private static readonly ModuleBuilder moduleBuilder;
@@ -61,7 +66,7 @@ namespace ProtoGenerator.Utilities.TypeUtilities
             }
 
             // Create a type builder.
-            var typeBuilder = moduleBuilder.DefineType(typeName, TypeAttributes.Public | TypeAttributes.Class);
+            var typeBuilder = moduleBuilder.DefineType($"{NAMESPACE_NAME}.{typeName}", TypeAttributes.Public | TypeAttributes.Class);
 
             // Add fields.
             foreach (var fieldData in Properties)
@@ -96,7 +101,7 @@ namespace ProtoGenerator.Utilities.TypeUtilities
             }
 
             // Create a type builder.
-            var typeBuilder = moduleBuilder.DefineType(newTypeName, TypeAttributes.Public | TypeAttributes.Class);
+            var typeBuilder = moduleBuilder.DefineType($"{NAMESPACE_NAME}.{newTypeName}", TypeAttributes.Public | TypeAttributes.Class);
 
             var arrayOfElementsType = elementType.MakeArrayType();
 
