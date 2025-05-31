@@ -48,7 +48,7 @@ namespace ProtoGenerator.Utilities.CollectionUtilities
         /// <typeparam name="T">The type of the elements in the collections.</typeparam>
         /// <param name="set">The set to add the <paramref name="collection"/> to.</param>
         /// <param name="collection">The collection to add to the <paramref name="set"/>.</param>
-        public static void AddRange<T>(this HashSet<T> set, IEnumerable<T> collection)
+        public static void AddRange<T>(this ISet<T> set, IEnumerable<T> collection)
         {
             foreach (var item in collection)
             {

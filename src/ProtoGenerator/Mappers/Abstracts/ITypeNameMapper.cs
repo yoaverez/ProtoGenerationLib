@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProtoGenerator.Models.Abstracts.ProtoDefinitions;
+using System;
 
 namespace ProtoGenerator.Mappers.Abstracts
 {
@@ -19,10 +20,29 @@ namespace ProtoGenerator.Mappers.Abstracts
         bool CanHandle(Type type);
 
         /// <summary>
-        /// Map the given <paramref name="type"/> to it's proto type name.
+        /// Map the given <paramref name="type"/> to its <see cref="IProtoTypeBaseMetadata"/>.
         /// </summary>
         /// <param name="type">The type to map.</param>
-        /// <returns>The name of the proto type that will represent the given <paramref name="type"/>.</returns>
-        string MapType(Type type);
+        /// <returns>The <see cref="IProtoTypeBaseMetadata"/> that represents the given <paramref name="type"/>.</returns>
+        /// <remarks>
+        /// <b>Notes</b>:<br/>
+        /// <list type="number">
+        /// <item>
+        /// Properties that you do not initialize will be initialized to <see langword="null"/>
+        /// and afterward will get value base on the chosen strategies and will be styled.
+        /// </item>
+        /// <item>
+        /// Properties that you chose to fill won't be styled meaning that you should
+        /// styled them yourself however you want.
+        /// </item>
+        /// <item>
+        /// If for some reason there is a new primitive type that is not yet supported
+        /// by this proto generator, you can add custom mapper that will support the new primitive
+        /// by filling the <see cref="IProtoTypeBaseMetadata.Package"/> and <see cref="IProtoTypeBaseMetadata.FilePath"/>
+        /// with <see cref="string.Empty"/> values (<b>And not nulls!</b>).
+        /// </item>
+        /// </list>
+        /// </remarks>
+        IProtoTypeBaseMetadata MapTypeToProtoMetaData(Type type);
     }
 }

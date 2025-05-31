@@ -1,0 +1,22 @@
+﻿using ProtoGenerator.Configurations.Abstracts;
+using ProtoGenerator.Models.Abstracts.ProtoDefinitions;
+using System;
+using System.Collections.Generic;
+
+namespace ProtoGenerator.Discovery.Abstracts
+{
+    /// <summary>
+    /// A discoverer of proto type metadata.
+    /// </summary>
+    public interface IProtoTypeMetadataDiscoverer
+    {
+        /// <summary>
+        /// Discover the given <paramref name="types"/> matching proto type metadata.
+        /// </summary>
+        /// <param name="types">The types from which to discover the proto metadata.</param>
+        /// <param name="protoGeneratorConfiguration">The options for the discovery.</param>
+        /// <returns>A mapping between a type to its matching proto type metadata.</returns>
+        IReadOnlyDictionary<Type, IProtoTypeMetadata> DiscoverProtosMetadata(IEnumerable<Type> types,
+                                                                             IProtoGeneratorConfiguration protoGeneratorConfiguration);
+    }
+}

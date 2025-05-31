@@ -339,5 +339,28 @@ namespace ProtoGenerator.Utilities.TypeUtilities
         {
             return string.Join("", type.Name.TakeWhile(c => c != '`'));
         }
+
+        /// <summary>
+        /// Try getting the declaring type of the given <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type whose declaring type is requested.</param>
+        /// <param name="declaringType">
+        /// The declaring type if <paramref name="type"/> is nested otherwise
+        /// <see langword="default"/> of <see cref="Type"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the given <paramref name="type"/> is nested
+        /// otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool TryGetDeclaringType(this Type type, out Type declaringType)
+        {
+            declaringType = default;
+            if (type.IsNested)
+            {
+                declaringType = type.DeclaringType;
+                return true;
+            }
+            return false;
+        }
     }
 }
