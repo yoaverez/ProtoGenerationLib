@@ -243,15 +243,15 @@ namespace ProtoGenerator.Discovery.Internals
             IProtoStylingStrategy stylingStrategy;
             if (type.IsEnum)
             {
-                stylingStrategy = componentsProvider.GetEnumStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.EnumStylingStrategy);
+                stylingStrategy = componentsProvider.GetProtoStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.EnumStylingStrategy);
             }
             else if (type.IsDefined(protoServiceAttribute, protoServiceAttribute.IsAttributeInherited()))
             {
-                stylingStrategy = componentsProvider.GetServiceStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.ServiceStylingStrategy);
+                stylingStrategy = componentsProvider.GetProtoStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.ServiceStylingStrategy);
             }
             else
             {
-                stylingStrategy = componentsProvider.GetMessageStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.MessageStylingStrategy);
+                stylingStrategy = componentsProvider.GetProtoStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.MessageStylingStrategy);
             }
 
             var styledName = stylingStrategy.ToProtoStyle(unstyledName);

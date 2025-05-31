@@ -10,8 +10,11 @@ namespace ProtoGenerator.Strategies.Internals.ProtoStylingStrategies
     /// e.g if the words are: ILikeApple, MeToo then the result will be
     /// i_like_apple.me_too
     /// </summary>
-    public class DotDelimitedSnakeCaseStrategy : IProtoStylingStrategy
+    public class DotDelimitedSnakeCaseStrategy : IPackageStylingStrategy
     {
+        /// <inheritdoc/>
+        public string PackageComponentsSeparator => ".";
+
         /// <inheritdoc/>
         public string ToProtoStyle(string word)
         {
@@ -21,7 +24,7 @@ namespace ProtoGenerator.Strategies.Internals.ProtoStylingStrategies
         /// <inheritdoc/>
         public string ToProtoStyle(string[] words)
         {
-            return string.Join(".", words.Select(word => word.ToSnakeCase()));
+            return string.Join(PackageComponentsSeparator, words.Select(word => word.ToSnakeCase()));
         }
     }
 }

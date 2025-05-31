@@ -37,28 +37,12 @@ namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
         #region Proto Styling Conventions Strategies Registry
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterMessageStylingStrategy(string, IProtoStylingStrategy)"/>
-        IRegistry RegisterMessageStylingStrategy(string strategyName, IProtoStylingStrategy strategy);
+        /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterProtoStylingStrategy(string, IProtoStylingStrategy)"/>
+        IRegistry RegisterProtoStylingStrategy(string strategyName, IProtoStylingStrategy strategy);
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterEnumStylingStrategy(string, IProtoStylingStrategy)"/>
-        IRegistry RegisterEnumStylingStrategy(string strategyName, IProtoStylingStrategy strategy);
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterEnumValueStylingStrategy(string, IProtoStylingStrategy)"/>
-        IRegistry RegisterEnumValueStylingStrategy(string strategyName, IProtoStylingStrategy strategy);
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterServiceStylingStrategy(string, IProtoStylingStrategy)"/>
-        IRegistry RegisterServiceStylingStrategy(string strategyName, IProtoStylingStrategy strategy);
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterFieldStylingStrategy(string, IProtoStylingStrategy)"/>
-        IRegistry RegisterFieldStylingStrategy(string strategyName, IProtoStylingStrategy strategy);
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterPackageStylingStrategy(string, IProtoStylingStrategy)"/>
-        IRegistry RegisterPackageStylingStrategy(string strategyName, IProtoStylingStrategy strategy);
+        /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterPackageStylingStrategy(string, IPackageStylingStrategy)"/>
+        IRegistry RegisterPackageStylingStrategy(string strategyName, IPackageStylingStrategy strategy);
 
         #endregion Proto Styling Conventions Strategies Registry
 

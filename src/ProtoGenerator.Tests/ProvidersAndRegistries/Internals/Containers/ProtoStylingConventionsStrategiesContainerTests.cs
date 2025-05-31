@@ -17,14 +17,14 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
 
         #region IProtoStylingConventionsStrategiesProvider Tests
 
-        #region GetEnumStylingStrategy Tests
+        #region GetProtoStylingStrategy Tests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void GetEnumStylingStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
+        public void GetProtoStylingStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
         {
             // Act
-            container.GetEnumStylingStrategy("sdfsdf");
+            container.GetProtoStylingStrategy("sdfsdf");
 
             // Assert
             // Noting to do.
@@ -33,14 +33,14 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void GetEnumStylingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
+        public void GetProtoStylingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
         {
             // Arrange
             var strategy = new Mock<IProtoStylingStrategy>();
-            container.RegisterEnumStylingStrategy("a", strategy.Object);
+            container.RegisterProtoStylingStrategy("a", strategy.Object);
 
             // Act
-            container.GetEnumStylingStrategy("sdfsdf");
+            container.GetProtoStylingStrategy("sdfsdf");
 
             // Assert
             // Noting to do.
@@ -48,158 +48,20 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         }
 
         [TestMethod]
-        public void GetEnumStylingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
+        public void GetProtoStylingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
         {
             // Arrange
             var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            container.RegisterEnumStylingStrategy("a", expectedStrategy);
+            container.RegisterProtoStylingStrategy("a", expectedStrategy);
 
             // Act
-            var actualStrategy = container.GetEnumStylingStrategy("a");
+            var actualStrategy = container.GetProtoStylingStrategy("a");
 
             // Assert
             Assert.AreSame(expectedStrategy, actualStrategy);
         }
 
-        #endregion GetEnumStylingStrategy Tests
-
-        #region GetEnumValueStylingStrategy Tests
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GetEnumValueStylingStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
-        {
-            // Act
-            container.GetEnumValueStylingStrategy("sdfsdf");
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GetEnumValueStylingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
-        {
-            // Arrange
-            var strategy = new Mock<IProtoStylingStrategy>();
-            container.RegisterEnumValueStylingStrategy("a", strategy.Object);
-
-            // Act
-            container.GetEnumValueStylingStrategy("sdfsdf");
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        [TestMethod]
-        public void GetEnumValueStylingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            container.RegisterEnumValueStylingStrategy("a", expectedStrategy);
-
-            // Act
-            var actualStrategy = container.GetEnumValueStylingStrategy("a");
-
-            // Assert
-            Assert.AreSame(expectedStrategy, actualStrategy);
-        }
-
-        #endregion GetEnumValueStylingStrategy Tests
-
-        #region GetFieldStylingStrategy Tests
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GetFieldStylingStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
-        {
-            // Act
-            container.GetFieldStylingStrategy("sdfsdf");
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GetFieldStylingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
-        {
-            // Arrange
-            var strategy = new Mock<IProtoStylingStrategy>();
-            container.RegisterFieldStylingStrategy("a", strategy.Object);
-
-            // Act
-            container.GetFieldStylingStrategy("sdfsdf");
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        [TestMethod]
-        public void GetFieldStylingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            container.RegisterFieldStylingStrategy("a", expectedStrategy);
-
-            // Act
-            var actualStrategy = container.GetFieldStylingStrategy("a");
-
-            // Assert
-            Assert.AreSame(expectedStrategy, actualStrategy);
-        }
-
-        #endregion GetFieldStylingStrategy Tests
-
-        #region GetMessageStylingStrategy Tests
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GetMessageStylingStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
-        {
-            // Act
-            container.GetMessageStylingStrategy("sdfsdf");
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GetMessageStylingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
-        {
-            // Arrange
-            var strategy = new Mock<IProtoStylingStrategy>();
-            container.RegisterMessageStylingStrategy("a", strategy.Object);
-
-            // Act
-            container.GetMessageStylingStrategy("sdfsdf");
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        [TestMethod]
-        public void GetMessageStylingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            container.RegisterMessageStylingStrategy("a", expectedStrategy);
-
-            // Act
-            var actualStrategy = container.GetMessageStylingStrategy("a");
-
-            // Assert
-            Assert.AreSame(expectedStrategy, actualStrategy);
-        }
-
-        #endregion GetMessageStylingStrategy Tests
+        #endregion GetProtoStylingStrategy Tests
 
         #region GetPackageStylingStrategy Tests
 
@@ -220,7 +82,7 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void GetPackageStylingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
         {
             // Arrange
-            var strategy = new Mock<IProtoStylingStrategy>();
+            var strategy = new Mock<IPackageStylingStrategy>();
             container.RegisterPackageStylingStrategy("a", strategy.Object);
 
             // Act
@@ -235,7 +97,7 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void GetPackageStylingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
         {
             // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
+            var expectedStrategy = new Mock<IPackageStylingStrategy>().Object;
             container.RegisterPackageStylingStrategy("a", expectedStrategy);
 
             // Act
@@ -247,199 +109,45 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
 
         #endregion GetPackageStylingStrategy Tests
 
-        #region GetServiceStylingStrategy Tests
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GetServiceStylingStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
-        {
-            // Act
-            container.GetServiceStylingStrategy("sdfsdf");
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GetServiceStylingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
-        {
-            // Arrange
-            var strategy = new Mock<IProtoStylingStrategy>();
-            container.RegisterServiceStylingStrategy("a", strategy.Object);
-
-            // Act
-            container.GetServiceStylingStrategy("sdfsdf");
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        [TestMethod]
-        public void GetServiceStylingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            container.RegisterServiceStylingStrategy("a", expectedStrategy);
-
-            // Act
-            var actualStrategy = container.GetServiceStylingStrategy("a");
-
-            // Assert
-            Assert.AreSame(expectedStrategy, actualStrategy);
-        }
-
-        #endregion GetServiceStylingStrategy Tests
-
         #endregion IProtoStylingConventionsStrategiesProvider Tests
 
         #region IProtoStylingConventionsStrategiesRegistry Tests
 
-        #region RegisterEnumStylingStrategy Tests
+        #region RegisterProtoStylingStrategy Tests
 
         [TestMethod]
-        public void RegisterEnumStylingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
+        public void RegisterProtoStylingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
         {
             // Arrange
             var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
             var strategyName = "a";
 
             // Act
-            container.RegisterEnumStylingStrategy(strategyName, expectedStrategy);
+            container.RegisterProtoStylingStrategy(strategyName, expectedStrategy);
 
             // Assert
-            var actualStrategy = container.GetEnumStylingStrategy(strategyName);
+            var actualStrategy = container.GetProtoStylingStrategy(strategyName);
             Assert.AreSame(expectedStrategy, actualStrategy);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void RegisterEnumStylingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
+        public void RegisterProtoStylingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
         {
             // Arrange
             var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
             var strategyName = "a";
-            container.RegisterEnumStylingStrategy(strategyName, expectedStrategy);
+            container.RegisterProtoStylingStrategy(strategyName, expectedStrategy);
 
             // Act
-            container.RegisterEnumStylingStrategy(strategyName, expectedStrategy);
+            container.RegisterProtoStylingStrategy(strategyName, expectedStrategy);
 
             // Assert
             // Noting to do.
             // The ExpectedException attribute will do the assert.
         }
 
-        #endregion RegisterEnumStylingStrategy Tests
-
-        #region RegisterEnumValueStylingStrategy Tests
-
-        [TestMethod]
-        public void RegisterEnumValueStylingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            var strategyName = "a";
-
-            // Act
-            container.RegisterEnumValueStylingStrategy(strategyName, expectedStrategy);
-
-            // Assert
-            var actualStrategy = container.GetEnumValueStylingStrategy(strategyName);
-            Assert.AreSame(expectedStrategy, actualStrategy);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void RegisterEnumValueStylingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            var strategyName = "a";
-            container.RegisterEnumValueStylingStrategy(strategyName, expectedStrategy);
-
-            // Act
-            container.RegisterEnumValueStylingStrategy(strategyName, expectedStrategy);
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        #endregion RegisterEnumValueStylingStrategy Tests
-
-        #region RegisterFieldStylingStrategy Tests
-
-        [TestMethod]
-        public void RegisterFieldStylingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            var strategyName = "a";
-
-            // Act
-            container.RegisterFieldStylingStrategy(strategyName, expectedStrategy);
-
-            // Assert
-            var actualStrategy = container.GetFieldStylingStrategy(strategyName);
-            Assert.AreSame(expectedStrategy, actualStrategy);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void RegisterFieldStylingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            var strategyName = "a";
-            container.RegisterFieldStylingStrategy(strategyName, expectedStrategy);
-
-            // Act
-            container.RegisterFieldStylingStrategy(strategyName, expectedStrategy);
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        #endregion RegisterFieldStylingStrategy Tests
-
-        #region RegisterMessageStylingStrategy Tests
-
-        [TestMethod]
-        public void RegisterMessageStylingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            var strategyName = "a";
-
-            // Act
-            container.RegisterMessageStylingStrategy(strategyName, expectedStrategy);
-
-            // Assert
-            var actualStrategy = container.GetMessageStylingStrategy(strategyName);
-            Assert.AreSame(expectedStrategy, actualStrategy);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void RegisterMessageStylingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            var strategyName = "a";
-            container.RegisterMessageStylingStrategy(strategyName, expectedStrategy);
-
-            // Act
-            container.RegisterMessageStylingStrategy(strategyName, expectedStrategy);
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        #endregion RegisterMessageStylingStrategy Tests
+        #endregion RegisterProtoStylingStrategy Tests
 
         #region RegisterPackageStylingStrategy Tests
 
@@ -447,15 +155,17 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void RegisterPackageStylingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
         {
             // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
+            var expectedStrategy = new Mock<IPackageStylingStrategy>().Object;
             var strategyName = "a";
 
             // Act
             container.RegisterPackageStylingStrategy(strategyName, expectedStrategy);
 
             // Assert
-            var actualStrategy = container.GetPackageStylingStrategy(strategyName);
-            Assert.AreSame(expectedStrategy, actualStrategy);
+            var actualPackageStrategy = container.GetPackageStylingStrategy(strategyName);
+            var actualProtoStrategy = container.GetProtoStylingStrategy(strategyName);
+            Assert.AreSame(expectedStrategy, actualPackageStrategy);
+            Assert.AreSame(expectedStrategy, actualProtoStrategy);
         }
 
         [TestMethod]
@@ -463,7 +173,7 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void RegisterPackageStylingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
         {
             // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
+            var expectedStrategy = new Mock<IPackageStylingStrategy>().Object;
             var strategyName = "a";
             container.RegisterPackageStylingStrategy(strategyName, expectedStrategy);
 
@@ -476,42 +186,6 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         }
 
         #endregion RegisterPackageStylingStrategy Tests
-
-        #region RegisterServiceStylingStrategy Tests
-
-        [TestMethod]
-        public void RegisterServiceStylingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            var strategyName = "a";
-
-            // Act
-            container.RegisterServiceStylingStrategy(strategyName, expectedStrategy);
-
-            // Assert
-            var actualStrategy = container.GetServiceStylingStrategy(strategyName);
-            Assert.AreSame(expectedStrategy, actualStrategy);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void RegisterServiceStylingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
-        {
-            // Arrange
-            var expectedStrategy = new Mock<IProtoStylingStrategy>().Object;
-            var strategyName = "a";
-            container.RegisterServiceStylingStrategy(strategyName, expectedStrategy);
-
-            // Act
-            container.RegisterServiceStylingStrategy(strategyName, expectedStrategy);
-
-            // Assert
-            // Noting to do.
-            // The ExpectedException attribute will do the assert.
-        }
-
-        #endregion RegisterServiceStylingStrategy Tests
 
         #endregion IProtoStylingConventionsStrategiesRegistry Tests
     }

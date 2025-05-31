@@ -94,39 +94,15 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         #region IProtoStylingConventionsStrategiesProvider Implementation
 
         /// <inheritdoc/>
-        public IProtoStylingStrategy GetEnumStylingStrategy(string strategyName)
+        public IProtoStylingStrategy GetProtoStylingStrategy(string strategyName)
         {
-            return protoStylingConventionsStrategiesContainer.GetEnumStylingStrategy(strategyName);
+            return protoStylingConventionsStrategiesContainer.GetProtoStylingStrategy(strategyName);
         }
 
         /// <inheritdoc/>
-        public IProtoStylingStrategy GetEnumValueStylingStrategy(string strategyName)
-        {
-            return protoStylingConventionsStrategiesContainer.GetEnumValueStylingStrategy(strategyName);
-        }
-
-        /// <inheritdoc/>
-        public IProtoStylingStrategy GetFieldStylingStrategy(string strategyName)
-        {
-            return protoStylingConventionsStrategiesContainer.GetFieldStylingStrategy(strategyName);
-        }
-
-        /// <inheritdoc/>
-        public IProtoStylingStrategy GetMessageStylingStrategy(string strategyName)
-        {
-            return protoStylingConventionsStrategiesContainer.GetMessageStylingStrategy(strategyName);
-        }
-
-        /// <inheritdoc/>
-        public IProtoStylingStrategy GetPackageStylingStrategy(string strategyName)
+        public IPackageStylingStrategy GetPackageStylingStrategy(string strategyName)
         {
             return protoStylingConventionsStrategiesContainer.GetPackageStylingStrategy(strategyName);
-        }
-
-        /// <inheritdoc/>
-        public IProtoStylingStrategy GetServiceStylingStrategy(string strategyName)
-        {
-            return protoStylingConventionsStrategiesContainer.GetServiceStylingStrategy(strategyName);
         }
 
         #endregion IProtoStylingConventionsStrategiesProvider Implementation
@@ -238,44 +214,16 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         #region IProtoStylingConventionsStrategiesRegistry Implementation
 
         /// <inheritdoc/>
-        public IRegistry RegisterEnumStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
+        public IRegistry RegisterProtoStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
         {
-            protoStylingConventionsStrategiesContainer.RegisterEnumStylingStrategy(strategyName, strategy);
+            protoStylingConventionsStrategiesContainer.RegisterProtoStylingStrategy(strategyName, strategy);
             return this;
         }
 
         /// <inheritdoc/>
-        public IRegistry RegisterEnumValueStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
-        {
-            protoStylingConventionsStrategiesContainer.RegisterEnumValueStylingStrategy(strategyName, strategy);
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IRegistry RegisterFieldStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
-        {
-            protoStylingConventionsStrategiesContainer.RegisterFieldStylingStrategy(strategyName, strategy);
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IRegistry RegisterMessageStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
-        {
-            protoStylingConventionsStrategiesContainer.RegisterMessageStylingStrategy(strategyName, strategy);
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IRegistry RegisterPackageStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
+        public IRegistry RegisterPackageStylingStrategy(string strategyName, IPackageStylingStrategy strategy)
         {
             protoStylingConventionsStrategiesContainer.RegisterPackageStylingStrategy(strategyName, strategy);
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IRegistry RegisterServiceStylingStrategy(string strategyName, IProtoStylingStrategy strategy)
-        {
-            protoStylingConventionsStrategiesContainer.RegisterServiceStylingStrategy(strategyName, strategy);
             return this;
         }
 

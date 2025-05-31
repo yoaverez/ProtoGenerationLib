@@ -32,7 +32,7 @@ namespace ProtoGenerator.Tests.Discovery.Internals
 
         private Mock<IProtoStylingStrategy> mockEnumStylingStrategy;
 
-        private Mock<IProtoStylingStrategy> mockPackageStylingStrategy;
+        private Mock<IPackageStylingStrategy> mockPackageStylingStrategy;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
@@ -81,18 +81,18 @@ namespace ProtoGenerator.Tests.Discovery.Internals
                          .Returns(mockIFileNamingStrategy.Object);
 
             mockMessageStylingStrategy = new Mock<IProtoStylingStrategy>();
-            mockIProvider.Setup(provider => provider.GetMessageStylingStrategy("4"))
+            mockIProvider.Setup(provider => provider.GetProtoStylingStrategy("4"))
                          .Returns(mockMessageStylingStrategy.Object);
 
             mockServiceStylingStrategy = new Mock<IProtoStylingStrategy>();
-            mockIProvider.Setup(provider => provider.GetServiceStylingStrategy("5"))
+            mockIProvider.Setup(provider => provider.GetProtoStylingStrategy("5"))
                          .Returns(mockServiceStylingStrategy.Object);
 
             mockEnumStylingStrategy = new Mock<IProtoStylingStrategy>();
-            mockIProvider.Setup(provider => provider.GetEnumStylingStrategy("6"))
+            mockIProvider.Setup(provider => provider.GetProtoStylingStrategy("6"))
                          .Returns(mockEnumStylingStrategy.Object);
 
-            mockPackageStylingStrategy = new Mock<IProtoStylingStrategy>();
+            mockPackageStylingStrategy = new Mock<IPackageStylingStrategy>();
             mockIProvider.Setup(provider => provider.GetPackageStylingStrategy("7"))
                          .Returns(mockPackageStylingStrategy.Object);
         }
