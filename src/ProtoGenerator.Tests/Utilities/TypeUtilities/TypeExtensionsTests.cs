@@ -238,6 +238,38 @@ namespace ProtoGenerator.Tests.Utilities.TypeUtilities
 
         #endregion IsSingleDimensionalArray Tests
 
+        #region IsMultiDimensionalOrJaggedArray Tests
+
+        [DataRow(typeof(int[]))]
+        [DataRow(typeof(bool[]))]
+        [DataRow(typeof(object[]))]
+        [DataRow(typeof(IEnumerable<Type>[]))]
+        [TestMethod]
+        public void IsMultiDimensionalOrJaggedArray_TypeIsNotAMultiDimensionalArrayNorJaggedArray_ReturnFalse(Type type)
+        {
+            // Act
+            var returnValue = type.IsMultiDimensionalOrJaggedArray();
+
+            // Assert
+            Assert.IsFalse(returnValue);
+        }
+
+        [DataRow(typeof(int[][]))]
+        [DataRow(typeof(char[][][][][]))]
+        [DataRow(typeof(bool[,]))]
+        [DataRow(typeof(string[,,,,,,,,,]))]
+        [TestMethod]
+        public void IsMultiDimensionalOrJaggedArray_TypeIsAMultiDimensionalArrayOrJaggedArray_ReturnTrue(Type type)
+        {
+            // Act
+            var returnValue = type.IsMultiDimensionalOrJaggedArray();
+
+            // Assert
+            Assert.IsTrue(returnValue);
+        }
+
+        #endregion IsMultiDimensionalOrJaggedArray Tests
+
         #region GetArrayElementType Tests
 
         [DataRow(typeof(int))]
@@ -371,6 +403,7 @@ namespace ProtoGenerator.Tests.Utilities.TypeUtilities
         [DataRow(typeof(bool))]
         [DataRow(typeof(object))]
         [DataRow(typeof(Type))]
+        [DataRow(typeof(string))]
         [TestMethod]
         public void TryGetElementOfEnumerableType_TypeIsNotEnumerable_ReturnsFalse(Type type)
         {

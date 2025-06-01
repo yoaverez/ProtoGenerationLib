@@ -17,7 +17,13 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.DummyTypes
             return 0;
         }
 
-        public int Method3(Type type)
+        [ProtoRpc(ProtoRpcType.ClientStreaming)]
+        public int Method3()
+        {
+            return 0;
+        }
+
+        public int Method4(Type type)
         {
             return 0;
         }

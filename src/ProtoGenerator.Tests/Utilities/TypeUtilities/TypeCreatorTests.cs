@@ -129,5 +129,40 @@ namespace ProtoGenerator.Tests.Utilities.TypeUtilities
         }
 
         #endregion CreateArrayType Tests
+
+        #region TryGetCreatedType Tests
+
+        [TestMethod]
+        public void TryGetCreatedType_TypeWithGivenNameHasNotBeenCreated_ReturnFalse()
+        {
+            // Act
+            var actualResult = TypeCreator.TryGetCreatedType("a", out var type);
+
+            // Assert
+            Assert.IsFalse(actualResult);
+        }
+
+        [TestMethod]
+        public void TryGetCreatedType_TypeWithGivenNameHasBeenCreated_ReturnTrue()
+        {
+            // Arrange
+            var dataTypeName = $"{nameof(TryGetCreatedType_TypeWithGivenNameHasBeenCreated_ReturnTrue)}-DataType";
+            var arrayTypeName = $"{nameof(TryGetCreatedType_TypeWithGivenNameHasBeenCreated_ReturnTrue)}-ArrayType";
+            var newDataType = TypeCreator.CreateDataType(dataTypeName, Array.Empty<(Type, string)>());
+            var newArrayType = TypeCreator.CreateArrayType(typeof(int), arrayTypeName);
+
+            // Act
+            var actualDataTypeResult = TypeCreator.TryGetCreatedType(dataTypeName, out var actualDataType);
+            var actualArrayTypeResult = TypeCreator.TryGetCreatedType(arrayTypeName, out var actualArrayType);
+
+            // Assert
+            Assert.IsTrue(actualDataTypeResult);
+            Assert.AreSame(newDataType, actualDataType);
+
+            Assert.IsTrue(actualArrayTypeResult);
+            Assert.AreSame(newArrayType, actualArrayType);
+        }
+
+        #endregion TryGetCreatedType Tests
     }
 }
