@@ -50,7 +50,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
                 // Need to create a special type for the parameters list.
                 if (methodParameters.Length > 1)
                 {
-                    var parameters = methodParameters.Select(parameterInfo => (parameterInfo.ParameterType, parameterInfo.Name ?? parameterInfo.ParameterType.Name));
+                    var parameters = methodParameters.Select(parameterInfo => (parameterInfo.ParameterType, parameterInfo.Name));
                     var newTypeName = parameterListNamingStrategy.GetNewParametersListTypeName(method);
                     var newType = TypeCreator.CreateDataType(newTypeName, parameters);
                     types.Add(newType);
