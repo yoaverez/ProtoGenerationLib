@@ -56,7 +56,7 @@ namespace ProtoGenerator.Models.Internals.ProtoDefinitions
             var other = obj as EnumDefinition;
             return other != null
                    && base.Equals(other)
-                   && Values.SequenceEqual(other.Values);
+                   && Values.SequenceEquivalence(other.Values);
         }
 
         /// <inheritdoc/>

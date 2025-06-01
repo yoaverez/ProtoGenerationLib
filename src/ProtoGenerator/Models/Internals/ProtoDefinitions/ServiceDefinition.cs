@@ -23,6 +23,18 @@ namespace ProtoGenerator.Models.Internals.ProtoDefinitions
         }
 
         /// <summary>
+        /// Create new instance of the <see cref="ServiceDefinition"/> class.
+        /// </summary>
+        /// <param name="rpcMethods"><inheritdoc cref="RpcMethods" path="/node()"/></param>
+        /// <param name="name"><inheritdoc cref="ProtoObject.Name" path="/node()"/></param>
+        /// <param name="package"><inheritdoc cref="ProtoObject.Package" path="/node()"/></param>
+        /// <param name="imports"><inheritdoc cref="ProtoObject.Imports" path="/node()"/></param>
+        public ServiceDefinition(IEnumerable<IRpcDefinition> rpcMethods, string name, string package, IEnumerable<string> imports) : base(name, package, imports)
+        {
+            RpcMethods = rpcMethods.ToList();
+        }
+
+        /// <summary>
         /// Create new instance of the <see cref="ServiceDefinition"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
@@ -42,7 +54,7 @@ namespace ProtoGenerator.Models.Internals.ProtoDefinitions
             var other = obj as ServiceDefinition;
             return other != null
                    && base.Equals(other)
-                   && RpcMethods.SequenceEqual(other.RpcMethods);
+                   && RpcMethods.SequenceEquivalence(other.RpcMethods);
         }
 
         /// <inheritdoc/>

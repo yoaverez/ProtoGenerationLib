@@ -20,6 +20,6 @@ namespace ProtoGenerator.Models.Abstracts.ProtoDefinitions
         /// <summary>
         /// The imports that are needed for the proto object to work.
         /// </summary>
-        IEnumerable<string> Imports { get; }
+        ISet<string> Imports { get; }
     }
 }

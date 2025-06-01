@@ -59,6 +59,11 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
                 {
                     types.Add(methodParameters[0].ParameterType);
                 }
+                // Method has no parameters.
+                else
+                {
+                    types.Add(typeof(void));
+                }
             }
 
             return types;

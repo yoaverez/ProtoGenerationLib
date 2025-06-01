@@ -1,4 +1,6 @@
-﻿namespace ProtoGenerator.Models.Abstracts.ProtoDefinitions
+﻿using ProtoGenerator.Attributes;
+
+namespace ProtoGenerator.Models.Abstracts.ProtoDefinitions
 {
     /// <summary>
     /// Represents RPC in a Protocol Buffer service.

@@ -114,6 +114,21 @@ namespace ProtoGenerator.Utilities.TypeUtilities
         }
 
         /// <summary>
+        /// Try getting a type that was already created.
+        /// </summary>
+        /// <param name="typeName">The name of the requested type.</param>
+        /// <param name="type">The result type if found otherwise null.</param>
+        /// <returns>
+        /// <see langword="true"/> if a type with a name of the given <paramref name="typeName"/>
+        /// was created otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool TryGetCreatedType(string typeName, out Type type)
+        {
+            type = null;
+            return CreatedTypes.TryGetValue(typeName, out type);
+        }
+
+        /// <summary>
         /// Define a public property in the given <paramref name="typeBuilder"/>.
         /// </summary>
         /// <param name="typeBuilder">The type builder in which to define new property.</param>

@@ -75,9 +75,9 @@ namespace ProtoGenerator.Models.Internals.ProtoDefinitions
             var other = obj as MessageDefinition;
             return other != null
                    && base.Equals(other)
-                   && Fields.SequenceEqual(other.Fields)
-                   && NestedMessages.SequenceEqual(other.NestedMessages)
-                   && NestedEnums.SequenceEqual(other.NestedEnums);
+                   && Fields.SequenceEquivalence(other.Fields)
+                   && NestedMessages.SequenceEquivalence(other.NestedMessages)
+                   && NestedEnums.SequenceEquivalence(other.NestedEnums);
         }
 
         /// <inheritdoc/>

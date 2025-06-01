@@ -140,6 +140,20 @@ namespace ProtoGenerator.Utilities.TypeUtilities
         }
 
         /// <summary>
+        /// Checks whether or not the given <paramref name="type"/> is
+        /// multi dimensional or jagged array.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        /// <see langword="true"/> if the given <paramref name="type"/>
+        /// is multi dimensional or jagged array. otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool IsMultiDimensionalOrJaggedArray(this Type type)
+        {
+            return type.IsArray && !type.IsSingleDimensionalArray();
+        }
+
+        /// <summary>
         /// Retrieves the element type of the given <paramref name="arrayType"/>.
         /// </summary>
         /// <param name="arrayType">The array type whose element type you want.</param>
@@ -225,6 +239,10 @@ namespace ProtoGenerator.Utilities.TypeUtilities
         public static bool TryGetElementOfEnumerableType(this Type type, out Type elementType)
         {
             elementType = default;
+
+            // String is a special case since it implements IEnumerable<char>.
+            if (type.Equals(typeof(string)))
+                return false;
 
             var possibleTypes = type.GetAllImplementedInterfaces().Append(type).ToArray();
             foreach (var possibleType in possibleTypes)

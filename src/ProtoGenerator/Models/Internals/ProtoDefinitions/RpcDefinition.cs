@@ -1,4 +1,5 @@
-﻿using ProtoGenerator.Models.Abstracts.ProtoDefinitions;
+﻿using ProtoGenerator.Attributes;
+using ProtoGenerator.Models.Abstracts.ProtoDefinitions;
 
 namespace ProtoGenerator.Models.Internals.ProtoDefinitions
 {
@@ -28,6 +29,21 @@ namespace ProtoGenerator.Models.Internals.ProtoDefinitions
             ResponseType = string.Empty;
             RequestType = string.Empty;
             RpcType = ProtoRpcType.Unary;
+        }
+
+        /// <summary>
+        /// Create new instances of the <see cref="RpcDefinition"/> class.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="Name" path="/node()"/></param>
+        /// <param name="responseType"><inheritdoc cref="ResponseType" path="/node()"/></param>
+        /// <param name="requestType"><inheritdoc cref="RequestType" path="/node()"/></param>
+        /// <param name="rpcType"><inheritdoc cref="RpcType" path="/node()"/></param>
+        public RpcDefinition(string name, string responseType, string requestType, ProtoRpcType rpcType)
+        {
+            Name = name;
+            ResponseType = responseType;
+            RequestType = requestType;
+            RpcType = rpcType;
         }
 
         /// <summary>

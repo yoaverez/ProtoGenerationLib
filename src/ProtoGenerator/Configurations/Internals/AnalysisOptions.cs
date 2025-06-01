@@ -29,5 +29,8 @@ namespace ProtoGenerator.Configurations.Internals
 
         /// <inheritdoc/>
         public Type ProtoRpcAttribute { get; set; }
+
+        /// <inheritdoc/>
+        public Type OptionalFieldAttribute { get; set; }
     }
 }

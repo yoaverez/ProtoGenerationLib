@@ -22,5 +22,8 @@ namespace ProtoGenerator.Configurations.Internals
 
         /// <inheritdoc/>
         public string PackageStylingStrategy { get; set; }
+
+        /// <inheritdoc/>
+        public string RpcStylingStrategy { get; set; }
     }
 }

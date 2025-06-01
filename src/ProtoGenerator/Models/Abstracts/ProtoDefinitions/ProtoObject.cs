@@ -15,7 +15,7 @@ namespace ProtoGenerator.Models.Abstracts.ProtoDefinitions
 
         /// <inheritdoc cref="IProtoObject.Imports"/>
         public HashSet<string> Imports { get; set; }
-        IEnumerable<string> IProtoObject.Imports => Imports;
+        ISet<string> IProtoObject.Imports => Imports;
 
         #region Constructors
 
@@ -63,7 +63,7 @@ namespace ProtoGenerator.Models.Abstracts.ProtoDefinitions
             return other != null
                    && Name.Equals(other.Name)
                    && Package.Equals(other.Package)
-                   && Imports.SequenceEqual(other.Imports);
+                   && Imports.SequenceEquivalence(other.Imports);
         }
 
         /// <inheritdoc/>

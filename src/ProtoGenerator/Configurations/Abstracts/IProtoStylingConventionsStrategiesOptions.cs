@@ -33,6 +33,11 @@
         /// <summary>
         /// The name of the package name styling strategy.
         /// </summary>
-        string PackageStylingStrategy { get; set; }
+        string PackageStylingStrategy { get; }
+
+        /// <summary>
+        /// The name of the rpc name styling strategy.
+        /// </summary>
+        string RpcStylingStrategy { get; set; }
     }
 }

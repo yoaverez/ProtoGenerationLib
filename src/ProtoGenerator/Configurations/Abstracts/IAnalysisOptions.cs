@@ -54,5 +54,11 @@ namespace ProtoGenerator.Configurations.Abstracts
         /// represents a proto rpc method.
         /// </summary>
         Type ProtoRpcAttribute { get; }
+
+        /// <summary>
+        /// The type of the attribute that tells that the field/property
+        /// represents an optional proto field.
+        /// </summary>
+        Type OptionalFieldAttribute { get; }
     }
 }
