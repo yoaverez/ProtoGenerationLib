@@ -14,13 +14,13 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.WrapperElementType
     public class DictionaryElementTypesExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public override bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             return type.IsKeyValuePairEnumerableType();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             type.TryGetElementsOfKeyValuePairEnumerableType(out var keyType, out var valueType);
             return new Type[] { keyType, valueType };

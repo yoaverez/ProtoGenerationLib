@@ -14,23 +14,23 @@ namespace ProtoGenerator.Extractors.Abstracts
         /// by the this extractor.
         /// </summary>
         /// <param name="type">The type to check.</param>
-        /// <param name="typeExtractionOptions">The options for the extraction.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>
         /// <see langword="true"/> if the given <paramref name="type"/>
         /// can be handled by this extractor otherwise <see langword="false"/>.
         /// </returns>
-        bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions);
+        bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions);
 
         /// <summary>
         /// Extract all the types that are used by the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to extract used types from.</param>
-        /// <param name="typeExtractionOptions">The options for the extraction.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>All the types that are used by the given <paramref name="type"/>.</returns>
         /// <exception cref="ArgumentException">
         /// Thrown when the given <paramref name="type"/>
         /// can not be handled by this extractor.
         /// </exception>
-        IEnumerable<Type> ExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions);
+        IEnumerable<Type> ExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions);
     }
 }

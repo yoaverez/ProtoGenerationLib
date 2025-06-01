@@ -119,13 +119,12 @@ namespace ProtoGenerator.Discovery.Internals
         /// Gets the proto name of the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type whose proto name you want.</param>
-        /// <param name="conversionOptions">The options of the conversion.</param>
-        /// <param name="typeMappers">The type name mappers.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The proto name of the given <paramref name="type"/>.</returns>
         private string GetProtoTypeName(Type type,
-                                        IConversionOptions conversionOptions)
+                                        IProtoGeneratorConfiguration generationOptions)
         {
-            var namingStrategy = componentsProvider.GetTypeNamingStrategy(conversionOptions.ProtoNamingStrategiesOptions.TypeNamingStrategy);
+            var namingStrategy = componentsProvider.GetTypeNamingStrategy(generationOptions.ProtoNamingStrategiesOptions.TypeNamingStrategy);
             return namingStrategy.GetTypeName(type);
         }
 
@@ -133,12 +132,12 @@ namespace ProtoGenerator.Discovery.Internals
         /// Get the styled package name of the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type whose package name to retrieve.</param>
-        /// <param name="conversionOptions">The options of the conversion.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The styled package name of the given <paramref name="type"/>.</returns>
         private string GetPackageName(Type type,
-                                      IConversionOptions conversionOptions)
+                                      IProtoGeneratorConfiguration generationOptions)
         {
-            var packageNamingStrategy = componentsProvider.GetPackageNamingStrategy(conversionOptions.ProtoNamingStrategiesOptions.PackageNamingStrategy);
+            var packageNamingStrategy = componentsProvider.GetPackageNamingStrategy(generationOptions.ProtoNamingStrategiesOptions.PackageNamingStrategy);
             var unstyledPackageComponents = packageNamingStrategy.GetPackageComponents(type);
             var unstyledPackage = string.Join(PACKAGE_COMPONENTS_SEPARATOR, unstyledPackageComponents);
             return unstyledPackage;
@@ -148,11 +147,11 @@ namespace ProtoGenerator.Discovery.Internals
         /// Gets the file path of the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type whose file path is requested.</param>
-        /// <param name="conversionOptions">The options.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The file path of the given <paramref name="type"/>.</returns>
-        private string GetFilePath(Type type, IConversionOptions conversionOptions)
+        private string GetFilePath(Type type, IProtoGeneratorConfiguration generationOptions)
         {
-            var fileNamingStrategy = componentsProvider.GetFileNamingStrategy(conversionOptions.ProtoNamingStrategiesOptions.FileNamingStrategy);
+            var fileNamingStrategy = componentsProvider.GetFileNamingStrategy(generationOptions.ProtoNamingStrategiesOptions.FileNamingStrategy);
             return fileNamingStrategy.GetFilePath(type);
         }
 
@@ -216,16 +215,16 @@ namespace ProtoGenerator.Discovery.Internals
         /// </summary>
         /// <param name="type">The type from which the given <paramref name="unstyledBaseMetadata"/> was created.</param>
         /// <param name="unstyledBaseMetadata">The unstyled proto type base metadata.</param>
-        /// <param name="conversionOptions">The generation options.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>
         /// A new <see cref="IProtoTypeBaseMetadata"/> from the given <paramref name="unstyledBaseMetadata"/>
         /// after applying styles to the properties.
         /// </returns>
-        private IProtoTypeBaseMetadata StyleBaseMetadata(Type type, IProtoTypeBaseMetadata unstyledBaseMetadata, IConversionOptions conversionOptions)
+        private IProtoTypeBaseMetadata StyleBaseMetadata(Type type, IProtoTypeBaseMetadata unstyledBaseMetadata, IProtoGeneratorConfiguration generationOptions)
         {
-            var styledName = StyleProtoName(type, unstyledBaseMetadata.Name!, conversionOptions);
+            var styledName = StyleProtoName(type, unstyledBaseMetadata.Name!, generationOptions);
 
-            var styledPackage = StyleProtoPackage(type, unstyledBaseMetadata.Package!, conversionOptions);
+            var styledPackage = StyleProtoPackage(type, unstyledBaseMetadata.Package!, generationOptions);
 
             return new ProtoTypeBaseMetadata(styledName, styledPackage, unstyledBaseMetadata.FilePath!);
         }
@@ -235,23 +234,23 @@ namespace ProtoGenerator.Discovery.Internals
         /// </summary>
         /// <param name="type">The type whose proto unstyled name is the given <paramref name="unstyledName"/>.</param>
         /// <param name="unstyledName">The unstyled proto name of the given <paramref name="type"/>.</param>
-        /// <param name="conversionOptions">The generation options.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The style proto type name of the given <paramref name="unstyledName"/>.</returns>
-        private string StyleProtoName(Type type, string unstyledName, IConversionOptions conversionOptions)
+        private string StyleProtoName(Type type, string unstyledName, IProtoGeneratorConfiguration generationOptions)
         {
-            var protoServiceAttribute = conversionOptions.AnalysisOptions.ProtoServiceAttribute;
+            var protoServiceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
             IProtoStylingStrategy stylingStrategy;
             if (type.IsEnum)
             {
-                stylingStrategy = componentsProvider.GetProtoStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.EnumStylingStrategy);
+                stylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.EnumStylingStrategy);
             }
             else if (type.IsDefined(protoServiceAttribute, protoServiceAttribute.IsAttributeInherited()))
             {
-                stylingStrategy = componentsProvider.GetProtoStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.ServiceStylingStrategy);
+                stylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.ServiceStylingStrategy);
             }
             else
             {
-                stylingStrategy = componentsProvider.GetProtoStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.MessageStylingStrategy);
+                stylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.MessageStylingStrategy);
             }
 
             var styledName = stylingStrategy.ToProtoStyle(unstyledName);
@@ -263,12 +262,12 @@ namespace ProtoGenerator.Discovery.Internals
         /// </summary>
         /// <param name="type">The type whose proto unstyled package is the given <paramref name="unstyledPackage"/>.</param>
         /// <param name="unstyledPackage">The unstyled proto package of the given <paramref name="type"/>.</param>
-        /// <param name="conversionOptions">The generation options.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The style proto type package of the given <paramref name="unstyledPackage"/>.</returns>
-        private string StyleProtoPackage(Type type, string unstyledPackage, IConversionOptions conversionOptions)
+        private string StyleProtoPackage(Type type, string unstyledPackage, IProtoGeneratorConfiguration generationOptions)
         {
             var packageComponents = unstyledPackage.Split(new string[] { PACKAGE_COMPONENTS_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
-            return StyleProtoPackage(type, packageComponents, conversionOptions);
+            return StyleProtoPackage(type, packageComponents, generationOptions);
         }
 
         /// <summary>
@@ -276,11 +275,11 @@ namespace ProtoGenerator.Discovery.Internals
         /// </summary>
         /// <param name="type">The type whose proto unstyled package is the given <paramref name="unstyledPackage"/>.</param>
         /// <param name="packageComponents">The unstyled proto package components of the given <paramref name="type"/>.</param>
-        /// <param name="conversionOptions">The generation options.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The style proto type package of the given <paramref name="unstyledPackage"/>.</returns>
-        private string StyleProtoPackage(Type type, string[] packageComponents, IConversionOptions conversionOptions)
+        private string StyleProtoPackage(Type type, string[] packageComponents, IProtoGeneratorConfiguration generationOptions)
         {
-            var packageStylingStrategy = componentsProvider.GetPackageStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy);
+            var packageStylingStrategy = componentsProvider.GetPackageStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy);
             var styledPackage = packageStylingStrategy.ToProtoStyle(packageComponents);
             return styledPackage;
         }

@@ -29,18 +29,18 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public override bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions)
         {
-            var protoServiceAttribute = typeExtractionOptions.AnalysisOptions.ProtoServiceAttribute;
+            var protoServiceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
             return type.IsDefined(protoServiceAttribute, protoServiceAttribute.IsAttributeInherited());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
         {
-            var parameterListNamingStrategy = parameterListNamingStrategiesProvider.GetParameterListNamingStrategy(typeExtractionOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
+            var parameterListNamingStrategy = parameterListNamingStrategiesProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
             var types = new HashSet<Type>();
-            var methods = type.ExtractMethods(typeExtractionOptions.AnalysisOptions.ProtoRpcAttribute);
+            var methods = type.ExtractMethods(generationOptions.AnalysisOptions.ProtoRpcAttribute);
 
             foreach (var method in methods)
             {

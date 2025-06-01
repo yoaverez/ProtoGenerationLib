@@ -33,12 +33,12 @@ namespace ProtoGenerator.Replacers.Internals.TypeReplacers
         }
 
         /// <inheritdoc/>
-        public Type ReplaceType(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public Type ReplaceType(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             if (!CanReplaceType(type))
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not an array and can not be replaced by the {nameof(ArrayTypeReplacer)}.");
 
-            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(typeExtractionOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
+            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
 
             Type newType;

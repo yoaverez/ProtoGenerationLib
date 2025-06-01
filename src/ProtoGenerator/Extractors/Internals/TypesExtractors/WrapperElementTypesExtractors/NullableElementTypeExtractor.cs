@@ -12,13 +12,13 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.WrapperElementType
     public class NullableElementTypeExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public override bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             return type.IsNullable();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             type.TryGetElementOfNullableType(out var elementType);
             return new Type[] { elementType };

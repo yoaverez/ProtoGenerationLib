@@ -13,8 +13,8 @@ namespace ProtoGenerator.Converters.Abstracts
         /// Convert the given <paramref name="type"/> to it's intermediate representation.
         /// </summary>
         /// <param name="type">The type to convert from csharp to intermediate representation.</param>
-        /// <param name="conversionOptions">The options for the conversion.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The intermediate representation of the given <paramref name="type"/>.</returns>
-        TIntermediate ConvertTypeToIntermediateRepresentation(Type type, IConversionOptions conversionOptions);
+        TIntermediate ConvertTypeToIntermediateRepresentation(Type type, IProtoGeneratorConfiguration generationOptions);
     }
 }

@@ -50,12 +50,12 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// <inheritdoc/>
         public IEnumDefinition ConvertIntermediateRepresentationToProtoDefinition(IEnumTypeMetadata intermediateType,
                                                                                   IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
-                                                                                  IConversionOptions conversionOptions)
+                                                                                  IProtoGeneratorConfiguration generationOptions)
         {
             var protoMetadata = protoTypesMetadatas[intermediateType.Type];
 
-            var enumValueNumberingStrategy = componentsProvider.GetEnumValueNumberingStrategy(conversionOptions.NumberingStrategiesOptions.EnumValueNumberingStrategy);
-            var enumValueStylingStrategy = componentsProvider.GetProtoStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.EnumValueStylingStrategy);
+            var enumValueNumberingStrategy = componentsProvider.GetEnumValueNumberingStrategy(generationOptions.NumberingStrategiesOptions.EnumValueNumberingStrategy);
+            var enumValueStylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.EnumValueStylingStrategy);
 
             var enumValueDefinitions = new List<EnumValueDefinition>();
             int i = 0;

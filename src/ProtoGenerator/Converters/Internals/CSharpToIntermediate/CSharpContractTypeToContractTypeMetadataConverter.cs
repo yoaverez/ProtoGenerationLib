@@ -14,10 +14,10 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
     public class CSharpContractTypeToContractTypeMetadataConverter : ICSharpToIntermediateConverter<IContractTypeMetadata>
     {
         /// <inheritdoc/>
-        public IContractTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IConversionOptions conversionOptions)
+        public IContractTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IProtoGeneratorConfiguration generationOptions)
         {
-            var serviceAttribute = conversionOptions.AnalysisOptions.ProtoServiceAttribute;
-            var rpcAttribute = conversionOptions.AnalysisOptions.ProtoRpcAttribute;
+            var serviceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
+            var rpcAttribute = generationOptions.AnalysisOptions.ProtoRpcAttribute;
             if (!type.IsDefined(serviceAttribute, serviceAttribute.IsAttributeInherited()))
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a contract type.", nameof(type));
 

@@ -74,8 +74,8 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
                          .Returns(mockIProtoStylingStrategy.Object);
 
             mockEnumConverter = new Mock<IIntermediateToProtoDefinitionConverter<IEnumTypeMetadata, IEnumDefinition>>();
-            mockEnumConverter.Setup(converter => converter.ConvertIntermediateRepresentationToProtoDefinition(It.IsAny<IEnumTypeMetadata>(), It.IsAny<IReadOnlyDictionary<Type, IProtoTypeMetadata>>(), It.IsAny<IConversionOptions>()))
-                             .Returns<IEnumTypeMetadata, IReadOnlyDictionary<Type, IProtoTypeMetadata>, IConversionOptions>((metadata, b, c) => new EnumDefinition(metadata.Type.Name, "", Array.Empty<IEnumValueDefinition>()));
+            mockEnumConverter.Setup(converter => converter.ConvertIntermediateRepresentationToProtoDefinition(It.IsAny<IEnumTypeMetadata>(), It.IsAny<IReadOnlyDictionary<Type, IProtoTypeMetadata>>(), generationOptions))
+                             .Returns<IEnumTypeMetadata, IReadOnlyDictionary<Type, IProtoTypeMetadata>, IProtoGeneratorConfiguration>((metadata, b, c) => new EnumDefinition(metadata.Type.Name, "", Array.Empty<IEnumValueDefinition>()));
             converter = new DataTypeMetadataToMessageDefinitionConverter(mockIProvider.Object, mockEnumConverter.Object);
         }
 

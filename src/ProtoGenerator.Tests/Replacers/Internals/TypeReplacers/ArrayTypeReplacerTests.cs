@@ -12,14 +12,14 @@ namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
     {
         private ArrayTypeReplacer replacer;
 
-        private ITypeExtractionOptions extractionOptions;
+        private IProtoGeneratorConfiguration generationOptions;
 
         private Mock<INewTypeNamingStrategy> mockINewTypeNamingStrategy;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            extractionOptions = new ProtoGeneratorConfiguration()
+            generationOptions = new ProtoGeneratorConfiguration()
             {
                 NewTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions
                 {
@@ -62,7 +62,7 @@ namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
         public void ReplaceType_TypeCanNotBeReplaced_ThrowsArgumentException(Type type)
         {
             // Act + Assert
-            TypeReplacersCommonTests.ReplaceType_TypeCanNotBeReplaced_ThrowsArgumentException(replacer, type, extractionOptions);
+            TypeReplacersCommonTests.ReplaceType_TypeCanNotBeReplaced_ThrowsArgumentException(replacer, type, generationOptions);
         }
 
         [DynamicData(nameof(GetTypesThatCanBeReplacedAndTheirNewType), DynamicDataSourceType.Method)]
@@ -74,7 +74,7 @@ namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
                                       .Returns(expectedNewType);
 
             // Act + Assert
-            TypeReplacersCommonTests.ReplaceType_TypeCanBeReplaced_ReturnNewType(replacer, type, extractionOptions, expectedNewType);
+            TypeReplacersCommonTests.ReplaceType_TypeCanBeReplaced_ReturnNewType(replacer, type, generationOptions, expectedNewType);
         }
 
         #endregion ReplaceType Tests

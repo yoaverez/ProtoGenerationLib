@@ -11,13 +11,13 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
     public class EnumTypesExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public override bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             return type.IsEnum;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             // Enum does not contains any types.
             return new HashSet<Type>();

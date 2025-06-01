@@ -11,7 +11,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.WrapperEleme
     {
         private ArrayElementTypeExtractor extractor;
 
-        private ITypeExtractionOptions extractionOptions;
+        private IProtoGeneratorConfiguration generationOptions;
 
         private Mock<INewTypeNamingStrategy> mockINewTypeNamingStrategy;
 
@@ -28,7 +28,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.WrapperEleme
         public void CanHandle_TypeCanNotBeHandled_ReturnFalse(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.CanHandle_TypeCanNotBeHandled_ReturnFalse(extractor, type, extractionOptions);
+            TypesExtractorsCommonTests.CanHandle_TypeCanNotBeHandled_ReturnFalse(extractor, type, generationOptions);
         }
 
         [DynamicData(nameof(GetTypesThatCanBeHandled), DynamicDataSourceType.Method)]
@@ -36,7 +36,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.WrapperEleme
         public void CanHandle_TypeCanBeHandled_ReturnTrue(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.CanHandle_TypeCanBeHandled_ReturnTrue(extractor, type, extractionOptions);
+            TypesExtractorsCommonTests.CanHandle_TypeCanBeHandled_ReturnTrue(extractor, type, generationOptions);
         }
 
         #endregion CanHandle Tests
@@ -48,7 +48,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.WrapperEleme
         public void ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(extractor, type, extractionOptions);
+            TypesExtractorsCommonTests.ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(extractor, type, generationOptions);
         }
 
         [DynamicData(nameof(GetTypesThatCanBeHandledAndTheirUsedTypes), DynamicDataSourceType.Method)]
@@ -56,7 +56,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.WrapperEleme
         public void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(Type type, IEnumerable<Type> expectedUsedTypes)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(extractor, type, extractionOptions, expectedUsedTypes);
+            TypesExtractorsCommonTests.ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(extractor, type, generationOptions, expectedUsedTypes);
         }
 
         #endregion ExtractUsedTypes Tests

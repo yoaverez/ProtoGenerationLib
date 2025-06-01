@@ -14,7 +14,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
     [TestClass]
     public class CSharpDataTypeToDataTypeMetadataConverterTests
     {
-        private static IConversionOptions conversionOptions;
+        private static IProtoGeneratorConfiguration generationOptions;
 
         private static IEnumTypeMetadata enumTypeMetadata;
 
@@ -25,7 +25,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            conversionOptions = new ProtoGeneratorConfiguration
+            generationOptions = new ProtoGeneratorConfiguration
             {
                 AnalysisOptions = new AnalysisOptions
                 {
@@ -51,7 +51,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
                         .Returns(mockStrategy.Object);
 
             var mockEnumConverter = new Mock<ICSharpToIntermediateConverter<IEnumTypeMetadata>>();
-            mockEnumConverter.Setup(enumConverter => enumConverter.ConvertTypeToIntermediateRepresentation(It.IsAny<Type>(), It.IsAny<IConversionOptions>()))
+            mockEnumConverter.Setup(enumConverter => enumConverter.ConvertTypeToIntermediateRepresentation(It.IsAny<Type>(), It.IsAny<IProtoGeneratorConfiguration>()))
                              .Returns(enumTypeMetadata);
 
             converter = new CSharpDataTypeToDataTypeMetadataConverter(mockProvider.Object, mockEnumConverter.Object);
@@ -65,7 +65,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
             var type = typeof(Enum1);
 
             // Act
-            converter.ConvertTypeToIntermediateRepresentation(type, conversionOptions);
+            converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
 
             // Assert
             // Noting to do. The ExpectedException will do the assert.
@@ -108,7 +108,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
                         .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "c", typeof(int)) });
 
             // Act
-            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, conversionOptions);
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
 
             // Assert
             Assert.AreEqual(expectedMetadata, actualMetadata);

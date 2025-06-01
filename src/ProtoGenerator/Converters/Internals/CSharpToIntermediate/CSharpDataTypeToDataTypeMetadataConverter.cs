@@ -34,7 +34,7 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
         }
 
         /// <inheritdoc/>
-        public IDataTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IConversionOptions conversionOptions)
+        public IDataTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             if (type.IsEnum)
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a data type.", nameof(type));
@@ -43,8 +43,8 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
             dataTypeMetadata.Type = type;
 
             // Extract the fields.
-            var fieldsAndPropertiesExtractor = extractionStrategiesProvider.GetFieldsAndPropertiesExtractionStrategy(conversionOptions.AnalysisOptions.FieldsAndPropertiesExtractionStrategy);
-            var fields = fieldsAndPropertiesExtractor.ExtractFieldsAndProperties(type, conversionOptions.AnalysisOptions);
+            var fieldsAndPropertiesExtractor = extractionStrategiesProvider.GetFieldsAndPropertiesExtractionStrategy(generationOptions.AnalysisOptions.FieldsAndPropertiesExtractionStrategy);
+            var fields = fieldsAndPropertiesExtractor.ExtractFieldsAndProperties(type, generationOptions.AnalysisOptions);
             dataTypeMetadata.Fields.AddRange(fields);
 
             // Extract the nested types.
@@ -53,11 +53,11 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
             {
                 if (nestedType.IsEnum)
                 {
-                    dataTypeMetadata.NestedEnumTypes.Add(csharpEnumTypeToEnumMetaDataConverter.ConvertTypeToIntermediateRepresentation(nestedType, conversionOptions));
+                    dataTypeMetadata.NestedEnumTypes.Add(csharpEnumTypeToEnumMetaDataConverter.ConvertTypeToIntermediateRepresentation(nestedType, generationOptions));
                 }
                 else
                 {
-                    dataTypeMetadata.NestedDataTypes.Add(ConvertTypeToIntermediateRepresentation(nestedType, conversionOptions));
+                    dataTypeMetadata.NestedDataTypes.Add(ConvertTypeToIntermediateRepresentation(nestedType, generationOptions));
                 }
             }
 

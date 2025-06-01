@@ -17,10 +17,10 @@ namespace ProtoGenerator.Converters.Abstracts
         /// </summary>
         /// <param name="intermediateType">The intermediate type to convert.</param>
         /// <param name="protoTypesMetadatas">The proto metadata of all the types.</param>
-        /// <param name="conversionOptions">The options for the conversion.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The proto definition that represents the given <paramref name="intermediateType"/>.</returns>
         TProtoDefinition ConvertIntermediateRepresentationToProtoDefinition(TIntermediate intermediateType,
                                                                             IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
-                                                                            IConversionOptions conversionOptions);
+                                                                            IProtoGeneratorConfiguration generationOptions);
     }
 }

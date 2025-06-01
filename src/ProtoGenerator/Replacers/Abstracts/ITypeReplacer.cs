@@ -23,7 +23,7 @@ namespace ProtoGenerator.Replacers.Abstracts
         /// Create a new type for replacing the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to replace.</param>
-        /// <param name="typeExtractionOptions">Option for the proto generation.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>
         /// A new type for replacing the given <paramref name="type"/>.
         /// </returns>
@@ -31,6 +31,6 @@ namespace ProtoGenerator.Replacers.Abstracts
         /// Thrown when the given <paramref name="type"/> can not be replaced
         /// by this replacer.
         /// </exception>
-        Type ReplaceType(Type type, ITypeExtractionOptions typeExtractionOptions);
+        Type ReplaceType(Type type, IProtoGeneratorConfiguration generationOptions);
     }
 }

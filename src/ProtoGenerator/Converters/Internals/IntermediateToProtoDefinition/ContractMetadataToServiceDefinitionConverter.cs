@@ -40,14 +40,14 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// <inheritdoc cref="CreateRpcFromMethodMetadata(IMethodMetadata, string, IConversionOptions, IReadOnlyDictionary{Type, IProtoTypeMetadata}, out ISet{string})" path="/exception"/>
         public IServiceDefinition ConvertIntermediateRepresentationToProtoDefinition(IContractTypeMetadata intermediateType,
                                                                                      IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
-                                                                                     IConversionOptions conversionOptions)
+                                                                                     IProtoGeneratorConfiguration generationOptions)
         {
             var typeProtoMetadata = protoTypesMetadatas[intermediateType.Type];
             var imports = new HashSet<string>();
             var rpcMethods = new List<IRpcDefinition>();
             foreach(var methodMetadata in intermediateType.Methods)
             {
-                rpcMethods.Add(CreateRpcFromMethodMetadata(methodMetadata, typeProtoMetadata.Package!, conversionOptions, protoTypesMetadatas, out var rpcNeededImports));
+                rpcMethods.Add(CreateRpcFromMethodMetadata(methodMetadata, typeProtoMetadata.Package!, generationOptions, protoTypesMetadatas, out var rpcNeededImports));
                 imports.AddRange(rpcNeededImports);
             }
 
@@ -59,7 +59,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// </summary>
         /// <param name="methodMetadata">The method meta data to convert.</param>
         /// <param name="filePackage">The package of the file in which the rpc is defined.</param>
-        /// <param name="conversionOptions">The generation options.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <param name="protoTypesMetadatas">Mapping between type to its proto type metadata.</param>
         /// <param name="neededImports">The imports needed in the file for the rpc.</param>
         /// <returns>An <see cref="IRpcDefinition"/> that represents the given <paramref name="methodMetadata"/>.</returns>
@@ -69,7 +69,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// </exception>
         private IRpcDefinition CreateRpcFromMethodMetadata(IMethodMetadata methodMetadata,
                                                            string filePackage,
-                                                           IConversionOptions conversionOptions,
+                                                           IProtoGeneratorConfiguration generationOptions,
                                                            IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
                                                            out ISet<string> neededImports)
         {
@@ -87,7 +87,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
             }
             else
             {
-                var parameterListNamingStrategy = componentsProvider.GetParameterListNamingStrategy(conversionOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
+                var parameterListNamingStrategy = componentsProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
                 var typeName = parameterListNamingStrategy.GetNewParametersListTypeName(methodMetadata.MethodInfo);
                 if (!TypeCreator.TryGetCreatedType(typeName, out requestType))
                     throw new Exception($"The service method: {methodMetadata.MethodInfo} " +
@@ -95,7 +95,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
                         $"for the parameter list.");
             }
 
-            var packageComponentsSeparator = componentsProvider.GetPackageStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy).PackageComponentsSeparator;
+            var packageComponentsSeparator = componentsProvider.GetPackageStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy).PackageComponentsSeparator;
 
             neededImports.Add(protoTypesMetadatas[requestType].FilePath!);
             var requestTypeName = GetTypeShortName(protoTypesMetadatas[requestType].FullName, filePackage, packageComponentsSeparator);
@@ -103,10 +103,10 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
             neededImports.Add(protoTypesMetadatas[methodMetadata.ReturnType].FilePath!);
             var responseTypeName = GetTypeShortName(protoTypesMetadatas[methodMetadata.ReturnType].FullName, filePackage, packageComponentsSeparator);
 
-            var rpcAttributeType = conversionOptions.AnalysisOptions.ProtoRpcAttribute;
+            var rpcAttributeType = generationOptions.AnalysisOptions.ProtoRpcAttribute;
             var attribute = methodMetadata.MethodInfo.GetCustomAttribute<ProtoRpcAttribute>(rpcAttributeType.IsAttributeInherited());
 
-            var rpcStylingStrategy = componentsProvider.GetProtoStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.RpcStylingStrategy);
+            var rpcStylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.RpcStylingStrategy);
             var rpcName = rpcStylingStrategy.ToProtoStyle(methodMetadata.MethodInfo.Name);
 
             return new RpcDefinition(rpcName, responseTypeName, requestTypeName, attribute.RpcType);

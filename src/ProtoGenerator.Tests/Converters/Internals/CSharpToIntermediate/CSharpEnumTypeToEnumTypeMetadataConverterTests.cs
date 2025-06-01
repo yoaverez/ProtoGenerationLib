@@ -10,14 +10,14 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
     [TestClass]
     public class CSharpEnumTypeToEnumTypeMetadataConverterTests
     {
-        private static IConversionOptions conversionOptions;
+        private static IProtoGeneratorConfiguration generationOptions;
 
         private static CSharpEnumTypeToEnumTypeMetadataConverter converter;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            conversionOptions = new ProtoGeneratorConfiguration();
+            generationOptions = new ProtoGeneratorConfiguration();
             converter = new CSharpEnumTypeToEnumTypeMetadataConverter();
         }
 
@@ -29,7 +29,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
             var type = typeof(CSharpEnumTypeToEnumTypeMetadataConverterTests);
 
             // Act
-            converter.ConvertTypeToIntermediateRepresentation(type, conversionOptions);
+            converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
 
             // Assert
             // Noting to do. The ExpectedException will do the assert.
@@ -48,7 +48,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
             });
 
             // Act
-            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, conversionOptions);
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
 
             // Assert
             Assert.AreEqual(expectedMetadata, actualMetadata);

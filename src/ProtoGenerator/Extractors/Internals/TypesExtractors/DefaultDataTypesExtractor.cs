@@ -36,16 +36,16 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public override bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             return true;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
         {
-            var fieldsAndPropertiesExtractionStrategy = extractionStrategiesProvider.GetFieldsAndPropertiesExtractionStrategy(typeExtractionOptions.AnalysisOptions.FieldsAndPropertiesExtractionStrategy);
-            var fieldTypes = fieldsAndPropertiesExtractionStrategy.ExtractFieldsAndProperties(type, typeExtractionOptions.AnalysisOptions)
+            var fieldsAndPropertiesExtractionStrategy = extractionStrategiesProvider.GetFieldsAndPropertiesExtractionStrategy(generationOptions.AnalysisOptions.FieldsAndPropertiesExtractionStrategy);
+            var fieldTypes = fieldsAndPropertiesExtractionStrategy.ExtractFieldsAndProperties(type, generationOptions.AnalysisOptions)
                                                                   .Select(member => member.Type)
                                                                   .ToHashSet();
 
@@ -55,9 +55,9 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
             {
                 foreach (var wrapperElementTypesExtractor in wrapperElementTypesExtractors)
                 {
-                    if (wrapperElementTypesExtractor.CanHandle(fieldType, typeExtractionOptions))
+                    if (wrapperElementTypesExtractor.CanHandle(fieldType, generationOptions))
                     {
-                        var elementTypes = wrapperElementTypesExtractor.ExtractUsedTypes(fieldType, typeExtractionOptions);
+                        var elementTypes = wrapperElementTypesExtractor.ExtractUsedTypes(fieldType, generationOptions);
 
                         // Remove the wrapper from the fieldTypes.
                         fieldTypes.Remove(fieldType);

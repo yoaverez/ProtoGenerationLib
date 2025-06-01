@@ -44,7 +44,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// <inheritdoc/>
         public IMessageDefinition ConvertIntermediateRepresentationToProtoDefinition(IDataTypeMetadata intermediateType,
                                                                                      IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
-                                                                                     IConversionOptions conversionOptions)
+                                                                                     IProtoGeneratorConfiguration generationOptions)
         {
             var imports = new HashSet<string>();
             var protoTypeMetadata = protoTypesMetadatas[intermediateType.Type];
@@ -52,7 +52,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
             var numOfFields = intermediateType.Fields.Count();
             for (int fieldIdx = 0; fieldIdx < numOfFields; fieldIdx++)
             {
-                fields.Add(CreateFieldDefinitionFromFieldMetadata(intermediateType.Fields.ElementAt(fieldIdx), fieldIdx, numOfFields, protoTypeMetadata.Package!, conversionOptions, protoTypesMetadatas, out var neededImports));
+                fields.Add(CreateFieldDefinitionFromFieldMetadata(intermediateType.Fields.ElementAt(fieldIdx), fieldIdx, numOfFields, protoTypeMetadata.Package!, generationOptions, protoTypesMetadatas, out var neededImports));
                 imports.AddRange(neededImports);
             }
 
@@ -62,8 +62,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
                 if (protoTypeMetadata.NestedTypes.Contains(nestedTypeMetadata.Type))
                 {
                     nestedMessages.Add(ConvertIntermediateRepresentationToProtoDefinition(nestedTypeMetadata,
-                                                                                          protoTypesMetadatas,
-                                                                                          conversionOptions));
+                                                                                          protoTypesMetadatas, generationOptions));
                 }
             }
 
@@ -73,8 +72,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
                 if (protoTypeMetadata.NestedTypes.Contains(nestedTypeMetadata.Type))
                 {
                     nestedEnums.Add(enumTypeMetadataToEnumDefinitionConverter.ConvertIntermediateRepresentationToProtoDefinition(nestedTypeMetadata,
-                                                                                                                                 protoTypesMetadatas,
-                                                                                                                                 conversionOptions));
+                                                                                                                                 protoTypesMetadatas, generationOptions));
                 }
             }
 
@@ -93,7 +91,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// <param name="fieldIndex">The index of the field.</param>
         /// <param name="numOfFields">The total number of fields.</param>
         /// <param name="filePackage">The package of the file in which this field will be declared.</param>
-        /// <param name="conversionOptions">The generation options.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
         /// <param name="protoTypesMetadatas">A mapping between type to its proto type metadata.</param>
         /// <param name="neededImports">The imports that are needed in the file in order to use the field type.</param>
         /// <returns>
@@ -103,17 +101,17 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
                                                                         int fieldIndex,
                                                                         int numOfFields,
                                                                         string filePackage,
-                                                                        IConversionOptions conversionOptions,
+                                                                        IProtoGeneratorConfiguration generationOptions,
                                                                         IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
                                                                         out ISet<string> neededImports)
         {
             neededImports = new HashSet<string>();
-            var numberingStrategy = componentsProvider.GetFieldNumberingStrategy(conversionOptions.NumberingStrategiesOptions.FieldNumberingStrategy);
+            var numberingStrategy = componentsProvider.GetFieldNumberingStrategy(generationOptions.NumberingStrategiesOptions.FieldNumberingStrategy);
             var fieldNumber = numberingStrategy.GetFieldNumber(fieldMetadata, fieldIndex, numOfFields);
 
-            var fieldName = componentsProvider.GetProtoStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.FieldStylingStrategy).ToProtoStyle(fieldMetadata.Name);
+            var fieldName = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.FieldStylingStrategy).ToProtoStyle(fieldMetadata.Name);
 
-            var packageComponentsSeparator = componentsProvider.GetPackageStylingStrategy(conversionOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy).PackageComponentsSeparator;
+            var packageComponentsSeparator = componentsProvider.GetPackageStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy).PackageComponentsSeparator;
             string typeName;
             var fieldRule = FieldRule.None;
             if (fieldMetadata.Type.TryGetElementsOfKeyValuePairEnumerableType(out var keyType, out var valueType))
@@ -141,7 +139,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
             }
             else
             {
-                if (IsOptionalField(fieldMetadata, conversionOptions.AnalysisOptions.OptionalFieldAttribute))
+                if (IsOptionalField(fieldMetadata, generationOptions.AnalysisOptions.OptionalFieldAttribute))
                 {
                     fieldRule = FieldRule.Optional;
                 }

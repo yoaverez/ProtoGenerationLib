@@ -13,7 +13,7 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
     public class CSharpEnumTypeToEnumTypeMetadataConverter : ICSharpToIntermediateConverter<IEnumTypeMetadata>
     {
         /// <inheritdoc/>
-        public IEnumTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IConversionOptions conversionOptions)
+        public IEnumTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             if (!type.IsEnum)
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not an enum.", nameof(type));

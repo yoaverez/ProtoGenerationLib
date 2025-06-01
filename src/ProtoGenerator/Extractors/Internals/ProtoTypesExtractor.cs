@@ -56,12 +56,12 @@ namespace ProtoGenerator.Extractors.Internals
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Type> ExtractProtoTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public IEnumerable<Type> ExtractProtoTypes(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             var customTypesExtractors = customConvertersProvider.GetCustomTypesExtractors();
             var typeExtractors = customTypesExtractors.Concat(defaultTypesExtractors).ToArray();
 
-            return ExtractProtoTypes(type, typeExtractionOptions, typeExtractors, typeReplacers, new HashSet<Type>());
+            return ExtractProtoTypes(type, generationOptions, typeExtractors, typeReplacers, new HashSet<Type>());
         }
 
         /// <param name="typesExtractors">The types extractors.</param>
@@ -70,9 +70,9 @@ namespace ProtoGenerator.Extractors.Internals
         /// Thrown when the given <paramref name="type"/> can not be handled
         /// by any of the given <paramref name="typesExtractors"/>
         /// </exception>
-        /// <inheritdoc cref="ExtractProtoTypes(Type, ITypeExtractionOptions)"/>
+        /// <inheritdoc cref="ExtractProtoTypes(Type, IProtoGeneratorConfiguration)"/>
         private IEnumerable<Type> ExtractProtoTypes(Type type,
-                                                    ITypeExtractionOptions typeExtractionOptions,
+                                                    IProtoGeneratorConfiguration generationOptions,
                                                     IEnumerable<ITypesExtractor> typesExtractors,
                                                     IEnumerable<ITypeReplacer> typeReplacers,
                                                     HashSet<Type> alreadyCheckedTypes)
@@ -91,7 +91,7 @@ namespace ProtoGenerator.Extractors.Internals
                 // if so then replace it.
                 if (typeReplacer.CanReplaceType(type))
                 {
-                    type = typeReplacer.ReplaceType(type, typeExtractionOptions);
+                    type = typeReplacer.ReplaceType(type, generationOptions);
                     break;
                 }
             }
@@ -99,16 +99,16 @@ namespace ProtoGenerator.Extractors.Internals
             var types = new HashSet<Type> { type };
             foreach (var typesExtractor in typesExtractors)
             {
-                if (typesExtractor.CanHandle(type, typeExtractionOptions))
+                if (typesExtractor.CanHandle(type, generationOptions))
                 {
-                    var usedTypes = typesExtractor.ExtractUsedTypes(type, typeExtractionOptions);
+                    var usedTypes = typesExtractor.ExtractUsedTypes(type, generationOptions);
                     alreadyCheckedTypes.Add(type);
                     foreach (var usedType in usedTypes)
                     {
                         if (!alreadyCheckedTypes.Contains(usedType))
                         {
                             alreadyCheckedTypes.Add(usedType);
-                            types.AddRange(ExtractProtoTypes(usedType, typeExtractionOptions, typesExtractors, typeReplacers, alreadyCheckedTypes));
+                            types.AddRange(ExtractProtoTypes(usedType, generationOptions, typesExtractors, typeReplacers, alreadyCheckedTypes));
                         }
                     }
                     return types;

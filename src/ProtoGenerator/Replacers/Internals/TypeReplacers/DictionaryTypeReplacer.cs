@@ -33,12 +33,12 @@ namespace ProtoGenerator.Replacers.Internals.TypeReplacers
         }
 
         /// <inheritdoc/>
-        public Type ReplaceType(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public Type ReplaceType(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             if (!CanReplaceType(type))
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a dictionary type and can not be replaced by the {nameof(DictionaryTypeReplacer)}.");
 
-            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(typeExtractionOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
+            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
 
             var props = new List<(Type, string)> { (type, "mapping") };

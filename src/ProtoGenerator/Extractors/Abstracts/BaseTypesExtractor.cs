@@ -10,11 +10,11 @@ namespace ProtoGenerator.Extractors.Abstracts
     public abstract class BaseTypesExtractor : ITypesExtractor
     {
         /// <inheritdoc/>
-        public IEnumerable<Type> ExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public IEnumerable<Type> ExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
         {
-            if (CanHandle(type, typeExtractionOptions))
+            if (CanHandle(type, generationOptions))
             {
-                return BaseExtractUsedTypes(type, typeExtractionOptions);
+                return BaseExtractUsedTypes(type, generationOptions);
             }
             else
             {
@@ -23,14 +23,14 @@ namespace ProtoGenerator.Extractors.Abstracts
         }
 
         /// <inheritdoc/>
-        public abstract bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions);
+        public abstract bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions);
 
-        /// <inheritdoc cref="ITypesExtractor.ExtractUsedTypes(Type, ITypeExtractionOptions)" path="/summary"/>
-        /// <inheritdoc cref="ITypesExtractor.ExtractUsedTypes(Type, ITypeExtractionOptions)" path="/param"/>
+        /// <inheritdoc cref="ITypesExtractor.ExtractUsedTypes(Type, IProtoGeneratorConfiguration)" path="/summary"/>
+        /// <inheritdoc cref="ITypesExtractor.ExtractUsedTypes(Type, IProtoGeneratorConfiguration)" path="/param"/>
         /// <remarks>
         /// Implementers can assume that this method is called only if the
         /// given <paramref name="type"/> can be handled by this extractor.
         /// </remarks>
-        protected abstract IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions);
+        protected abstract IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions);
     }
 }

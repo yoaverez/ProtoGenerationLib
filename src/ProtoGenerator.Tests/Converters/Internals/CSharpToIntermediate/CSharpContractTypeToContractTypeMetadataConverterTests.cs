@@ -11,14 +11,14 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
     [TestClass]
     public class CSharpContractTypeToContractTypeMetadataConverterTests
     {
-        private static IConversionOptions conversionOptions;
+        private static IProtoGeneratorConfiguration generationOptions;
 
         private static CSharpContractTypeToContractTypeMetadataConverter converter;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            conversionOptions = new ProtoGeneratorConfiguration
+            generationOptions = new ProtoGeneratorConfiguration
             {
                 AnalysisOptions = new AnalysisOptions
                 {
@@ -37,7 +37,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
             var type = typeof(CSharpContractTypeToContractTypeMetadataConverterTests);
 
             // Act
-            converter.ConvertTypeToIntermediateRepresentation(type, conversionOptions);
+            converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
 
             // Assert
             // Noting to do. The ExpectedException will do the assert.
@@ -63,7 +63,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
             });
 
             // Act
-            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, conversionOptions);
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
 
             // Assert
             Assert.AreEqual(expectedMetadata, actualMetadata);

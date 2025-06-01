@@ -33,19 +33,19 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, ITypeExtractionOptions typeExtractionOptions)
+        public override bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             return !type.IsEnum;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, ITypeExtractionOptions typeExtractionOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
         {
             foreach(var extractor in dataTypesExtractors)
             {
-                if (extractor.CanHandle(type, typeExtractionOptions))
+                if (extractor.CanHandle(type, generationOptions))
                 {
-                    return extractor.ExtractUsedTypes(type, typeExtractionOptions);
+                    return extractor.ExtractUsedTypes(type, generationOptions);
                 }
             }
 
