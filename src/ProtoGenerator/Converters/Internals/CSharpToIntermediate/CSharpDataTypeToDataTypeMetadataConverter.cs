@@ -4,6 +4,7 @@ using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerator.Models.Internals.IntermediateRepresentations;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using System;
+using static ProtoGenerator.Converters.Internals.CSharpToIntermediate.CSharpToIntermediateUtils;
 
 namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
 {
@@ -13,9 +14,9 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
     public class CSharpDataTypeToDataTypeMetadataConverter : ICSharpToIntermediateConverter<IDataTypeMetadata>
     {
         /// <summary>
-        /// Provider of extraction strategies.
+        /// A provider of all the proto generator customizations.
         /// </summary>
-        private IExtractionStrategiesProvider extractionStrategiesProvider;
+        private IProvider componentsProvider;
 
         /// <summary>
         /// Converter from csharp enum type to intermediate enum metadata.
@@ -25,12 +26,12 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
         /// <summary>
         /// Create new instance of the <see cref="CSharpDataTypeToDataTypeMetadataConverter"/> class.
         /// </summary>
-        /// <param name="extractionStrategiesProvider"><inheritdoc cref="extractionStrategiesProvider" path="/node()"/></param>
-        /// <param name="csharpEnumTypeToEnumMetaDataConverter"><inheritdoc cref="extractionStrategiesProvider" path="/node()"/></param>
-        public CSharpDataTypeToDataTypeMetadataConverter(IExtractionStrategiesProvider extractionStrategiesProvider, ICSharpToIntermediateConverter<IEnumTypeMetadata>? csharpEnumTypeToEnumMetaDataConverter = null)
+        /// <param name="componentsProvider"><inheritdoc cref="componentsProvider" path="/node()"/></param>
+        /// <param name="csharpEnumTypeToEnumMetaDataConverter"><inheritdoc cref="componentsProvider" path="/node()"/></param>
+        public CSharpDataTypeToDataTypeMetadataConverter(IProvider componentsProvider, ICSharpToIntermediateConverter<IEnumTypeMetadata>? csharpEnumTypeToEnumMetaDataConverter = null)
         {
-            this.extractionStrategiesProvider = extractionStrategiesProvider;
-            this.csharpEnumTypeToEnumMetaDataConverter = csharpEnumTypeToEnumMetaDataConverter ?? new CSharpEnumTypeToEnumTypeMetadataConverter();
+            this.componentsProvider = componentsProvider;
+            this.csharpEnumTypeToEnumMetaDataConverter = csharpEnumTypeToEnumMetaDataConverter ?? new CSharpEnumTypeToEnumTypeMetadataConverter(componentsProvider);
         }
 
         /// <inheritdoc/>
@@ -39,26 +40,33 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
             if (type.IsEnum)
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a data type.", nameof(type));
 
-            var dataTypeMetadata = new DataTypeMetadata();
-            dataTypeMetadata.Type = type;
+            var customConverters = componentsProvider.GetDataTypeCustomConverters();
 
-            // Extract the fields.
-            var fieldsAndPropertiesExtractor = extractionStrategiesProvider.GetFieldsAndPropertiesExtractionStrategy(generationOptions.AnalysisOptions.FieldsAndPropertiesExtractionStrategy);
-            var fields = fieldsAndPropertiesExtractor.ExtractFieldsAndProperties(type, generationOptions.AnalysisOptions);
-            dataTypeMetadata.Fields.AddRange(fields);
-
-            // Extract the nested types.
-            var nestedTypes = type.GetNestedTypes();
-            foreach (var nestedType in nestedTypes)
+            IDataTypeMetadata dataTypeMetadata;
+            if (!TryConvertWithCustomConverters(type, customConverters, generationOptions, out dataTypeMetadata))
             {
-                if (nestedType.IsEnum)
+                var metadata = new DataTypeMetadata();
+                metadata.Type = type;
+
+                // Extract the fields.
+                var fieldsAndPropertiesExtractor = componentsProvider.GetFieldsAndPropertiesExtractionStrategy(generationOptions.AnalysisOptions.FieldsAndPropertiesExtractionStrategy);
+                var fields = fieldsAndPropertiesExtractor.ExtractFieldsAndProperties(type, generationOptions.AnalysisOptions);
+                metadata.Fields.AddRange(fields);
+
+                // Extract the nested types.
+                var nestedTypes = type.GetNestedTypes();
+                foreach (var nestedType in nestedTypes)
                 {
-                    dataTypeMetadata.NestedEnumTypes.Add(csharpEnumTypeToEnumMetaDataConverter.ConvertTypeToIntermediateRepresentation(nestedType, generationOptions));
+                    if (nestedType.IsEnum)
+                    {
+                        metadata.NestedEnumTypes.Add(csharpEnumTypeToEnumMetaDataConverter.ConvertTypeToIntermediateRepresentation(nestedType, generationOptions));
+                    }
+                    else
+                    {
+                        metadata.NestedDataTypes.Add(ConvertTypeToIntermediateRepresentation(nestedType, generationOptions));
+                    }
                 }
-                else
-                {
-                    dataTypeMetadata.NestedDataTypes.Add(ConvertTypeToIntermediateRepresentation(nestedType, generationOptions));
-                }
+                dataTypeMetadata = metadata;
             }
 
             return dataTypeMetadata;

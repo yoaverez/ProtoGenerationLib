@@ -22,6 +22,8 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
 
         private Mock<IFieldsAndPropertiesExtractionStrategy> mockStrategy;
 
+        private List<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> customConverters;
+
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
@@ -44,11 +46,15 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
         [TestInitialize]
         public void TestInitialize()
         {
+            customConverters = new List<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>>();
+
             mockStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>();
 
             var mockProvider = new Mock<IProvider>();
             mockProvider.Setup(provider => provider.GetFieldsAndPropertiesExtractionStrategy(It.IsAny<string>()))
                         .Returns(mockStrategy.Object);
+            mockProvider.Setup(provider => provider.GetDataTypeCustomConverters())
+                        .Returns(customConverters);
 
             var mockEnumConverter = new Mock<ICSharpToIntermediateConverter<IEnumTypeMetadata>>();
             mockEnumConverter.Setup(enumConverter => enumConverter.ConvertTypeToIntermediateRepresentation(It.IsAny<Type>(), It.IsAny<IProtoGenerationOptions>()))
@@ -112,6 +118,45 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
 
             // Assert
             Assert.AreEqual(expectedMetadata, actualMetadata);
+        }
+
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(2)]
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_TypeIsDataTypeAndCouldBeHandledByCustomConverter_MetadataIsTheCustomConverterResult(int suitableCustomConverterIndex)
+        {
+            // Arrange
+            var type = typeof(DataType1);
+            var expectedMetadata = CreateDataTypeMetadata(typeof(DataType1.DataType2), new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "b", typeof(int)),
+                CreateFieldMetadata(typeof(object), "c", typeof(double)),
+            }, new List<IDataTypeMetadata>(), new List<IEnumTypeMetadata>());
+
+            for (int i = 0; i < 3; i++)
+            {
+                var mockConverter = new Mock<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>>();
+                if (i != suitableCustomConverterIndex)
+                {
+                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                                 .Returns(false);
+                }
+                else
+                {
+                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                                 .Returns(true);
+                    mockConverter.Setup(customConverter => customConverter.ConvertTypeToIntermediateRepresentation(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                                 .Returns(expectedMetadata);
+                }
+                customConverters.Add(mockConverter.Object);
+            }
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreSame(expectedMetadata, actualMetadata);
         }
     }
 }
