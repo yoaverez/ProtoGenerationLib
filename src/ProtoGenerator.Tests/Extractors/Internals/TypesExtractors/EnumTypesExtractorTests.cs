@@ -10,13 +10,13 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
     {
         private static EnumTypesExtractor extractor;
 
-        private static IProtoGeneratorConfiguration generationOptions;
+        private static IProtoGenerationOptions generationOptions;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
             extractor = new EnumTypesExtractor();
-            generationOptions = new ProtoGeneratorConfiguration();
+            generationOptions = new ProtoGenerationOptions();
         }
 
         #region CanHandle Tests

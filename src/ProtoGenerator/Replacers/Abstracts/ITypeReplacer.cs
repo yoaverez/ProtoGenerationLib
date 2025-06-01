@@ -31,6 +31,6 @@ namespace ProtoGenerator.Replacers.Abstracts
         /// Thrown when the given <paramref name="type"/> can not be replaced
         /// by this replacer.
         /// </exception>
-        Type ReplaceType(Type type, IProtoGeneratorConfiguration generationOptions);
+        Type ReplaceType(Type type, IProtoGenerationOptions generationOptions);
     }
 }

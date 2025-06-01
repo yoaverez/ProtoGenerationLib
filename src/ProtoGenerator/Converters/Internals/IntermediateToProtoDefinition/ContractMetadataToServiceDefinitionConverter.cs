@@ -40,7 +40,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// <inheritdoc cref="CreateRpcFromMethodMetadata(IMethodMetadata, string, IConversionOptions, IReadOnlyDictionary{Type, IProtoTypeMetadata}, out ISet{string})" path="/exception"/>
         public IServiceDefinition ConvertIntermediateRepresentationToProtoDefinition(IContractTypeMetadata intermediateType,
                                                                                      IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
-                                                                                     IProtoGeneratorConfiguration generationOptions)
+                                                                                     IProtoGenerationOptions generationOptions)
         {
             var typeProtoMetadata = protoTypesMetadatas[intermediateType.Type];
             var imports = new HashSet<string>();
@@ -69,7 +69,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// </exception>
         private IRpcDefinition CreateRpcFromMethodMetadata(IMethodMetadata methodMetadata,
                                                            string filePackage,
-                                                           IProtoGeneratorConfiguration generationOptions,
+                                                           IProtoGenerationOptions generationOptions,
                                                            IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
                                                            out ISet<string> neededImports)
         {

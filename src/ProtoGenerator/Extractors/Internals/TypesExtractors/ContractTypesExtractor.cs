@@ -29,14 +29,14 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions)
+        public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
         {
             var protoServiceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
             return type.IsDefined(protoServiceAttribute, protoServiceAttribute.IsAttributeInherited());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
         {
             var parameterListNamingStrategy = parameterListNamingStrategiesProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
             var types = new HashSet<Type>();

@@ -36,13 +36,13 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         }
 
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions)
+        public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
         {
             return true;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
         {
             var fieldsAndPropertiesExtractionStrategy = extractionStrategiesProvider.GetFieldsAndPropertiesExtractionStrategy(generationOptions.AnalysisOptions.FieldsAndPropertiesExtractionStrategy);
             var fieldTypes = fieldsAndPropertiesExtractionStrategy.ExtractFieldsAndProperties(type, generationOptions.AnalysisOptions)

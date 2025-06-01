@@ -14,7 +14,7 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
     public class CSharpContractTypeToContractTypeMetadataConverter : ICSharpToIntermediateConverter<IContractTypeMetadata>
     {
         /// <inheritdoc/>
-        public IContractTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IProtoGeneratorConfiguration generationOptions)
+        public IContractTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IProtoGenerationOptions generationOptions)
         {
             var serviceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
             var rpcAttribute = generationOptions.AnalysisOptions.ProtoRpcAttribute;

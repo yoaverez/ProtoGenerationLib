@@ -33,7 +33,7 @@ namespace ProtoGenerator.Replacers.Internals.TypeReplacers
         }
 
         /// <inheritdoc/>
-        public Type ReplaceType(Type type, IProtoGeneratorConfiguration generationOptions)
+        public Type ReplaceType(Type type, IProtoGenerationOptions generationOptions)
         {
             if (!CanReplaceType(type))
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a dictionary type and can not be replaced by the {nameof(DictionaryTypeReplacer)}.");

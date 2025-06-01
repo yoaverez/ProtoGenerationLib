@@ -44,7 +44,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// <inheritdoc/>
         public IMessageDefinition ConvertIntermediateRepresentationToProtoDefinition(IDataTypeMetadata intermediateType,
                                                                                      IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
-                                                                                     IProtoGeneratorConfiguration generationOptions)
+                                                                                     IProtoGenerationOptions generationOptions)
         {
             var imports = new HashSet<string>();
             var protoTypeMetadata = protoTypesMetadatas[intermediateType.Type];
@@ -101,7 +101,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
                                                                         int fieldIndex,
                                                                         int numOfFields,
                                                                         string filePackage,
-                                                                        IProtoGeneratorConfiguration generationOptions,
+                                                                        IProtoGenerationOptions generationOptions,
                                                                         IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
                                                                         out ISet<string> neededImports)
         {

@@ -10,14 +10,14 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
     [TestClass]
     public class CSharpEnumTypeToEnumTypeMetadataConverterTests
     {
-        private static IProtoGeneratorConfiguration generationOptions;
+        private static IProtoGenerationOptions generationOptions;
 
         private static CSharpEnumTypeToEnumTypeMetadataConverter converter;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            generationOptions = new ProtoGeneratorConfiguration();
+            generationOptions = new ProtoGenerationOptions();
             converter = new CSharpEnumTypeToEnumTypeMetadataConverter();
         }
 

@@ -12,7 +12,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
     {
         private DataTypesExtractor extractor;
 
-        private IProtoGeneratorConfiguration generationOptions;
+        private IProtoGenerationOptions generationOptions;
 
         private List<string> actualFlow;
 
@@ -32,7 +32,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
                 CreateExtractorsMock(typeof(char), actualFlow),
             };
             extractor = new DataTypesExtractor(dataTypesExtractors);
-            generationOptions = new ProtoGeneratorConfiguration();
+            generationOptions = new ProtoGenerationOptions();
         }
 
         #region CanHandle Tests
@@ -167,15 +167,15 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
             var mockExtractor = new Mock<ITypesExtractor>();
 
             // Setup the CanHandle method.
-            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => type.Equals(canHandleType)), It.IsAny<IProtoGeneratorConfiguration>()))
+            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => type.Equals(canHandleType)), It.IsAny<IProtoGenerationOptions>()))
                          .Callback(() => actualFlow.Add(string.Format(canHandleFormattedString, canHandleType.Name, true)))
                          .Returns(true);
-            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => !type.Equals(canHandleType)), It.IsAny<IProtoGeneratorConfiguration>()))
+            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => !type.Equals(canHandleType)), It.IsAny<IProtoGenerationOptions>()))
                          .Callback(() => actualFlow.Add(string.Format(canHandleFormattedString, canHandleType.Name, false)))
                          .Returns(false);
 
             // Setup the CanHandle method.
-            mockExtractor.Setup(x => x.ExtractUsedTypes(It.IsAny<Type>(), It.IsAny<IProtoGeneratorConfiguration>()))
+            mockExtractor.Setup(x => x.ExtractUsedTypes(It.IsAny<Type>(), It.IsAny<IProtoGenerationOptions>()))
                          .Callback(() => actualFlow.Add(string.Format(extractUsedTypesFormattedString, canHandleType.Name)))
                          .Returns(new Type[] { canHandleType });
 

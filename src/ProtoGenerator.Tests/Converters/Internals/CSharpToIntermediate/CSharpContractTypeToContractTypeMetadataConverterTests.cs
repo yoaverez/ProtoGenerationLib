@@ -11,14 +11,14 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
     [TestClass]
     public class CSharpContractTypeToContractTypeMetadataConverterTests
     {
-        private static IProtoGeneratorConfiguration generationOptions;
+        private static IProtoGenerationOptions generationOptions;
 
         private static CSharpContractTypeToContractTypeMetadataConverter converter;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            generationOptions = new ProtoGeneratorConfiguration
+            generationOptions = new ProtoGenerationOptions
             {
                 AnalysisOptions = new AnalysisOptions
                 {

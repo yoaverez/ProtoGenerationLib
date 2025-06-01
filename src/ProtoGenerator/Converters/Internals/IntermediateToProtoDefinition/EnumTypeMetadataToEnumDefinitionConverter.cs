@@ -50,7 +50,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         /// <inheritdoc/>
         public IEnumDefinition ConvertIntermediateRepresentationToProtoDefinition(IEnumTypeMetadata intermediateType,
                                                                                   IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
-                                                                                  IProtoGeneratorConfiguration generationOptions)
+                                                                                  IProtoGenerationOptions generationOptions)
         {
             var protoMetadata = protoTypesMetadatas[intermediateType.Type];
 

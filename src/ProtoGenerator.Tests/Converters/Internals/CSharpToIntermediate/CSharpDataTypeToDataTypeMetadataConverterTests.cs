@@ -14,7 +14,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
     [TestClass]
     public class CSharpDataTypeToDataTypeMetadataConverterTests
     {
-        private static IProtoGeneratorConfiguration generationOptions;
+        private static IProtoGenerationOptions generationOptions;
 
         private static IEnumTypeMetadata enumTypeMetadata;
 
@@ -25,7 +25,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            generationOptions = new ProtoGeneratorConfiguration
+            generationOptions = new ProtoGenerationOptions
             {
                 AnalysisOptions = new AnalysisOptions
                 {
@@ -51,7 +51,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.CSharpToIntermediate
                         .Returns(mockStrategy.Object);
 
             var mockEnumConverter = new Mock<ICSharpToIntermediateConverter<IEnumTypeMetadata>>();
-            mockEnumConverter.Setup(enumConverter => enumConverter.ConvertTypeToIntermediateRepresentation(It.IsAny<Type>(), It.IsAny<IProtoGeneratorConfiguration>()))
+            mockEnumConverter.Setup(enumConverter => enumConverter.ConvertTypeToIntermediateRepresentation(It.IsAny<Type>(), It.IsAny<IProtoGenerationOptions>()))
                              .Returns(enumTypeMetadata);
 
             converter = new CSharpDataTypeToDataTypeMetadataConverter(mockProvider.Object, mockEnumConverter.Object);

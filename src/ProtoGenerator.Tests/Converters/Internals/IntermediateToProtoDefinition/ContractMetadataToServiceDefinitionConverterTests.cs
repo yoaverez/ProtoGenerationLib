@@ -27,12 +27,12 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
 
         private ContractMetadataToServiceDefinitionConverter converter;
 
-        private static ProtoGeneratorConfiguration generationOptions;
+        private static ProtoGenerationOptions generationOptions;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
         {
-            generationOptions = new ProtoGeneratorConfiguration
+            generationOptions = new ProtoGenerationOptions
             {
                 NewTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions
                 {

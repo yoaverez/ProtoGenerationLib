@@ -15,7 +15,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
     {
         private DefaultDataTypesExtractor extractor;
 
-        private IProtoGeneratorConfiguration generationOptions;
+        private IProtoGenerationOptions generationOptions;
 
         private Mock<IFieldsAndPropertiesExtractionStrategy> mockIFieldsAndPropertiesExtractionStrategy;
 
@@ -30,7 +30,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
         [TestInitialize]
         public void TestInitialize()
         {
-            generationOptions = new ProtoGeneratorConfiguration()
+            generationOptions = new ProtoGenerationOptions()
             {
                 AnalysisOptions = new AnalysisOptions()
                 {

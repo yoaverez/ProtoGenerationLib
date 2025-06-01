@@ -12,14 +12,14 @@ namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
     {
         private TupleTypeReplacer replacer;
 
-        private IProtoGeneratorConfiguration generationOptions;
+        private IProtoGenerationOptions generationOptions;
 
         private Mock<INewTypeNamingStrategy> mockINewTypeNamingStrategy;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            generationOptions = new ProtoGeneratorConfiguration()
+            generationOptions = new ProtoGenerationOptions()
             {
                 NewTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions
                 {

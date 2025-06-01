@@ -34,7 +34,7 @@ namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
         }
 
         /// <inheritdoc/>
-        public IDataTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IProtoGeneratorConfiguration generationOptions)
+        public IDataTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IProtoGenerationOptions generationOptions)
         {
             if (type.IsEnum)
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a data type.", nameof(type));

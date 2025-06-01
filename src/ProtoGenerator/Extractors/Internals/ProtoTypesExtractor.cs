@@ -56,7 +56,7 @@ namespace ProtoGenerator.Extractors.Internals
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Type> ExtractProtoTypes(Type type, IProtoGeneratorConfiguration generationOptions)
+        public IEnumerable<Type> ExtractProtoTypes(Type type, IProtoGenerationOptions generationOptions)
         {
             var customTypesExtractors = customConvertersProvider.GetCustomTypesExtractors();
             var typeExtractors = customTypesExtractors.Concat(defaultTypesExtractors).ToArray();
@@ -70,9 +70,9 @@ namespace ProtoGenerator.Extractors.Internals
         /// Thrown when the given <paramref name="type"/> can not be handled
         /// by any of the given <paramref name="typesExtractors"/>
         /// </exception>
-        /// <inheritdoc cref="ExtractProtoTypes(Type, IProtoGeneratorConfiguration)"/>
+        /// <inheritdoc cref="ExtractProtoTypes(Type, IProtoGenerationOptions)"/>
         private IEnumerable<Type> ExtractProtoTypes(Type type,
-                                                    IProtoGeneratorConfiguration generationOptions,
+                                                    IProtoGenerationOptions generationOptions,
                                                     IEnumerable<ITypesExtractor> typesExtractors,
                                                     IEnumerable<ITypeReplacer> typeReplacers,
                                                     HashSet<Type> alreadyCheckedTypes)

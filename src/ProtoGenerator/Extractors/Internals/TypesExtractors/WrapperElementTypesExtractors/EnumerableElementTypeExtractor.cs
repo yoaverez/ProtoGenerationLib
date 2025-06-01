@@ -12,13 +12,13 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors.WrapperElementType
     public class EnumerableElementTypeExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions)
+        public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
         {
             return type.IsEnumerableType();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
         {
             type.TryGetElementOfEnumerableType(out var elementType);
             return new Type[] { elementType };

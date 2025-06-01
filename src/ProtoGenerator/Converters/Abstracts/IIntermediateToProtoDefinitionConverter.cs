@@ -21,6 +21,6 @@ namespace ProtoGenerator.Converters.Abstracts
         /// <returns>The proto definition that represents the given <paramref name="intermediateType"/>.</returns>
         TProtoDefinition ConvertIntermediateRepresentationToProtoDefinition(TIntermediate intermediateType,
                                                                             IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
-                                                                            IProtoGeneratorConfiguration generationOptions);
+                                                                            IProtoGenerationOptions generationOptions);
     }
 }

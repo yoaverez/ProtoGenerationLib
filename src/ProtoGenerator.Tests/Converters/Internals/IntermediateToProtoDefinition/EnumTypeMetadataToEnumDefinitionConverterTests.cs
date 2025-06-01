@@ -22,12 +22,12 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
 
         private EnumTypeMetadataToEnumDefinitionConverter converter;
 
-        private static ProtoGeneratorConfiguration generationOptions;
+        private static ProtoGenerationOptions generationOptions;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
         {
-            generationOptions = new ProtoGeneratorConfiguration
+            generationOptions = new ProtoGenerationOptions
             {
                 NumberingStrategiesOptions = new NumberingStrategiesOptions
                 {

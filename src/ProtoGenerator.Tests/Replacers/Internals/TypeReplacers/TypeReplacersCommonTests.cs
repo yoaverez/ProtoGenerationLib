@@ -32,7 +32,7 @@ namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
 
         #region ReplaceType Tests
 
-        public static void ReplaceType_TypeCanNotBeReplaced_ThrowsArgumentException(ITypeReplacer replacer, Type type, IProtoGeneratorConfiguration generationOptions)
+        public static void ReplaceType_TypeCanNotBeReplaced_ThrowsArgumentException(ITypeReplacer replacer, Type type, IProtoGenerationOptions generationOptions)
         {
             var isArgumentExceptionThrown = false;
 
@@ -50,7 +50,7 @@ namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
             Assert.IsTrue(isArgumentExceptionThrown);
         }
 
-        public static void ReplaceType_TypeCanBeReplaced_ReturnNewType(ITypeReplacer replacer, Type type, IProtoGeneratorConfiguration generationOptions, string expectedNewType)
+        public static void ReplaceType_TypeCanBeReplaced_ReturnNewType(ITypeReplacer replacer, Type type, IProtoGenerationOptions generationOptions, string expectedNewType)
         {
             // Act
             var actualNewType = replacer.ReplaceType(type, generationOptions);

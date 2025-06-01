@@ -14,7 +14,7 @@ namespace ProtoGenerator.Tests.Discovery.Internals
     [TestClass]
     public class ProtoTypeMetadataDiscovererTests
     {
-        private static ProtoGeneratorConfiguration generationOptions;
+        private static ProtoGenerationOptions generationOptions;
 
         private Mock<IProvider> mockIProvider;
 
@@ -37,7 +37,7 @@ namespace ProtoGenerator.Tests.Discovery.Internals
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            generationOptions = new ProtoGeneratorConfiguration
+            generationOptions = new ProtoGenerationOptions
             {
                 ProtoNamingStrategiesOptions = new ProtoNamingStrategiesOptions
                 {

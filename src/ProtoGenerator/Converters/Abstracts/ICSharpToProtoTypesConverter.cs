@@ -16,6 +16,6 @@ namespace ProtoGenerator.Converters.Abstracts
         /// <param name="types">The csharp types to convert.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>A container that contains all the proto components that was create from the given <paramref name="types"/>.</returns>
-        IProtoComponentsContainer Convert(IEnumerable<Type> types, IProtoGeneratorConfiguration generationOptions);
+        IProtoComponentsContainer Convert(IEnumerable<Type> types, IProtoGenerationOptions generationOptions);
     }
 }

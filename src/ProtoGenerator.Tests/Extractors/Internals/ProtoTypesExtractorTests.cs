@@ -13,12 +13,12 @@ namespace ProtoGenerator.Tests.Extractors.Internals
     {
         private Mock<IProvider> mockIProvider;
 
-        private static IProtoGeneratorConfiguration generationOptions;
+        private static IProtoGenerationOptions generationOptions;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
         {
-            generationOptions = new ProtoGeneratorConfiguration();
+            generationOptions = new ProtoGenerationOptions();
         }
 
         [TestInitialize]

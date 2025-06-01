@@ -11,7 +11,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors.WrapperEleme
     {
         private ArrayElementTypeExtractor extractor;
 
-        private IProtoGeneratorConfiguration generationOptions;
+        private IProtoGenerationOptions generationOptions;
 
         private Mock<INewTypeNamingStrategy> mockINewTypeNamingStrategy;
 

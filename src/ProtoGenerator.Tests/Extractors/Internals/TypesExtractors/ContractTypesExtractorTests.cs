@@ -16,7 +16,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
     {
         private static ContractTypesExtractor extractor;
 
-        private static IProtoGeneratorConfiguration generationOptions;
+        private static IProtoGenerationOptions generationOptions;
 
         private static Mock<INewTypeNamingStrategiesProvider> mockINewTypeNamingStrategiesProvider;
 
@@ -43,7 +43,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
                                                 .Returns(mockStrategy.Object);
 
             extractor = new ContractTypesExtractor(mockINewTypeNamingStrategiesProvider.Object);
-            generationOptions = new ProtoGeneratorConfiguration
+            generationOptions = new ProtoGenerationOptions
             {
                 NewTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions(),
                 AnalysisOptions = new AnalysisOptions

@@ -19,7 +19,7 @@ namespace ProtoGenerator.Extractors.Abstracts
         /// <see langword="true"/> if the given <paramref name="type"/>
         /// can be handled by this extractor otherwise <see langword="false"/>.
         /// </returns>
-        bool CanHandle(Type type, IProtoGeneratorConfiguration generationOptions);
+        bool CanHandle(Type type, IProtoGenerationOptions generationOptions);
 
         /// <summary>
         /// Extract all the types that are used by the given <paramref name="type"/>.
@@ -31,6 +31,6 @@ namespace ProtoGenerator.Extractors.Abstracts
         /// Thrown when the given <paramref name="type"/>
         /// can not be handled by this extractor.
         /// </exception>
-        IEnumerable<Type> ExtractUsedTypes(Type type, IProtoGeneratorConfiguration generationOptions);
+        IEnumerable<Type> ExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions);
     }
 }

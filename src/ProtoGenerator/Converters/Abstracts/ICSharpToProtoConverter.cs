@@ -15,6 +15,6 @@ namespace ProtoGenerator.Converters.Abstracts
         /// <param name="type">The type to convert.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The proto definition that represents the given <paramref name="type"/>.</returns>
-        TProtoDefinition ConvertTypeToProtoDefinition(Type type, IProtoGeneratorConfiguration generationOptions);
+        TProtoDefinition ConvertTypeToProtoDefinition(Type type, IProtoGenerationOptions generationOptions);
     }
 }

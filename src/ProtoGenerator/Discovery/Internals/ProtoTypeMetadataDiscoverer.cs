@@ -45,7 +45,7 @@ namespace ProtoGenerator.Discovery.Internals
 
         /// <inheritdoc/>
         public IReadOnlyDictionary<Type, IProtoTypeMetadata> DiscoverProtosMetadata(IEnumerable<Type> types,
-                                                                                    IProtoGeneratorConfiguration protoGeneratorConfiguration)
+                                                                                    IProtoGenerationOptions protoGeneratorConfiguration)
         {
             var userDefinedTypeMappers = componentsProvider.GetCustomTypeNameMappers();
 
@@ -122,7 +122,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The proto name of the given <paramref name="type"/>.</returns>
         private string GetProtoTypeName(Type type,
-                                        IProtoGeneratorConfiguration generationOptions)
+                                        IProtoGenerationOptions generationOptions)
         {
             var namingStrategy = componentsProvider.GetTypeNamingStrategy(generationOptions.ProtoNamingStrategiesOptions.TypeNamingStrategy);
             return namingStrategy.GetTypeName(type);
@@ -135,7 +135,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The styled package name of the given <paramref name="type"/>.</returns>
         private string GetPackageName(Type type,
-                                      IProtoGeneratorConfiguration generationOptions)
+                                      IProtoGenerationOptions generationOptions)
         {
             var packageNamingStrategy = componentsProvider.GetPackageNamingStrategy(generationOptions.ProtoNamingStrategiesOptions.PackageNamingStrategy);
             var unstyledPackageComponents = packageNamingStrategy.GetPackageComponents(type);
@@ -149,7 +149,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// <param name="type">The type whose file path is requested.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The file path of the given <paramref name="type"/>.</returns>
-        private string GetFilePath(Type type, IProtoGeneratorConfiguration generationOptions)
+        private string GetFilePath(Type type, IProtoGenerationOptions generationOptions)
         {
             var fileNamingStrategy = componentsProvider.GetFileNamingStrategy(generationOptions.ProtoNamingStrategiesOptions.FileNamingStrategy);
             return fileNamingStrategy.GetFilePath(type);
@@ -220,7 +220,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// A new <see cref="IProtoTypeBaseMetadata"/> from the given <paramref name="unstyledBaseMetadata"/>
         /// after applying styles to the properties.
         /// </returns>
-        private IProtoTypeBaseMetadata StyleBaseMetadata(Type type, IProtoTypeBaseMetadata unstyledBaseMetadata, IProtoGeneratorConfiguration generationOptions)
+        private IProtoTypeBaseMetadata StyleBaseMetadata(Type type, IProtoTypeBaseMetadata unstyledBaseMetadata, IProtoGenerationOptions generationOptions)
         {
             var styledName = StyleProtoName(type, unstyledBaseMetadata.Name!, generationOptions);
 
@@ -236,7 +236,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// <param name="unstyledName">The unstyled proto name of the given <paramref name="type"/>.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The style proto type name of the given <paramref name="unstyledName"/>.</returns>
-        private string StyleProtoName(Type type, string unstyledName, IProtoGeneratorConfiguration generationOptions)
+        private string StyleProtoName(Type type, string unstyledName, IProtoGenerationOptions generationOptions)
         {
             var protoServiceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
             IProtoStylingStrategy stylingStrategy;
@@ -264,7 +264,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// <param name="unstyledPackage">The unstyled proto package of the given <paramref name="type"/>.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The style proto type package of the given <paramref name="unstyledPackage"/>.</returns>
-        private string StyleProtoPackage(Type type, string unstyledPackage, IProtoGeneratorConfiguration generationOptions)
+        private string StyleProtoPackage(Type type, string unstyledPackage, IProtoGenerationOptions generationOptions)
         {
             var packageComponents = unstyledPackage.Split(new string[] { PACKAGE_COMPONENTS_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
             return StyleProtoPackage(type, packageComponents, generationOptions);
@@ -277,7 +277,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// <param name="packageComponents">The unstyled proto package components of the given <paramref name="type"/>.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The style proto type package of the given <paramref name="unstyledPackage"/>.</returns>
-        private string StyleProtoPackage(Type type, string[] packageComponents, IProtoGeneratorConfiguration generationOptions)
+        private string StyleProtoPackage(Type type, string[] packageComponents, IProtoGenerationOptions generationOptions)
         {
             var packageStylingStrategy = componentsProvider.GetPackageStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy);
             var styledPackage = packageStylingStrategy.ToProtoStyle(packageComponents);
@@ -297,7 +297,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// <returns>A new <see cref="IProtoTypeBaseMetadata"/> that represents the filled version of the given <paramref name="mapperBaseMetadata"/>.</returns>
         private IProtoTypeBaseMetadata FillMapperBaseMetadata(IProtoTypeBaseMetadata mapperBaseMetadata,
                                                               Type type,
-                                                              IProtoGeneratorConfiguration protoGeneratorConfiguration)
+                                                              IProtoGenerationOptions protoGeneratorConfiguration)
         {
             var styledName = mapperBaseMetadata.Name;
             var styledPackage = mapperBaseMetadata.Package;

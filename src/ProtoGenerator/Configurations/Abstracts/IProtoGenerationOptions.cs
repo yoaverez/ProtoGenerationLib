@@ -3,7 +3,7 @@
     /// <summary>
     /// The proto generator configurations.
     /// </summary>
-    public interface IProtoGeneratorConfiguration
+    public interface IProtoGenerationOptions
     {
         /// <inheritdoc cref="IAnalysisOptions"/>
         IAnalysisOptions AnalysisOptions { get; }

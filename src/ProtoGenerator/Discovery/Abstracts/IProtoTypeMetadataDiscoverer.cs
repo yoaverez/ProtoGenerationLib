@@ -17,6 +17,6 @@ namespace ProtoGenerator.Discovery.Abstracts
         /// <param name="protoGeneratorConfiguration">The options for the discovery.</param>
         /// <returns>A mapping between a type to its matching proto type metadata.</returns>
         IReadOnlyDictionary<Type, IProtoTypeMetadata> DiscoverProtosMetadata(IEnumerable<Type> types,
-                                                                             IProtoGeneratorConfiguration protoGeneratorConfiguration);
+                                                                             IProtoGenerationOptions protoGeneratorConfiguration);
     }
 }

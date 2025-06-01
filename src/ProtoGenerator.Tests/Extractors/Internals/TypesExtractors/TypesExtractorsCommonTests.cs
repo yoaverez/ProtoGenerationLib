@@ -10,7 +10,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
     {
         #region CanHandle Tests
 
-        public static void CanHandle_TypeCanNotBeHandled_ReturnFalse(ITypesExtractor extractor, Type type, IProtoGeneratorConfiguration generationOptions)
+        public static void CanHandle_TypeCanNotBeHandled_ReturnFalse(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions)
         {
             // Act
             var returnValue = extractor.CanHandle(type, generationOptions);
@@ -19,7 +19,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
             Assert.IsFalse(returnValue);
         }
 
-        public static void CanHandle_TypeCanBeHandled_ReturnTrue(ITypesExtractor extractor, Type type, IProtoGeneratorConfiguration generationOptions)
+        public static void CanHandle_TypeCanBeHandled_ReturnTrue(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions)
         {
             // Act
             var returnValue = extractor.CanHandle(type, generationOptions);
@@ -32,7 +32,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
 
         #region ExtractUsedTypes Tests
 
-        public static void ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(ITypesExtractor extractor, Type type, IProtoGeneratorConfiguration generationOptions)
+        public static void ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions)
         {
             var isArgumentExceptionThrown = false;
 
@@ -50,7 +50,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals.TypesExtractors
             Assert.IsTrue(isArgumentExceptionThrown);
         }
 
-        public static void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(ITypesExtractor extractor, Type type, IProtoGeneratorConfiguration generationOptions, IEnumerable<Type> expectedUsedTypes)
+        public static void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions, IEnumerable<Type> expectedUsedTypes)
         {
             // Act
             var actualUsedTypes = extractor.ExtractUsedTypes(type, generationOptions);
