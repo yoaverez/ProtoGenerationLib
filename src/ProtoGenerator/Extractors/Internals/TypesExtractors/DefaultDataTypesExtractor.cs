@@ -19,20 +19,20 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         private IExtractionStrategiesProvider extractionStrategiesProvider;
 
         /// <summary>
-        /// Types extractors for wrapper types.
+        /// Extractor for needed proto types from fields.
         /// </summary>
-        private IEnumerable<ITypesExtractor> wrapperElementTypesExtractors;
+        private IFieldsTypesExtractor fieldsTypesExtractor;
 
         /// <summary>
         /// Create new instance of the <see cref="DefaultDataTypesExtractor"/> class.
         /// </summary>
         /// <param name="extractionStrategiesProvider"><inheritdoc cref="extractionStrategiesProvider" path="/node()"/></param>
-        /// <param name="wrapperElementTypesExtractors"><inheritdoc cref="wrapperElementTypesExtractors" path="/node()"/></param>
+        /// <param name="wrapperElementTypesExtractors"><inheritdoc cref="fieldsTypesExtractor" path="/node()"/></param>
         public DefaultDataTypesExtractor(IExtractionStrategiesProvider extractionStrategiesProvider,
-                                         IEnumerable<ITypesExtractor> wrapperElementTypesExtractors)
+                                         IFieldsTypesExtractor? fieldsTypesExtractor = null)
         {
             this.extractionStrategiesProvider = extractionStrategiesProvider;
-            this.wrapperElementTypesExtractors = wrapperElementTypesExtractors;
+            this.fieldsTypesExtractor = fieldsTypesExtractor ?? FieldsTypesExtractor.Instance;
         }
 
         /// <inheritdoc/>
@@ -49,28 +49,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
                                                                   .Select(member => member.Type)
                                                                   .ToHashSet();
 
-            // Extract element types from wrapper types like nullable or enumerable types.
-            // The ToArray is so that the fieldTypes set could be changed inside the loop.
-            foreach (var fieldType in fieldTypes.ToArray())
-            {
-                foreach (var wrapperElementTypesExtractor in wrapperElementTypesExtractors)
-                {
-                    if (wrapperElementTypesExtractor.CanHandle(fieldType, generationOptions))
-                    {
-                        var elementTypes = wrapperElementTypesExtractor.ExtractUsedTypes(fieldType, generationOptions);
-
-                        // Remove the wrapper from the fieldTypes.
-                        fieldTypes.Remove(fieldType);
-
-                        // Add the element types of the wrapper type.
-                        fieldTypes.AddRange(elementTypes);
-
-                        // There is no need to keep looking for wrappers.
-                        break;
-                    }
-                }
-            }
-            return fieldTypes;
+            return fieldsTypesExtractor.ExtractUsedTypesFromFields(fieldTypes, generationOptions);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         {
             return new ITypesExtractor[]
             {
-                new DefaultDataTypesExtractor(componentsProvider, CreateDefaultWrapperElementTypesExtractors()),
+                new DefaultDataTypesExtractor(componentsProvider, FieldsTypesExtractor.Instance),
             };
         }
 
