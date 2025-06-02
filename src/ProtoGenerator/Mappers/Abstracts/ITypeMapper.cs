@@ -4,7 +4,7 @@ using System;
 namespace ProtoGenerator.Mappers.Abstracts
 {
     /// <summary>
-    /// Mapper between csharp type to it proto type name.
+    /// Mapper between csharp type to its <see cref="IProtoTypeBaseMetadata"/>.
     /// </summary>
     public interface ITypeMapper
     {
