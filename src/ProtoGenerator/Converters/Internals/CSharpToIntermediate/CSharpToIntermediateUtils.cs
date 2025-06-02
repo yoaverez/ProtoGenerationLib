@@ -1,7 +1,7 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Converters.Abstracts;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace ProtoGenerator.Converters.Internals.CSharpToIntermediate
 {
