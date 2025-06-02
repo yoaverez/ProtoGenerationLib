@@ -84,7 +84,7 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         #region ICustomTypeNameMappersProvider Implementation
 
         /// <inheritdoc/>
-        public IEnumerable<ITypeNameMapper> GetCustomTypeNameMappers()
+        public IEnumerable<ITypeMapper> GetCustomTypeNameMappers()
         {
             return customTypeNameMappersContainer.GetCustomTypeNameMappers();
         }
@@ -203,7 +203,7 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         #region ICustomTypeNameMappersRegistry Implementation
 
         /// <inheritdoc/>
-        public IRegistry RegisterCustomTypeNameMapper(ITypeNameMapper typeNameMapper)
+        public IRegistry RegisterCustomTypeNameMapper(ITypeMapper typeNameMapper)
         {
             customTypeNameMappersContainer.RegisterCustomTypeNameMapper(typeNameMapper);
             return this;

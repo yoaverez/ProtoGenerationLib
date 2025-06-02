@@ -25,7 +25,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// <summary>
         /// The default type mappers.
         /// </summary>
-        private IEnumerable<ITypeNameMapper> defaultTypeMappers;
+        private IEnumerable<ITypeMapper> defaultTypeMappers;
 
         /// <summary>
         /// The separator that should be used by the user and by the library in order
@@ -38,7 +38,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// </summary>
         /// <param name="componentsProvider"><inheritdoc cref="componentsProvider" path="/node()"/></param>
         /// <param name="defaultTypeMappers"><inheritdoc cref="defaultTypeMappers" path="/node()"/></param>
-        public ProtoTypeMetadataDiscoverer(IProvider componentsProvider, IEnumerable<ITypeNameMapper>? defaultTypeMappers = null)
+        public ProtoTypeMetadataDiscoverer(IProvider componentsProvider, IEnumerable<ITypeMapper>? defaultTypeMappers = null)
         {
             this.componentsProvider = componentsProvider;
             this.defaultTypeMappers = defaultTypeMappers ?? DefaultTypeMappersCreator.CreateDefaultTypeMappers();
@@ -332,7 +332,7 @@ namespace ProtoGenerator.Discovery.Internals
         /// <see langword="true"/> if the given <paramref name="type"/> can be mapped by
         /// any of the given <paramref name="mappers"/> otherwise <see langword="false"/>.
         /// </returns>
-        private static bool TryGetProtoTypeMetadataFromMappers(Type type, IEnumerable<ITypeNameMapper> mappers, out IProtoTypeBaseMetadata protoTypeMetadata)
+        private static bool TryGetProtoTypeMetadataFromMappers(Type type, IEnumerable<ITypeMapper> mappers, out IProtoTypeBaseMetadata protoTypeMetadata)
         {
             protoTypeMetadata = default;
             foreach (var mapper in mappers)

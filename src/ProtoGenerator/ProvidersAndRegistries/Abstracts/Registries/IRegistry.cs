@@ -29,8 +29,8 @@ namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
         #region Custom Type Name Mappers Registry
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomTypeNameMappersRegistry.RegisterCustomTypeNameMapper(ITypeNameMapper)"/>
-        IRegistry RegisterCustomTypeNameMapper(ITypeNameMapper typeNameMapper);
+        /// <inheritdoc cref="ICustomTypeNameMappersRegistry.RegisterCustomTypeNameMapper(ITypeMapper)"/>
+        IRegistry RegisterCustomTypeNameMapper(ITypeMapper typeNameMapper);
 
         #endregion Custom Type Name Mappers Registry
 

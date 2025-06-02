@@ -12,6 +12,6 @@ namespace ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries
         /// type name mappers collection.
         /// </summary>
         /// <param name="typeNameMapper">The type name mapper to register.</param>
-        void RegisterCustomTypeNameMapper(ITypeNameMapper typeNameMapper);
+        void RegisterCustomTypeNameMapper(ITypeMapper typeNameMapper);
     }
 }

@@ -9,7 +9,7 @@ namespace ProtoGenerator.Mappers.Internals.TypeMappers
     /// <summary>
     /// A mapper from well known csharp types to their well known proto metadatas.
     /// </summary>
-    public class WellKnownTypesMapper : ITypeNameMapper
+    public class WellKnownTypesMapper : ITypeMapper
     {
         /// <summary>
         /// Mapping from csharp type to its well known proto type metadata.

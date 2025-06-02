@@ -13,9 +13,9 @@ namespace ProtoGenerator.Mappers.Internals
         /// Create the proto generation default type mappers.
         /// </summary>
         /// <returns>All the proto generation default type mappers.</returns>
-        public static IEnumerable<ITypeNameMapper> CreateDefaultTypeMappers()
+        public static IEnumerable<ITypeMapper> CreateDefaultTypeMappers()
         {
-            return new ITypeNameMapper[]
+            return new ITypeMapper[]
             {
                 new WellKnownTypesMapper(),
             };

@@ -243,7 +243,7 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void GetCustomTypeNameMappers_NoMappers_ReturnsEmptyEnumerable()
         {
             // Arrange
-            var expectedMappers = new List<ITypeNameMapper>();
+            var expectedMappers = new List<ITypeMapper>();
 
             // Act
             var actualMappers = container.GetCustomTypeNameMappers().ToList();
@@ -256,10 +256,10 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void GetCustomTypeNameMappers_ThereAreMappers_ReturnsAllMappers()
         {
             // Arrange
-            var mapper1 = new Mock<ITypeNameMapper>();
-            var mapper2 = new Mock<ITypeNameMapper>();
+            var mapper1 = new Mock<ITypeMapper>();
+            var mapper2 = new Mock<ITypeMapper>();
 
-            var expectedMappers = new List<ITypeNameMapper>
+            var expectedMappers = new List<ITypeMapper>
             {
                 mapper1.Object, mapper2.Object
             };
@@ -278,10 +278,10 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void GetCustomTypeNameMappers_SameMapperMultipleTimes_ReturnsAllMappersIncludingDuplicates()
         {
             // Arrange
-            var mapper1 = new Mock<ITypeNameMapper>();
-            var mapper2 = new Mock<ITypeNameMapper>();
+            var mapper1 = new Mock<ITypeMapper>();
+            var mapper2 = new Mock<ITypeMapper>();
 
-            var expectedMappers = new List<ITypeNameMapper>
+            var expectedMappers = new List<ITypeMapper>
             {
                 mapper1.Object, mapper2.Object, mapper1.Object
             };
@@ -995,8 +995,8 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void RegisterCustomTypeNameMapper_NoMappers_GetMappersReturnTheNewMapper()
         {
             // Arrange
-            var mapper = new Mock<ITypeNameMapper>();
-            var expectedMappers = new List<ITypeNameMapper>()
+            var mapper = new Mock<ITypeMapper>();
+            var expectedMappers = new List<ITypeMapper>()
             {
                 mapper.Object,
             };
@@ -1013,8 +1013,8 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void RegisterCustomTypeNameMapper_SameMapperExists_GetMappersReturnTheAllMappers()
         {
             // Arrange
-            var mapper = new Mock<ITypeNameMapper>();
-            var expectedMappers = new List<ITypeNameMapper>()
+            var mapper = new Mock<ITypeMapper>();
+            var expectedMappers = new List<ITypeMapper>()
             {
                 mapper.Object, mapper.Object,
             };
@@ -1034,9 +1034,9 @@ namespace ProtoGenerator.Tests.ProvidersAndRegistries.Internals.Containers
         public void RegisterCustomTypeNameMapper_DifferentMapperExists_GetMappersReturnTheAllMappers()
         {
             // Arrange
-            var mapper1 = new Mock<ITypeNameMapper>();
-            var mapper2 = new Mock<ITypeNameMapper>();
-            var expectedMappers = new List<ITypeNameMapper>()
+            var mapper1 = new Mock<ITypeMapper>();
+            var mapper2 = new Mock<ITypeMapper>();
+            var expectedMappers = new List<ITypeMapper>()
             {
                 mapper1.Object, mapper2.Object,
             };

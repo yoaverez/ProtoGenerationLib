@@ -6,7 +6,7 @@ namespace ProtoGenerator.Mappers.Abstracts
     /// <summary>
     /// Mapper between csharp type to it proto type name.
     /// </summary>
-    public interface ITypeNameMapper
+    public interface ITypeMapper
     {
         /// <summary>
         /// Check whether or not the given <paramref name="type"/> can be handled

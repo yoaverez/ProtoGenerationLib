@@ -13,20 +13,20 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         /// <summary>
         /// The collection of all the registered custom type name mappers.
         /// </summary>
-        private List<ITypeNameMapper> customTypeNameMappers;
+        private List<ITypeMapper> customTypeNameMappers;
 
         /// <summary>
         /// Create new instance of the <see cref="CustomTypeNameMappersContainer"/> class.
         /// </summary>
         public CustomTypeNameMappersContainer()
         {
-            customTypeNameMappers = new List<ITypeNameMapper>();
+            customTypeNameMappers = new List<ITypeMapper>();
         }
 
         #region ICustomTypeNameMappersProvider Implementation
 
         /// <inheritdoc/>
-        public IEnumerable<ITypeNameMapper> GetCustomTypeNameMappers()
+        public IEnumerable<ITypeMapper> GetCustomTypeNameMappers()
         {
             return customTypeNameMappers;
         }
@@ -36,7 +36,7 @@ namespace ProtoGenerator.ProvidersAndRegistries.Internals.Containers
         #region ICustomTypeNameMappersRegistry Implementation
 
         /// <inheritdoc/>
-        public void RegisterCustomTypeNameMapper(ITypeNameMapper typeNameMapper)
+        public void RegisterCustomTypeNameMapper(ITypeMapper typeNameMapper)
         {
             customTypeNameMappers.Add(typeNameMapper);
         }

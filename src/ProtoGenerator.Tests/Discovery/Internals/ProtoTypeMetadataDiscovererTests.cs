@@ -18,7 +18,7 @@ namespace ProtoGenerator.Tests.Discovery.Internals
 
         private Mock<IProvider> mockIProvider;
 
-        private List<ITypeNameMapper> customMappers;
+        private List<ITypeMapper> customMappers;
 
         private Mock<ITypeNamingStrategy> mockITypeNamingStrategy;
 
@@ -62,7 +62,7 @@ namespace ProtoGenerator.Tests.Discovery.Internals
         [TestInitialize]
         public void TestInitialize()
         {
-            customMappers = new List<ITypeNameMapper>();
+            customMappers = new List<ITypeMapper>();
             mockIProvider = new Mock<IProvider>();
             mockIProvider.Setup(provider => provider.GetCustomTypeNameMappers())
                          .Returns(customMappers);
@@ -130,11 +130,11 @@ namespace ProtoGenerator.Tests.Discovery.Internals
                 [type] = correctMetadata
             };
 
-            var defaultTypeMappers = new List<ITypeNameMapper>();
+            var defaultTypeMappers = new List<ITypeMapper>();
             var numberOfDefaultHandlers = 3;
             for (int i = 0; i < numberOfDefaultHandlers; i++)
             {
-                Mock<ITypeNameMapper> defaultTypeMapper;
+                Mock<ITypeMapper> defaultTypeMapper;
                 if (i < mapperHandlerIndex % numberOfDefaultHandlers)
                 {
                     defaultTypeMapper = CreateAndSetUpITypeMapperMock(false);
@@ -184,7 +184,7 @@ namespace ProtoGenerator.Tests.Discovery.Internals
             var numberOfCustomHandlers = 3;
             for (int i = 0; i < numberOfCustomHandlers; i++)
             {
-                Mock<ITypeNameMapper> customTypeMapper;
+                Mock<ITypeMapper> customTypeMapper;
                 if (i < mapperHandlerIndex % numberOfCustomHandlers)
                 {
                     customTypeMapper = CreateAndSetUpITypeMapperMock(false);
@@ -202,7 +202,7 @@ namespace ProtoGenerator.Tests.Discovery.Internals
 
             var defaultTypeMapper = CreateAndSetUpITypeMapperMock(false, incorrectBaseMetadata);
 
-            var discoverer = CreateDiscoverer(mockIProvider.Object, new List<ITypeNameMapper> { defaultTypeMapper.Object });
+            var discoverer = CreateDiscoverer(mockIProvider.Object, new List<ITypeMapper> { defaultTypeMapper.Object });
 
             // Act
             var actualTypeToProtoMetadataMapping = discoverer.DiscoverProtosMetadata(types, generationOptions);
@@ -282,7 +282,7 @@ namespace ProtoGenerator.Tests.Discovery.Internals
 
             var defaultMapper = CreateAndSetUpITypeMapperMock(true, protoTypeBaseMetadata);
 
-            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeNameMapper[] { defaultMapper.Object });
+            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { defaultMapper.Object });
 
             // Act
             var actualTypeToProtoMetadataMapping = discoverer.DiscoverProtosMetadata(types, generationOptions);
@@ -506,14 +506,14 @@ namespace ProtoGenerator.Tests.Discovery.Internals
 
         #region Auxiliary Methods
 
-        private ProtoTypeMetadataDiscoverer CreateDiscoverer(IProvider provider, IEnumerable<ITypeNameMapper>? defaultTypeMappers = null)
+        private ProtoTypeMetadataDiscoverer CreateDiscoverer(IProvider provider, IEnumerable<ITypeMapper>? defaultTypeMappers = null)
         {
-            return new ProtoTypeMetadataDiscoverer(provider, defaultTypeMappers ?? new List<ITypeNameMapper>());
+            return new ProtoTypeMetadataDiscoverer(provider, defaultTypeMappers ?? new List<ITypeMapper>());
         }
 
-        private Mock<ITypeNameMapper> CreateAndSetUpITypeMapperMock(bool canHandle, IProtoTypeBaseMetadata? protoTypeBaseMetadata = null)
+        private Mock<ITypeMapper> CreateAndSetUpITypeMapperMock(bool canHandle, IProtoTypeBaseMetadata? protoTypeBaseMetadata = null)
         {
-            var mock = new Mock<ITypeNameMapper>();
+            var mock = new Mock<ITypeMapper>();
             mock.Setup(mapper => mapper.CanHandle(It.IsAny<Type>()))
                 .Returns(canHandle);
 
@@ -526,9 +526,9 @@ namespace ProtoGenerator.Tests.Discovery.Internals
             return mock;
         }
 
-        private Mock<ITypeNameMapper> CreateAndSetUpITypeMapperMock(Type canHandle, IProtoTypeBaseMetadata? protoTypeBaseMetadata = null)
+        private Mock<ITypeMapper> CreateAndSetUpITypeMapperMock(Type canHandle, IProtoTypeBaseMetadata? protoTypeBaseMetadata = null)
         {
-            var mock = new Mock<ITypeNameMapper>();
+            var mock = new Mock<ITypeMapper>();
             mock.Setup(mapper => mapper.CanHandle(canHandle))
                 .Returns(true);
 
