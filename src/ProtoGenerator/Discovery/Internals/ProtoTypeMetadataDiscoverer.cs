@@ -1,6 +1,7 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.Discovery.Abstracts;
 using ProtoGenerator.Mappers.Abstracts;
+using ProtoGenerator.Mappers.Internals;
 using ProtoGenerator.Models.Abstracts.ProtoDefinitions;
 using ProtoGenerator.Models.Internals.ProtoDefinitions;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
@@ -37,10 +38,10 @@ namespace ProtoGenerator.Discovery.Internals
         /// </summary>
         /// <param name="componentsProvider"><inheritdoc cref="componentsProvider" path="/node()"/></param>
         /// <param name="defaultTypeMappers"><inheritdoc cref="defaultTypeMappers" path="/node()"/></param>
-        public ProtoTypeMetadataDiscoverer(IProvider componentsProvider, IEnumerable<ITypeNameMapper> defaultTypeMappers)
+        public ProtoTypeMetadataDiscoverer(IProvider componentsProvider, IEnumerable<ITypeNameMapper>? defaultTypeMappers = null)
         {
             this.componentsProvider = componentsProvider;
-            this.defaultTypeMappers = defaultTypeMappers;
+            this.defaultTypeMappers = defaultTypeMappers ?? DefaultTypeMappersCreator.CreateDefaultTypeMappers();
         }
 
         /// <inheritdoc/>
