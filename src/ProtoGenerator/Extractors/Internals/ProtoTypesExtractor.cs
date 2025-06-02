@@ -34,9 +34,9 @@ namespace ProtoGenerator.Extractors.Internals
         private IEnumerable<ITypeReplacer> typeReplacers;
 
         /// <summary>
-        /// A mapping between csharp well known types to proto well known types.
+        /// A set of types that are proto well known types or primitives.
         /// </summary>
-        private IReadOnlyDictionary<Type, string> wellKnownTypes;
+        private ISet<Type> wellKnownTypes;
 
         /// <summary>
         /// Create new instance of the <see cref="ProtoTypesExtractor"/> class.
@@ -47,12 +47,12 @@ namespace ProtoGenerator.Extractors.Internals
         public ProtoTypesExtractor(IProvider componentsProvider,
                                    IEnumerable<ITypesExtractor>? defaultTypesExtractors = null,
                                    IEnumerable<ITypeReplacer>? typeReplacers = null,
-                                   IReadOnlyDictionary<Type, string>? wellKnownTypes = null)
+                                   ISet<Type>? wellKnownTypes = null)
         {
             this.customConvertersProvider = componentsProvider;
             this.defaultTypesExtractors = defaultTypesExtractors ?? DefaultTypesExtractorsCreator.CreateStructuralTypesExtractors(componentsProvider);
             this.typeReplacers = typeReplacers ?? DefaultTypeReplacersCreator.CreateDefaultTypeReplacers(componentsProvider);
-            this.wellKnownTypes = wellKnownTypes ?? WellKnownTypesConstants.WellKnownTypes;
+            this.wellKnownTypes = wellKnownTypes ?? WellKnownTypesConstants.WellKnownTypes.Keys.ToHashSet();
         }
 
         /// <inheritdoc/>
@@ -78,7 +78,7 @@ namespace ProtoGenerator.Extractors.Internals
                                                     HashSet<Type> alreadyCheckedTypes)
         {
             // There is no reason to create a new proto type from a known types.
-            if (wellKnownTypes.ContainsKey(type))
+            if (wellKnownTypes.Contains(type))
             {
                 // There is no need to check well known types.
                 alreadyCheckedTypes.Add(type);

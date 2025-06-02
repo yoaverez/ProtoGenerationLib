@@ -55,7 +55,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals
 
             var expectedTypes = new List<Type> { testedType };
 
-            var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockExtractor.Object }, wellKnownTypes: new Dictionary<Type, string> { [testedType] = testedType.Name });
+            var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockExtractor.Object }, wellKnownTypes: new HashSet<Type> { testedType });
 
             // Act
             var actualTypes = protoTypesExtractor.ExtractProtoTypes(testedType, generationOptions).ToList();
@@ -89,11 +89,11 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             mockExtractor.Setup(extractor => extractor.ExtractUsedTypes(It.IsAny<Type>(), generationOptions)).
                 Returns(new List<Type> { typeof(bool), typeof(object) });
 
-            var wellKnownTypes = new Dictionary<Type, string>
+            var wellKnownTypes = new HashSet<Type>
             {
-                [typeof(bool)] = typeof(bool).Name,
-                [typeof(object)] = typeof(object).Name,
-                [replacingType] = replacingType.Name,
+                typeof(bool),
+                typeof(object),
+                replacingType,
             };
             var expectedTypes = new List<Type> { replacingType, typeof(bool), typeof(object) };
 
@@ -208,12 +208,12 @@ namespace ProtoGenerator.Tests.Extractors.Internals
 
         private ProtoTypesExtractor CreateProtoTypesExtractor(IEnumerable<ITypesExtractor> typesExtractors,
                                                               IEnumerable<ITypeReplacer>? typeReplacers = null,
-                                                              IReadOnlyDictionary<Type, string>? wellKnownTypes = null)
+                                                              ISet<Type>? wellKnownTypes = null)
         {
             return new ProtoTypesExtractor(mockIProvider.Object,
                                            typesExtractors,
                                            typeReplacers ?? new List<ITypeReplacer>(),
-                                           wellKnownTypes ?? new Dictionary<Type, string>());
+                                           wellKnownTypes ?? new HashSet<Type>());
         }
     }
 }
