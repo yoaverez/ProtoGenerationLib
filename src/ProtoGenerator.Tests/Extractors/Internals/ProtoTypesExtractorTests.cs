@@ -37,7 +37,7 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>());
 
             // Act
-            var actualTypes = protoTypesExtractor.ExtractProtoTypes(typeof(int), generationOptions);
+            var actualTypes = protoTypesExtractor.ExtractProtoTypes(typeof(int), generationOptions, out var _);
 
             // Assert
             // Noting to do. The ExpectedException attribute will assert the test.
@@ -58,10 +58,11 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockExtractor.Object }, wellKnownTypes: new HashSet<Type> { testedType });
 
             // Act
-            var actualTypes = protoTypesExtractor.ExtractProtoTypes(testedType, generationOptions).ToList();
+            var actualTypes = protoTypesExtractor.ExtractProtoTypes(testedType, generationOptions, out var originTypeToNewTypeMapping).ToList();
 
             // Assert
             CollectionAssert.AreEqual(expectedTypes, actualTypes);
+            Assert.AreEqual(0, originTypeToNewTypeMapping.Count);
         }
 
         [TestMethod]
@@ -96,16 +97,21 @@ namespace ProtoGenerator.Tests.Extractors.Internals
                 replacingType,
             };
             var expectedTypes = new List<Type> { replacingType, typeof(bool), typeof(object) };
+            var expectedOriginToNewType = new Dictionary<Type, Type>
+            {
+                [testedType] = replacingType,
+            };
 
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockExtractor.Object },
                                                                 new List<ITypeReplacer> { mockReplacer.Object },
                                                                 wellKnownTypes);
 
             // Act
-            var actualTypes = protoTypesExtractor.ExtractProtoTypes(testedType, generationOptions).ToList();
+            var actualTypes = protoTypesExtractor.ExtractProtoTypes(testedType, generationOptions, out var originTypeToNewTypeMapping).ToList();
 
             // Assert
             CollectionAssert.AreEquivalent(expectedTypes, actualTypes);
+            CollectionAssert.AreEquivalent(expectedOriginToNewType, originTypeToNewTypeMapping.ToDictionary(x => x.Key, x => x.Value));
         }
 
         [TestMethod]
@@ -134,10 +140,11 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockDefaultExtractor.Object });
 
             // Act
-            var actualResult = protoTypesExtractor.ExtractProtoTypes(typeof(bool), generationOptions).ToList();
+            var actualResult = protoTypesExtractor.ExtractProtoTypes(typeof(bool), generationOptions, out var originTypeToNewTypeMapping).ToList();
 
             // Assert
             CollectionAssert.AreEquivalent(expectedResult, actualResult);
+            Assert.AreEqual(0, originTypeToNewTypeMapping.Count);
         }
 
         [TestMethod]
@@ -160,10 +167,11 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>());
 
             // Act
-            var actualResult = protoTypesExtractor.ExtractProtoTypes(typeof(int), generationOptions).ToList();
+            var actualResult = protoTypesExtractor.ExtractProtoTypes(typeof(int), generationOptions, out var originTypeToNewTypeMapping).ToList();
 
             // Assert
             CollectionAssert.AreEquivalent(expectedResult, actualResult);
+            Assert.AreEqual(0, originTypeToNewTypeMapping.Count);
         }
 
         [TestMethod]
@@ -200,10 +208,11 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>());
 
             // Act
-            var actualResult = protoTypesExtractor.ExtractProtoTypes(typeof(int), generationOptions).ToList();
+            var actualResult = protoTypesExtractor.ExtractProtoTypes(typeof(int), generationOptions, out var originTypeToNewTypeMapping).ToList();
 
             // Assert
             CollectionAssert.AreEquivalent(expectedResult, actualResult);
+            Assert.AreEqual(0, originTypeToNewTypeMapping.Count);
         }
 
         private ProtoTypesExtractor CreateProtoTypesExtractor(IEnumerable<ITypesExtractor> typesExtractors,

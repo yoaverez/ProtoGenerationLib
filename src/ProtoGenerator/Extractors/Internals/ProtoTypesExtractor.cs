@@ -56,12 +56,16 @@ namespace ProtoGenerator.Extractors.Internals
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Type> ExtractProtoTypes(Type type, IProtoGenerationOptions generationOptions)
+        public IEnumerable<Type> ExtractProtoTypes(Type type, IProtoGenerationOptions generationOptions, out IReadOnlyDictionary<Type, Type> originTypeToNewTypeMapping)
         {
             var customTypesExtractors = customConvertersProvider.GetCustomTypesExtractors();
             var typeExtractors = customTypesExtractors.Concat(defaultTypesExtractors).ToArray();
 
-            return ExtractProtoTypes(type, generationOptions, typeExtractors, typeReplacers, new HashSet<Type>());
+            var originTypeToNewTypeMappingDictionary = new Dictionary<Type, Type>();
+            var protoTypes = ExtractProtoTypes(type, generationOptions, typeExtractors, typeReplacers, new HashSet<Type>(), ref originTypeToNewTypeMappingDictionary);
+
+            originTypeToNewTypeMapping = originTypeToNewTypeMappingDictionary;
+            return protoTypes;
         }
 
         /// <param name="typesExtractors">The types extractors.</param>
@@ -70,12 +74,13 @@ namespace ProtoGenerator.Extractors.Internals
         /// Thrown when the given <paramref name="type"/> can not be handled
         /// by any of the given <paramref name="typesExtractors"/>
         /// </exception>
-        /// <inheritdoc cref="ExtractProtoTypes(Type, IProtoGenerationOptions)"/>
+        /// <inheritdoc cref="ExtractProtoTypes(Type, IProtoGenerationOptions, out IReadOnlyDictionary{Type, Type})"/>
         private IEnumerable<Type> ExtractProtoTypes(Type type,
                                                     IProtoGenerationOptions generationOptions,
                                                     IEnumerable<ITypesExtractor> typesExtractors,
                                                     IEnumerable<ITypeReplacer> typeReplacers,
-                                                    HashSet<Type> alreadyCheckedTypes)
+                                                    HashSet<Type> alreadyCheckedTypes,
+                                                    ref Dictionary<Type, Type> originTypeToNewTypeMapping)
         {
             // There is no reason to create a new proto type from a known types.
             if (wellKnownTypes.Contains(type))
@@ -91,7 +96,9 @@ namespace ProtoGenerator.Extractors.Internals
                 // if so then replace it.
                 if (typeReplacer.CanReplaceType(type))
                 {
-                    type = typeReplacer.ReplaceType(type, generationOptions);
+                    var newType = typeReplacer.ReplaceType(type, generationOptions);
+                    originTypeToNewTypeMapping[type] = newType;
+                    type = newType;
                     break;
                 }
             }
@@ -101,14 +108,14 @@ namespace ProtoGenerator.Extractors.Internals
             {
                 if (typesExtractor.CanHandle(type, generationOptions))
                 {
-                    var usedTypes = typesExtractor.ExtractUsedTypes(type, generationOptions);
                     alreadyCheckedTypes.Add(type);
+                    var usedTypes = typesExtractor.ExtractUsedTypes(type, generationOptions);
                     foreach (var usedType in usedTypes)
                     {
                         if (!alreadyCheckedTypes.Contains(usedType))
                         {
                             alreadyCheckedTypes.Add(usedType);
-                            types.AddRange(ExtractProtoTypes(usedType, generationOptions, typesExtractors, typeReplacers, alreadyCheckedTypes));
+                            types.AddRange(ExtractProtoTypes(usedType, generationOptions, typesExtractors, typeReplacers, alreadyCheckedTypes, ref originTypeToNewTypeMapping));
                         }
                     }
                     return types;

@@ -15,6 +15,6 @@ namespace ProtoGenerator.Extractors.Abstracts
         /// <param name="type">The type to from which to extract types that are needed for proto generation.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>All the types that are used by the given <paramref name="type"/>.</returns>
-        IEnumerable<Type> ExtractProtoTypes(Type type, IProtoGenerationOptions generationOptions);
+        IEnumerable<Type> ExtractProtoTypes(Type type, IProtoGenerationOptions generationOptions, out IReadOnlyDictionary<Type, Type> originTypeToNewTypeMapping);
     }
 }
