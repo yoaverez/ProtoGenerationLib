@@ -16,26 +16,26 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         /// <summary>
         /// Types extractors for wrapper types.
         /// </summary>
-        public IEnumerable<ITypesExtractor> wrapperElementTypesExtractors;
+        public IEnumerable<ITypesExtractor> wrapperElementTypesExtractors => lazyWrapperElementTypesExtractors.Value;
+
+        /// <summary>
+        /// The lazy initialization of the <see cref="wrapperElementTypesExtractors"/> property.
+        /// </summary>
+        private Lazy<IEnumerable<ITypesExtractor>> lazyWrapperElementTypesExtractors;
 
         #region Singleton
 
         /// <summary>
-        /// The only instance of the <see cref="FieldsTypesExtractor"/> class
-        /// that will be initialize lazily in order to use mocks in tests.
-        /// </summary>
-        private static Lazy<FieldsTypesExtractor> instance;
-        /// <summary>
         /// The only instance of the <see cref="FieldsTypesExtractor"/> class.
         /// </summary>
-        public static FieldsTypesExtractor Instance => instance.Value;
+        public static FieldsTypesExtractor Instance { get; }
 
         /// <summary>
         /// Initialize the static members of the <see cref="FieldsTypesExtractor"/> class.
         /// </summary>
         static FieldsTypesExtractor()
         {
-            instance = new Lazy<FieldsTypesExtractor>(() => new FieldsTypesExtractor());
+            Instance = new FieldsTypesExtractor();
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace ProtoGenerator.Extractors.Internals.TypesExtractors
         /// </summary>
         private FieldsTypesExtractor()
         {
-            wrapperElementTypesExtractors = DefaultTypesExtractorsCreator.CreateDefaultWrapperElementTypesExtractors();
+            lazyWrapperElementTypesExtractors = new Lazy<IEnumerable<ITypesExtractor>>(DefaultTypesExtractorsCreator.CreateDefaultWrapperElementTypesExtractors);
         }
 
         #endregion Singleton

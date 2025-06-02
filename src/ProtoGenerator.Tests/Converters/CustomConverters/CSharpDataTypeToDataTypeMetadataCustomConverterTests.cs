@@ -12,6 +12,8 @@ namespace ProtoGenerator.Tests.Converters.CustomConverters
     [TestClass]
     public class CSharpDataTypeToDataTypeMetadataCustomConverterTests
     {
+        public TestContext TestContext { get; set; }
+
         private class CustomConverter : CSharpDataTypeToDataTypeMetadataCustomConverter
         {
             public Func<Type, IProtoGenerationOptions, bool> CanHandleTypeIProtoGenerationOptions { get; set; }
@@ -130,7 +132,7 @@ namespace ProtoGenerator.Tests.Converters.CustomConverters
             var type = typeof(int);
             var expectedUsedTypes = typesInMetadata.Append(typeof(void)).ToList();
 
-            var harmony = new Harmony(nameof(ExtractUsedTypes_CanHandleType_ReturnAllTheUsedTypes));
+            var harmony = new Harmony($"{GetType().Name}.{TestContext.TestName}");
             var originMethod = typeof(FieldsTypesExtractor).GetMethod(nameof(FieldsTypesExtractor.ExtractUsedTypesFromFields));
             static bool Prefix(ref IEnumerable<Type> __result, IEnumerable<Type> fieldTypes, IProtoGenerationOptions generationOptions)
             {
