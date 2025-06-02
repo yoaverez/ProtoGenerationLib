@@ -1,9 +1,9 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerator.Utilities.TypeUtilities;
-using System.Collections.Generic;
-using System;
 using ProtoGenerator.Replacers.Abstracts;
+using ProtoGenerator.Utilities.TypeUtilities;
+using System;
+using System.Collections.Generic;
 
 namespace ProtoGenerator.Replacers.Internals.TypeReplacers
 {
@@ -38,10 +38,12 @@ namespace ProtoGenerator.Replacers.Internals.TypeReplacers
             if (!CanReplaceType(type))
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a dictionary type and can not be replaced by the {nameof(DictionaryTypeReplacer)}.");
 
+            type.TryGetElementsOfKeyValuePairEnumerableType(out var keyType, out var valueType);
+            var unifiedDictionaryType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
             var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
-            var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
+            var newTypeName = newTypeNamingStrategy.GetNewTypeName(unifiedDictionaryType);
 
-            var props = new List<(Type, string)> { (type, "mapping") };
+            var props = new List<(Type, string)> { (unifiedDictionaryType, "mapping") };
             var newType = TypeCreator.CreateDataType(newTypeName, props);
             return newType;
         }

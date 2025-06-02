@@ -4,6 +4,7 @@ using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerator.Replacers.Internals.TypeReplacers;
 using ProtoGenerator.Strategies.Abstracts;
+using ProtoGenerator.Utilities.TypeUtilities;
 
 namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
 {
@@ -70,7 +71,19 @@ namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
         public void ReplaceType_TypeCanBeReplaced_ReturnNewType(Type type, string expectedNewType)
         {
             // Arrange
-            mockINewTypeNamingStrategy.Setup(x => x.GetNewTypeName(It.Is<Type>(t => t.Equals(type))))
+            type.TryGetElementOfEnumerableType(out var elementType);
+            Type arrayType;
+
+            if(elementType.IsArray)
+            {
+                arrayType = elementType.GetArrayElementType().MakeArrayType(2);
+            }
+            else
+            {
+                arrayType = elementType.MakeArrayType();
+            }
+
+            mockINewTypeNamingStrategy.Setup(x => x.GetNewTypeName(It.Is<Type>(t => t.Equals(arrayType))))
                                       .Returns(expectedNewType);
 
             // Act + Assert
@@ -98,6 +111,7 @@ namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
                 new object[] { typeof(Dictionary<int, string>), $"{testClassName}1" },
                 new object[] { typeof(List<char>), $"{testClassName}2" },
                 new object[] { typeof(IEnumerable<double>), $"{testClassName}3" },
+                new object[] { typeof(IEnumerable<int[,,,][][,,,]>), $"{testClassName}4" },
             };
         }
 

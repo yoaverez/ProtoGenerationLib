@@ -1,9 +1,9 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerator.Utilities.TypeUtilities;
-using System.Collections.Generic;
-using System;
 using ProtoGenerator.Replacers.Abstracts;
+using ProtoGenerator.Utilities.TypeUtilities;
+using System;
+using System.Collections.Generic;
 
 namespace ProtoGenerator.Replacers.Internals.TypeReplacers
 {
@@ -38,10 +38,26 @@ namespace ProtoGenerator.Replacers.Internals.TypeReplacers
             if (!CanReplaceType(type))
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not an enumerable and can not be replaced by the {nameof(EnumerableTypeReplacer)}.");
 
-            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
-            var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
+            type.TryGetElementOfEnumerableType(out var elementType);
+            Type arrayType;
 
-            var props = new List<(Type, string)> { (type, "items") };
+            if(elementType.IsArray)
+            {
+                // Make a multi dimensional array
+                // since the type is IEnumerable<ArrayType>.
+                arrayType = elementType.GetArrayElementType().MakeArrayType(2);
+            }
+            else
+            {
+                // Make a single dimensional array
+                // since the type is IEnumerable<NoneArrayType>.
+                arrayType = elementType.MakeArrayType();
+            }
+
+            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
+            var newTypeName = newTypeNamingStrategy.GetNewTypeName(arrayType);
+
+            var props = new List<(Type, string)> { (arrayType, "items") };
             var newType = TypeCreator.CreateDataType(newTypeName, props);
             return newType;
         }

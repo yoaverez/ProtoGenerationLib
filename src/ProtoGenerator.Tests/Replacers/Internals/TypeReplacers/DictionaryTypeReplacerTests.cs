@@ -4,6 +4,7 @@ using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerator.Replacers.Internals.TypeReplacers;
 using ProtoGenerator.Strategies.Abstracts;
+using ProtoGenerator.Utilities.TypeUtilities;
 
 namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
 {
@@ -70,7 +71,10 @@ namespace ProtoGenerator.Tests.Replacers.Internals.TypeReplacers
         public void ReplaceType_TypeCanBeReplaced_ReturnNewType(Type type, string expectedNewType)
         {
             // Arrange
-            mockINewTypeNamingStrategy.Setup(x => x.GetNewTypeName(It.Is<Type>(t => t.Equals(type))))
+            type.TryGetElementsOfKeyValuePairEnumerableType(out var keyType, out var valueType);
+            var unifiedDictionaryType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
+
+            mockINewTypeNamingStrategy.Setup(x => x.GetNewTypeName(It.Is<Type>(t => t.Equals(unifiedDictionaryType))))
                                       .Returns(expectedNewType);
 
             // Act + Assert
