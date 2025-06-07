@@ -27,6 +27,8 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
 
         private ContractMetadataToServiceDefinitionConverter converter;
 
+        private Dictionary<Type, IProtoTypeMetadata> primitiveTypesWrappers;
+
         private static ProtoGenerationOptions generationOptions;
 
         [ClassInitialize]
@@ -73,7 +75,8 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
             mockIProvider.Setup(provider => provider.GetProtoStylingStrategy("3"))
                          .Returns(mockIProtoStylingStrategy.Object);
 
-            converter = new ContractMetadataToServiceDefinitionConverter(mockIProvider.Object);
+            primitiveTypesWrappers = new Dictionary<Type, IProtoTypeMetadata>();
+            converter = new ContractMetadataToServiceDefinitionConverter(mockIProvider.Object, primitiveTypesWrappers);
         }
 
         [TestMethod]
@@ -81,6 +84,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
         {
             // Arrange
             var contractType = typeof(IContractType2);
+
             var contractMetadata = new ContractTypeMetadata(contractType,
                                                             contractType.GetMethods()
                                                                         .Select(x => new MethodMetadata(x))
@@ -99,15 +103,18 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
                 [newParameterListType] = new ProtoTypeMetadata(newParameterListType.Name, newParameterListType.Namespace, $"{newParameterListType.Namespace}.{newParameterListType.Name}", "path4"),
             };
 
+            primitiveTypesWrappers.Add(typeof(int), new ProtoTypeMetadata("PrimitiveInt", "int.pac", "int.pac.PrimitiveInt", "protobuf.primitives"));
+            primitiveTypesWrappers.Add(typeof(double), new ProtoTypeMetadata("PrimitiveDouble", "pac", "pac.PrimitiveDouble", "protobuf.primitives"));
+
             var rpcs = new List<IRpcDefinition>
             {
                 new RpcDefinition(nameof(IContractType2.Method1).ToUpperInvariant(), "void", "void", ProtoRpcType.Unary),
-                new RpcDefinition(nameof(IContractType2.Method2).ToUpperInvariant(), "void", "int.pac.int", ProtoRpcType.ClientStreaming),
-                new RpcDefinition(nameof(IContractType2.Method3).ToUpperInvariant(), "double", $"{newParameterListType.Namespace}.{newParameterListType.Name}", ProtoRpcType.BidirectionalStreaming),
+                new RpcDefinition(nameof(IContractType2.Method2).ToUpperInvariant(), "void", "int.pac.PrimitiveInt", ProtoRpcType.ClientStreaming),
+                new RpcDefinition(nameof(IContractType2.Method3).ToUpperInvariant(), "PrimitiveDouble", $"{newParameterListType.Namespace}.{newParameterListType.Name}", ProtoRpcType.BidirectionalStreaming),
             };
             var imports = new HashSet<string>
             {
-                "path1", "path2", "path4",
+                "path1", "path4", "protobuf.primitives"
             };
             var expectedDefinition = new ServiceDefinition(rpcs, "contract", "pac.pac2", imports);
 
@@ -138,6 +145,9 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
                 [typeof(double)] = new ProtoTypeMetadata("double", "pac", "pac.double", "path2"),
                 [typeof(IContractType2)] = new ProtoTypeMetadata("contract", "pac.pac2", "pac.pac2.contract", "path3"),
             };
+
+            primitiveTypesWrappers.Add(typeof(int), new ProtoTypeMetadata("PrimitiveInt", "int.pac", "int.pac.PrimitiveInt", "protobuf.primitives"));
+            primitiveTypesWrappers.Add(typeof(double), new ProtoTypeMetadata("PrimitiveDouble", "pac", "pac.PrimitiveDouble", "protobuf.primitives"));
 
             // Act
             var actualDefinition = converter.ConvertIntermediateRepresentationToProtoDefinition(contractMetadata, protoTypesMetadatas, generationOptions);

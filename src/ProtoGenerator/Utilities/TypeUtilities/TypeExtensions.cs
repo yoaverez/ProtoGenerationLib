@@ -380,5 +380,34 @@ namespace ProtoGenerator.Utilities.TypeUtilities
             }
             return false;
         }
+
+        /// <summary>
+        /// Checks whether or not the given <paramref name="type"/>
+        /// is a primitive type that have a protobuf wrapper type.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        /// <see langword="true"/> if the given <paramref name="type"/>
+        /// is a primitive type that have a protobuf wrapper type
+        /// otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool DoesTypeHaveProtobufWrapperType(this Type type)
+        {
+            return type.Equals(typeof(bool))
+                   || type.Equals(typeof(byte))
+                   || type.Equals(typeof(sbyte))
+                   || type.Equals(typeof(short))
+                   || type.Equals(typeof(ushort))
+                   || type.Equals(typeof(int))
+                   || type.Equals(typeof(uint))
+                   || type.Equals(typeof(long))
+                   || type.Equals(typeof(ulong))
+                   || type.Equals(typeof(float))
+                   || type.Equals(typeof(double))
+                   || type.Equals(typeof(decimal))
+                   || type.Equals(typeof(byte[]))
+                   || type.Equals(typeof(char))
+                   || type.Equals(typeof(string));
+        }
     }
 }

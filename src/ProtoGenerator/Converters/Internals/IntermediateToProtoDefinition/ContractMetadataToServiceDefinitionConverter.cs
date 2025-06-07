@@ -1,5 +1,6 @@
 ﻿using ProtoGenerator.Attributes;
 using ProtoGenerator.Configurations.Abstracts;
+using ProtoGenerator.Constants;
 using ProtoGenerator.Converters.Abstracts;
 using ProtoGenerator.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerator.Models.Abstracts.ProtoDefinitions;
@@ -28,16 +29,24 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
         private IProvider componentsProvider;
 
         /// <summary>
+        /// A mapping between a csharp primitive type to its
+        /// protobuf wrapper message type metadata.
+        /// </summary>
+        private IReadOnlyDictionary<Type, IProtoTypeMetadata> primitiveTypesWrappers;
+
+        /// <summary>
         /// Create new instance of the <see cref="ContractMetadataToServiceDefinitionConverter"/> class.
         /// </summary>
         /// <param name="componentsProvider"><inheritdoc cref="componentsProvider"/>.</param>
-        public ContractMetadataToServiceDefinitionConverter(IProvider componentsProvider)
+        /// <param name="primitiveTypesWrappers"><inheritdoc cref="primitiveTypesWrappers"/>.</param>
+        public ContractMetadataToServiceDefinitionConverter(IProvider componentsProvider, IReadOnlyDictionary<Type, IProtoTypeMetadata>? primitiveTypesWrappers = null)
         {
             this.componentsProvider = componentsProvider;
+            this.primitiveTypesWrappers = primitiveTypesWrappers ?? WellKnownTypesConstants.PrimitiveTypesWrappers;
         }
 
         /// <inheritdoc/>
-        /// <inheritdoc cref="CreateRpcFromMethodMetadata(IMethodMetadata, string, IConversionOptions, IReadOnlyDictionary{Type, IProtoTypeMetadata}, out ISet{string})" path="/exception"/>
+        /// <inheritdoc cref="CreateRpcFromMethodMetadata(IMethodMetadata, string, IProtoGenerationOptions, IReadOnlyDictionary{Type, IProtoTypeMetadata}, out ISet{string})" path="/exception"/>
         public IServiceDefinition ConvertIntermediateRepresentationToProtoDefinition(IContractTypeMetadata intermediateType,
                                                                                      IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
                                                                                      IProtoGenerationOptions generationOptions)
@@ -97,11 +106,13 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
 
             var packageComponentsSeparator = componentsProvider.GetPackageStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy).PackageComponentsSeparator;
 
-            neededImports.Add(protoTypesMetadatas[requestType].FilePath!);
-            var requestTypeName = GetTypeShortName(protoTypesMetadatas[requestType].FullName, filePackage, packageComponentsSeparator);
+            var requestTypeMetadata = GetTypeMetadata(requestType, protoTypesMetadatas);
+            neededImports.Add(requestTypeMetadata.FilePath!);
+            var requestTypeName = GetTypeShortName(requestTypeMetadata.FullName, filePackage, packageComponentsSeparator);
 
-            neededImports.Add(protoTypesMetadatas[methodMetadata.ReturnType].FilePath!);
-            var responseTypeName = GetTypeShortName(protoTypesMetadatas[methodMetadata.ReturnType].FullName, filePackage, packageComponentsSeparator);
+            var returnTypeMetadata = GetTypeMetadata(methodMetadata.ReturnType, protoTypesMetadatas);
+            neededImports.Add(returnTypeMetadata.FilePath!);
+            var responseTypeName = GetTypeShortName(returnTypeMetadata.FullName, filePackage, packageComponentsSeparator);
 
             var rpcAttributeType = generationOptions.AnalysisOptions.ProtoRpcAttribute;
             var attribute = methodMetadata.MethodInfo.GetCustomAttribute<ProtoRpcAttribute>(rpcAttributeType.IsAttributeInherited());
@@ -110,6 +121,22 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
             var rpcName = rpcStylingStrategy.ToProtoStyle(methodMetadata.MethodInfo.Name);
 
             return new RpcDefinition(rpcName, responseTypeName, requestTypeName, attribute.RpcType);
+        }
+
+        /// <summary>
+        /// Get the proto type metadata of rpc return or request type.
+        /// </summary>
+        /// <param name="type">The type that is used as the rpc return or request type.</param>
+        /// <param name="protoTypesMetadatas">The mapping between types to their metadatas.</param>
+        /// <returns>The proto type metadata of rpc return or request type.</returns>
+        private IProtoTypeMetadata GetTypeMetadata(Type type, IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas)
+        {
+            if (type.DoesTypeHaveProtobufWrapperType())
+            {
+                return primitiveTypesWrappers[type];
+            }
+
+            return protoTypesMetadatas[type];
         }
     }
 }
