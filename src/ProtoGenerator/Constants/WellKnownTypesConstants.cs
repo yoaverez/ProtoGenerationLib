@@ -34,7 +34,7 @@ namespace ProtoGenerator.Constants
                 [typeof(char)] = CreatePrimitiveTypeMetadata("uint32"),
                 [typeof(string)] = CreatePrimitiveTypeMetadata("string"),
                 // Proto3 doesn't have a decimal type.
-                [typeof(decimal)] = CreatePrimitiveTypeMetadata("double"),
+                [typeof(decimal)] = CreatePrimitiveTypeMetadata("string"),
 
                 [typeof(void)] = CreateProtobufWellKnownTypeMetadata("Empty", "empty"),
                 [typeof(object)] = CreateProtobufWellKnownTypeMetadata("Any", "any"),
