@@ -270,15 +270,27 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
         public void ConvertIntermediateRepresentationToProtoDefinition_TypeContainsNestedTypes_MessageDefinitionContainsNestedTypes()
         {
             // Arrange
+            mockIFieldNumberingStrategy.Setup(strategy => strategy.GetFieldNumber(It.IsAny<IFieldMetadata>(), It.IsAny<int>(), It.IsAny<int>()))
+                                       .Returns<IFieldMetadata, int, int>((a, idx, b) => Convert.ToUInt32(idx + 1));
+
             var type = typeof(object);
 
             var nestedEnum1 = new EnumTypeMetadata(typeof(long), new List<IEnumValueMetadata>());
             var nestedEnum2 = new EnumTypeMetadata(typeof(char), new List<IEnumValueMetadata>());
             var nestedEnum3 = new EnumTypeMetadata(typeof(short), new List<IEnumValueMetadata>());
 
-            var nestedDataType1 = new DataTypeMetadata(typeof(int), Array.Empty<IFieldMetadata>(), Array.Empty<IDataTypeMetadata>(), Array.Empty<IEnumTypeMetadata>());
-            var nestedDataType2 = new DataTypeMetadata(typeof(string), Array.Empty<IFieldMetadata>(), Array.Empty<IDataTypeMetadata>(), Array.Empty<IEnumTypeMetadata>());
-            var nestedDataType3 = new DataTypeMetadata(typeof(bool), Array.Empty<IFieldMetadata>(), new IDataTypeMetadata[] { nestedDataType2 }, new IEnumTypeMetadata[] { nestedEnum2 });
+            // Those are used for the imports.
+            var fieldMetadata1 = new FieldMetadata(typeof(byte), "a1", Array.Empty<Attribute>(), typeof(int));
+            var fieldMetadata2 = new FieldMetadata(typeof(char), "a2", Array.Empty<Attribute>(), typeof(string));
+            var fieldMetadata3 = new FieldMetadata(typeof(short), "a3", Array.Empty<Attribute>(), typeof(bool));
+
+            var fieldDefinition1 = new FieldDefinition("a1".ToUpperInvariant(), "byte", 1, FieldRule.None);
+            var fieldDefinition2 = new FieldDefinition("a2".ToUpperInvariant(), "char", 1, FieldRule.None);
+            var fieldDefinition3 = new FieldDefinition("a3".ToUpperInvariant(), "short", 1, FieldRule.None);
+
+            var nestedDataType1 = new DataTypeMetadata(typeof(int), new IFieldMetadata[] { fieldMetadata1 }, Array.Empty<IDataTypeMetadata>(), Array.Empty<IEnumTypeMetadata>());
+            var nestedDataType2 = new DataTypeMetadata(typeof(string), new IFieldMetadata[] { fieldMetadata2 }, Array.Empty<IDataTypeMetadata>(), Array.Empty<IEnumTypeMetadata>());
+            var nestedDataType3 = new DataTypeMetadata(typeof(bool), new IFieldMetadata[] { fieldMetadata3 }, new IDataTypeMetadata[] { nestedDataType2 }, new IEnumTypeMetadata[] { nestedEnum2 });
 
             var dataTypeMetadata = new DataTypeMetadata(type,
                                                         Array.Empty<IFieldMetadata>(),
@@ -300,6 +312,11 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
 
                 [typeof(string)] = new ProtoTypeMetadata("string", "pac.pac2", "pac.pac2.string", "path1"),
                 [typeof(int)] = new ProtoTypeMetadata("int", "pac", "pac.int", "path2"),
+
+                // For the imports.
+                [typeof(byte)] = new ProtoTypeMetadata("byte", "pac", "pac.byte", "import1"),
+                [typeof(char)] = new ProtoTypeMetadata("char", "pac", "pac.char", "import2"),
+                [typeof(short)] = new ProtoTypeMetadata("short", "pac", "pac.short", "import3"),
             };
 
             var expectedNestedEnum1 = new EnumDefinition(typeof(long).Name, "", Array.Empty<IEnumValueDefinition>());
@@ -308,28 +325,28 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
 
             var expectedNestedMessage1 = new MessageDefinition("int",
                                                                "pac",
-                                                               Array.Empty<string>(),
-                                                               Array.Empty<IFieldDefinition>(),
+                                                               new string[] { "import1" },
+                                                               new IFieldDefinition[] { fieldDefinition1 },
                                                                Array.Empty<IMessageDefinition>(),
                                                                Array.Empty<IEnumDefinition>());
 
             var expectedNestedMessage2 = new MessageDefinition("string",
                                                                "pac.pac2",
-                                                               Array.Empty<string>(),
-                                                               Array.Empty<IFieldDefinition>(),
+                                                               new string[] { "import2" },
+                                                               new IFieldDefinition[] { fieldDefinition2 },
                                                                Array.Empty<IMessageDefinition>(),
                                                                Array.Empty<IEnumDefinition>());
 
             var expectedNestedMessage3 = new MessageDefinition("bool",
                                                                "pac",
-                                                               Array.Empty<string>(),
-                                                               Array.Empty<IFieldDefinition>(),
+                                                               new string[] { "import3", "import2" },
+                                                               new IFieldDefinition[] { fieldDefinition3 },
                                                                new IMessageDefinition[] { expectedNestedMessage2 },
                                                                new IEnumDefinition[] { expectedNestedEnum2 });
 
             var expectedDefinition = new MessageDefinition(type.Name,
                                                            "pac",
-                                                           new HashSet<string>(),
+                                                           new string[] { "import1", "import2", "import3" },
                                                            Array.Empty<IFieldDefinition>(),
                                                            new IMessageDefinition[] { expectedNestedMessage1, expectedNestedMessage3 },
                                                            new IEnumDefinition[] { expectedNestedEnum1, expectedNestedEnum3 });

@@ -61,8 +61,11 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
             {
                 if (protoTypeMetadata.NestedTypes.Contains(nestedTypeMetadata.Type))
                 {
-                    nestedMessages.Add(ConvertIntermediateRepresentationToProtoDefinition(nestedTypeMetadata,
-                                                                                          protoTypesMetadatas, generationOptions));
+                    var nestedMessage = ConvertIntermediateRepresentationToProtoDefinition(nestedTypeMetadata,
+                                                                                           protoTypesMetadatas,
+                                                                                           generationOptions);
+                    nestedMessages.Add(nestedMessage);
+                    imports.AddRange(nestedMessage.Imports);
                 }
             }
 
@@ -72,7 +75,8 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
                 if (protoTypeMetadata.NestedTypes.Contains(nestedTypeMetadata.Type))
                 {
                     nestedEnums.Add(enumTypeMetadataToEnumDefinitionConverter.ConvertIntermediateRepresentationToProtoDefinition(nestedTypeMetadata,
-                                                                                                                                 protoTypesMetadatas, generationOptions));
+                                                                                                                                 protoTypesMetadatas,
+                                                                                                                                 generationOptions));
                 }
             }
 
