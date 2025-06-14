@@ -11,11 +11,18 @@ namespace ProtoGenerator.Converters.Abstracts
     public interface ICSharpToProtoTypesConverter
     {
         /// <summary>
-        /// Convert the given csharp <paramref name="types"/> to proto components.
+        /// Convert the given csharp <paramref name="types"/> to proto files definitions.
         /// </summary>
         /// <param name="types">The csharp types to convert.</param>
+        /// <param name="protoTypesMetadatas">The proto metadata of all the types.</param>
         /// <param name="generationOptions">The proto generation options.</param>
-        /// <returns>A container that contains all the proto components that was create from the given <paramref name="types"/>.</returns>
-        IProtoComponentsContainer Convert(IEnumerable<Type> types, IProtoGenerationOptions generationOptions);
+        /// <returns>A mapping between the proto file relative path to its file definition.</returns>
+        /// <exception cref="Exception">
+        /// Thrown when there are at least two types in the same proto file
+        /// which have different packages.
+        /// </exception>
+        IDictionary<string, IProtoDefinition> Convert(IEnumerable<Type> types,
+                                                      IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
+                                                      IProtoGenerationOptions generationOptions);
     }
 }
