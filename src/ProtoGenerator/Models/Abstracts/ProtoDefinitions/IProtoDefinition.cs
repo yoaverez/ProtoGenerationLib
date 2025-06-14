@@ -20,7 +20,7 @@ namespace ProtoGenerator.Models.Abstracts.ProtoDefinitions
         /// <summary>
         /// The collection of import statements for the Protocol Buffer definition.
         /// </summary>
-        IEnumerable<string> Imports { get; }
+        ISet<string> Imports { get; }
 
         /// <summary>
         /// The collection of service definitions in the Protocol Buffer definition.

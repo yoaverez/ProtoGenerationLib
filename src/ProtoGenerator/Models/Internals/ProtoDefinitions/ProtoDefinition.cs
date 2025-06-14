@@ -15,8 +15,8 @@ namespace ProtoGenerator.Models.Internals.ProtoDefinitions
         public string Package { get; set; }
 
         /// <inheritdoc cref="IProtoDefinition.Imports"/>
-        public List<string> Imports { get; set; }
-        IEnumerable<string> IProtoDefinition.Imports => Imports;
+        public HashSet<string> Imports { get; set; }
+        ISet<string> IProtoDefinition.Imports => Imports;
 
         /// <inheritdoc cref="IProtoDefinition.Services"/>
         public List<IServiceDefinition> Services {  get; set; }
@@ -39,7 +39,7 @@ namespace ProtoGenerator.Models.Internals.ProtoDefinitions
         {
             Syntax = string.Empty;
             Package = string.Empty;
-            Imports = new List<string>();
+            Imports = new HashSet<string>();
             Services = new List<IServiceDefinition>();
             Messages = new List<IMessageDefinition>();
             Enums = new List<IEnumDefinition>();
@@ -54,7 +54,7 @@ namespace ProtoGenerator.Models.Internals.ProtoDefinitions
         {
             Syntax = other.Syntax;
             Package = other.Package;
-            Imports = other.Imports.ToList();
+            Imports = other.Imports.ToHashSet();
             Services = other.Services.Select(x => new ServiceDefinition(x)).Cast<IServiceDefinition>().ToList();
             Messages = other.Messages.Select(x => new MessageDefinition(x)).Cast<IMessageDefinition>().ToList();
             Enums = other.Enums.Select(x => new EnumDefinition(x)).Cast<IEnumDefinition>().ToList();
@@ -71,10 +71,10 @@ namespace ProtoGenerator.Models.Internals.ProtoDefinitions
             return other != null
                    && Syntax.Equals(other.Syntax)
                    && Package.Equals(other.Package)
-                   && Imports.SequenceEqual(other.Imports)
-                   && Services.SequenceEqual(other.Services)
-                   && Messages.SequenceEqual(other.Messages)
-                   && Enums.SequenceEqual(other.Enums);
+                   && Imports.SequenceEquivalence(other.Imports)
+                   && Services.SequenceEquivalence(other.Services)
+                   && Messages.SequenceEquivalence(other.Messages)
+                   && Enums.SequenceEquivalence(other.Enums);
         }
 
         /// <inheritdoc/>
