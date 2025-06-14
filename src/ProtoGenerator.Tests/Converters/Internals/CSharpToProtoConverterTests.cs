@@ -43,7 +43,8 @@ namespace ProtoGenerator.Tests.Converters.Internals
                 AnalysisOptions = new AnalysisOptions
                 {
                     ProtoServiceAttribute = typeof(ProtoServiceAttribute),
-                }
+                },
+                ProtoFileSyntax = "",
             };
 
             wellKnownTypes = new HashSet<Type>();

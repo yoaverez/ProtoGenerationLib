@@ -19,5 +19,11 @@
 
         /// <inheritdoc cref="INumberingStrategiesOptions"/>
         INumberingStrategiesOptions NumberingStrategiesOptions { get; }
+
+        /// <summary>
+        /// The proto file syntax (The line in the head of a proto file).
+        /// Should be either "proto2" or "proto3".
+        /// </summary>
+        string ProtoFileSyntax { get; }
     }
 }

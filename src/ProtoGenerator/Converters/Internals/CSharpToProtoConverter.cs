@@ -75,7 +75,7 @@ namespace ProtoGenerator.Converters.Internals
                 if (protoTypesMetadatas[type].IsNested)
                     continue;
 
-                var fileDefinition = GetOrAddProtoDefinition(fileToFileDefinition, type, protoTypesMetadatas[type]);
+                var fileDefinition = GetOrAddProtoDefinition(fileToFileDefinition, type, protoTypesMetadatas[type], generationOptions.ProtoFileSyntax);
 
                 IProtoObject protoObject;
                 if (type.IsEnum)
@@ -112,6 +112,7 @@ namespace ProtoGenerator.Converters.Internals
         /// <param name="fileToFileDefinition">The mapping between file paths to their <see cref="IProtoDefinition"/>.</param>
         /// <param name="type">The type whose declaring <see cref="ProtoDefinition"/> is requested.</param>
         /// <param name="metadata">The metadata of the given <paramref name="type"/>.</param>
+        /// <param name="protoFileSyntax">The proto file syntax (The line in the head of a proto file).</param>
         /// <returns>
         /// The <see cref="ProtoDefinition"/> in which the given
         /// <paramref name="type"/> should be declared.
@@ -123,7 +124,8 @@ namespace ProtoGenerator.Converters.Internals
         /// </exception>
         private static ProtoDefinition GetOrAddProtoDefinition(IDictionary<string, IProtoDefinition> fileToFileDefinition,
                                                                Type type,
-                                                               IProtoTypeMetadata metadata)
+                                                               IProtoTypeMetadata metadata,
+                                                               string protoFileSyntax)
         {
             var fileRelativePath = metadata.FilePath!;
             var typePackage = metadata.Package!;
@@ -144,6 +146,7 @@ namespace ProtoGenerator.Converters.Internals
                 fileDefinition = new ProtoDefinition
                 {
                     Package = typePackage,
+                    Syntax = protoFileSyntax,
                 };
                 fileToFileDefinition.Add(fileRelativePath, fileDefinition);
             }

@@ -24,5 +24,8 @@ namespace ProtoGenerator.Configurations.Internals
         /// <inheritdoc cref="INewTypeNamingStrategiesOptions"/>
         public NewTypeNamingStrategiesOptions NewTypeNamingStrategiesOptions { get; set; }
         INewTypeNamingStrategiesOptions IProtoGenerationOptions.NewTypeNamingStrategiesOptions => NewTypeNamingStrategiesOptions;
+
+        /// <inheritdoc/>
+        public string ProtoFileSyntax { get; set; }
     }
 }
