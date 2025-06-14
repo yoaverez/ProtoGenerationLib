@@ -27,6 +27,8 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             mockIProvider = new Mock<IProvider>();
         }
 
+        #region ExtractProtoTypes With Single Type Tests
+
         [ExpectedException(typeof(ArgumentException))]
         [TestMethod]
         public void ExtractProtoTypes_TypeCouldNotBeHandled_ThrowsArgumentException()
@@ -75,11 +77,11 @@ namespace ProtoGenerator.Tests.Extractors.Internals
                          .Returns(new List<ITypesExtractor>());
 
             var mockReplacer = new Mock<ITypeReplacer>();
-            mockReplacer.Setup(extractor => extractor.CanReplaceType(It.Is<Type>(x => x.Equals(testedType))))
+            mockReplacer.Setup(replacer => replacer.CanReplaceType(It.Is<Type>(x => x.Equals(testedType))))
                         .Returns(true);
-            mockReplacer.Setup(extractor => extractor.CanReplaceType(It.Is<Type>(x => !x.Equals(testedType))))
+            mockReplacer.Setup(replacer => replacer.CanReplaceType(It.Is<Type>(x => !x.Equals(testedType))))
                         .Returns(false);
-            mockReplacer.Setup(extractor => extractor.ReplaceType(It.Is<Type>(x => x.Equals(testedType)), generationOptions))
+            mockReplacer.Setup(replacer => replacer.ReplaceType(It.Is<Type>(x => x.Equals(testedType)), generationOptions))
                         .Returns(replacingType);
 
             var mockExtractor = new Mock<ITypesExtractor>();
@@ -214,6 +216,114 @@ namespace ProtoGenerator.Tests.Extractors.Internals
             CollectionAssert.AreEquivalent(expectedResult, actualResult);
             Assert.AreEqual(0, originTypeToNewTypeMapping.Count);
         }
+
+        #endregion ExtractProtoTypes With Single Type Tests
+
+        #region ExtractProtoTypes With Multiple Type Tests
+
+        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]
+        public void ExtractProtoTypes_MiddleTypeCouldNotBeHandled_ThrowsArgumentException()
+        {
+            // Arrange
+            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
+                         .Returns(new List<ITypesExtractor>());
+
+            var testedTypes = new Type[] { typeof(int), typeof(bool), typeof(object) };
+
+            var mockTypeExtractor = new Mock<ITypesExtractor>();
+            mockTypeExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(type => !type.Equals(testedTypes[1])), It.IsAny<IProtoGenerationOptions>()))
+                             .Returns(true);
+            mockTypeExtractor.Setup(extractor => extractor.ExtractUsedTypes(It.Is<Type>(type => !type.Equals(testedTypes[1])), It.IsAny<IProtoGenerationOptions>()))
+                             .Returns(Array.Empty<Type>());
+
+            // Make sure that the middle type could not be handled by the mock extractor.
+            mockTypeExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(type => type.Equals(testedTypes[1])), It.IsAny<IProtoGenerationOptions>()))
+                             .Returns(false);
+
+            var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>() { mockTypeExtractor.Object });
+
+            // Act
+            var actualTypes = protoTypesExtractor.ExtractProtoTypes(testedTypes, generationOptions, out var _);
+
+            // Assert
+            // Noting to do. The ExpectedException attribute will assert the test.
+        }
+
+        [TestMethod]
+        public void ExtractProtoTypes_MultipleTypesThatCanBeReplaced_ReturnTheReplacedTypesAlongWithAllItsUsedTypes()
+        {
+            // Arrange
+            var testedTypes = new Type[] { typeof(int), typeof(short), typeof(long), typeof(string) };
+            var replacingTypes = new Type[] { typeof(uint), typeof(ushort), typeof(ulong) };
+            var usedTypes = new Type[] { typeof(float), typeof(double), typeof(decimal), typeof(string) };
+
+            var customType = typeof(short);
+            var customTypeUsedType = typeof(double);
+            var mockCustomExtractor = new Mock<ITypesExtractor>();
+            mockCustomExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => x.Equals(customType)), generationOptions))
+                         .Returns(true);
+            mockCustomExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => !x.Equals(customType)), generationOptions))
+                         .Returns(false);
+            mockCustomExtractor.Setup(extractor => extractor.ExtractUsedTypes(It.IsAny<Type>(), generationOptions))
+                               .Returns(new List<Type> { customTypeUsedType });
+
+            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
+                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
+
+            var replacers = new List<ITypeReplacer>();
+            var extractors = new List<ITypesExtractor>();
+            for (int i = 0; i < replacingTypes.Length; i++)
+            {
+                if (i != 1)
+                {
+                    var replacingType = replacingTypes[i];
+                    var testedType = testedTypes[i];
+                    var usedType = usedTypes[i];
+                    var mockExtractor = new Mock<ITypesExtractor>();
+                    mockExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => x.Equals(replacingType)), It.IsAny<IProtoGenerationOptions>()))
+                                 .Returns(true);
+                    mockExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => !x.Equals(replacingType)), It.IsAny<IProtoGenerationOptions>()))
+                                 .Returns(false);
+                    mockExtractor.Setup(extractor => extractor.ExtractUsedTypes(It.Is<Type>(x => x.Equals(replacingType)), It.IsAny<IProtoGenerationOptions>()))
+                                 .Returns(new Type[] { usedType });
+                    extractors.Add(mockExtractor.Object);
+
+                    var mockReplacer = new Mock<ITypeReplacer>();
+                    mockReplacer.Setup(replacer => replacer.CanReplaceType(It.Is<Type>(x => x.Equals(testedType))))
+                                .Returns(true);
+                    mockReplacer.Setup(replacer => replacer.CanReplaceType(It.Is<Type>(x => !x.Equals(testedType))))
+                                .Returns(false);
+                    mockReplacer.Setup(replacer => replacer.ReplaceType(It.Is<Type>(x => x.Equals(testedType)), generationOptions))
+                                .Returns(replacingType);
+                    replacers.Add(mockReplacer.Object);
+                }
+            }
+
+            var wellKnownTypes = new HashSet<Type>(usedTypes);
+            var expectedOriginToNewType = new Dictionary<Type, Type>
+            {
+                [testedTypes[0]] = replacingTypes[0],
+                [testedTypes[2]] = replacingTypes[2],
+            };
+
+            // The index 1 is for convenience.
+            var realReplacingTypes = replacingTypes.Where((x, idx) => idx != 1);
+            var expectedTypes = usedTypes.Concat(realReplacingTypes).Append(customType).ToArray();
+
+            var protoTypesExtractor = CreateProtoTypesExtractor(extractors,
+                                                                replacers,
+                                                                wellKnownTypes);
+
+            // Act
+            var actualTypes = protoTypesExtractor.ExtractProtoTypes(testedTypes, generationOptions, out var originTypeToNewTypeMapping).ToList();
+
+            // Assert
+            CollectionAssert.AreEquivalent(expectedTypes, actualTypes);
+            CollectionAssert.AreEquivalent(expectedOriginToNewType, originTypeToNewTypeMapping.ToDictionary(x => x.Key, x => x.Value));
+        }
+
+        #endregion ExtractProtoTypes With Multiple Type Tests
 
         private ProtoTypesExtractor CreateProtoTypesExtractor(IEnumerable<ITypesExtractor> typesExtractors,
                                                               IEnumerable<ITypeReplacer>? typeReplacers = null,

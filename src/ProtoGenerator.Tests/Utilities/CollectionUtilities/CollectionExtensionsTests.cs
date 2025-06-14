@@ -5,6 +5,56 @@ namespace ProtoGenerator.Tests.Utilities.CollectionUtilities
     [TestClass]
     public class CollectionExtensionsTests
     {
+        #region AddRange Tests
+
+        [TestMethod]
+        public void SetAddRange_ReturnAsExpected()
+        {
+            // Arrange
+            var initialSet = new HashSet<int> { 1, 3, 6 };
+            var collectionToAdd = new List<int> { 5, 3, 4, 1, 2 };
+            var expectedSet = new HashSet<int> { 1, 2, 3, 4, 5, 6 };
+            var actualSet = new HashSet<int>(initialSet);
+
+            // Act
+            actualSet.AddRange(collectionToAdd);
+
+            // Assert
+            CollectionAssert.AreEquivalent(expectedSet.ToArray(), actualSet.ToArray());
+        }
+
+        [TestMethod]
+        public void DictionaryAddRange_ReturnAsExpected()
+        {
+            // Arrange
+            var initialDictionary = new Dictionary<int, int>
+            {
+                [1] = 1, [3] = 3, [6] = 6
+            };
+            var collectionToAdd = new List<KeyValuePair<int, int>>
+            {
+                new KeyValuePair<int, int>(5, 5),
+                new KeyValuePair<int, int>(3, 3),
+                new KeyValuePair<int, int>(4, 4),
+                new KeyValuePair<int, int>(1, 1),
+                new KeyValuePair<int, int>(2, 2),
+            };
+
+            var expectedDictionary = new Dictionary<int, int>
+            {
+                [1] = 1, [2] = 2, [3] = 3, [4] = 4, [5] = 5, [6] = 6,
+            };
+            var actualDictionary = new Dictionary<int, int>(initialDictionary);
+
+            // Act
+            actualDictionary.AddRange(collectionToAdd);
+
+            // Assert
+            CollectionAssert.AreEquivalent(expectedDictionary, actualDictionary);
+        }
+
+        #endregion AddRange Tests
+
         #region SequenceEquivalence Tests
 
         [TestMethod]

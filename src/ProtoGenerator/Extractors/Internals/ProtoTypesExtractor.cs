@@ -43,6 +43,7 @@ namespace ProtoGenerator.Extractors.Internals
         /// </summary>
         /// <param name="componentsProvider">A provider of the proto generator customizations.</param>
         /// <param name="defaultTypesExtractors"><inheritdoc cref="defaultTypesExtractors" path="/node()"/></param>
+        /// <param name="typeReplacers"><inheritdoc cref="typeReplacers" path="/node()"/></param>
         /// <param name="wellKnownTypes"><inheritdoc cref="wellKnownTypes" path="/node()"/></param>
         public ProtoTypesExtractor(IProvider componentsProvider,
                                    IEnumerable<ITypesExtractor>? defaultTypesExtractors = null,
@@ -56,13 +57,38 @@ namespace ProtoGenerator.Extractors.Internals
         }
 
         /// <inheritdoc/>
+        public IEnumerable<Type> ExtractProtoTypes(IEnumerable<Type> types, IProtoGenerationOptions generationOptions, out IReadOnlyDictionary<Type, Type> originTypeToNewTypeMapping)
+        {
+            var alreadyCheckedTypes = new HashSet<Type>();
+            var usedTypes = new HashSet<Type>();
+            var originTypeToNewType = new Dictionary<Type, Type>();
+            foreach (var type in types)
+            {
+                usedTypes.AddRange(ExtractProtoTypes(type, generationOptions, alreadyCheckedTypes, out var originTypeToNewTypeMappingResult));
+                originTypeToNewType.AddRange(originTypeToNewTypeMappingResult);
+            }
+
+            originTypeToNewTypeMapping = originTypeToNewType;
+            return usedTypes;
+        }
+
+        /// <inheritdoc/>
         public IEnumerable<Type> ExtractProtoTypes(Type type, IProtoGenerationOptions generationOptions, out IReadOnlyDictionary<Type, Type> originTypeToNewTypeMapping)
+        {
+            return ExtractProtoTypes(type, generationOptions, new HashSet<Type>(), out originTypeToNewTypeMapping);
+        }
+
+        /// <inheritdoc cref="IProtoTypesExtractor.ExtractProtoTypes(Type, IProtoGenerationOptions, out IReadOnlyDictionary{Type, Type})"/>
+        private IEnumerable<Type> ExtractProtoTypes(Type type,
+                                                    IProtoGenerationOptions generationOptions,
+                                                    HashSet<Type> alreadyCheckedTypes,
+                                                    out IReadOnlyDictionary<Type, Type> originTypeToNewTypeMapping)
         {
             var customTypesExtractors = customConvertersProvider.GetCustomTypesExtractors();
             var typeExtractors = customTypesExtractors.Concat(defaultTypesExtractors).ToArray();
 
             var originTypeToNewTypeMappingDictionary = new Dictionary<Type, Type>();
-            var protoTypes = ExtractProtoTypes(type, generationOptions, typeExtractors, typeReplacers, new HashSet<Type>(), ref originTypeToNewTypeMappingDictionary);
+            var protoTypes = ExtractProtoTypes(type, generationOptions, typeExtractors, typeReplacers, alreadyCheckedTypes, ref originTypeToNewTypeMappingDictionary);
 
             originTypeToNewTypeMapping = originTypeToNewTypeMappingDictionary;
             return protoTypes;

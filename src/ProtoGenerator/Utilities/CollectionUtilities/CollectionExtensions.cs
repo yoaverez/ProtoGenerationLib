@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ProtoGenerator.Utilities.CollectionUtilities
@@ -53,6 +54,21 @@ namespace ProtoGenerator.Utilities.CollectionUtilities
             foreach (var item in collection)
             {
                 set.Add(item);
+            }
+        }
+
+        /// <summary>
+        /// Add the given <paramref name="collection"/> to the <paramref name="dictionary"/>.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the keys in the collections.</typeparam>
+        /// <typeparam name="TValue">The type of the values in the collections.</typeparam>
+        /// <param name="dictionary">The dictionary to add the <paramref name="collection"/> to.</param>
+        /// <param name="collection">The collection to add to the <paramref name="dictionary"/>.</param>
+        public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IEnumerable<KeyValuePair<TKey, TValue>> collection)
+        {
+            foreach (var item in collection)
+            {
+                dictionary[item.Key] = item.Value;
             }
         }
 
