@@ -60,7 +60,7 @@ namespace ProtoGenerator.Converters.Internals.IntermediateToProtoDefinition
                 imports.AddRange(rpcNeededImports);
             }
 
-            return new ServiceDefinition(rpcMethods, typeProtoMetadata.Name!, typeProtoMetadata.Package!, imports);
+            return new ServiceDefinition(typeProtoMetadata.Name!, typeProtoMetadata.Package!, imports, rpcMethods);
         }
 
         /// <summary>

@@ -116,7 +116,7 @@ namespace ProtoGenerator.Tests.Converters.Internals.IntermediateToProtoDefinitio
             {
                 "path1", "path4", "protobuf.primitives"
             };
-            var expectedDefinition = new ServiceDefinition(rpcs, "contract", "pac.pac2", imports);
+            var expectedDefinition = new ServiceDefinition("contract", "pac.pac2", imports, rpcs);
 
             // Act
             var actualDefinition = converter.ConvertIntermediateRepresentationToProtoDefinition(contractMetadata, protoTypesMetadatas, generationOptions);
