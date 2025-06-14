@@ -45,8 +45,8 @@ namespace ProtoGenerator.Discovery.Internals
         }
 
         /// <inheritdoc/>
-        public IDictionary<Type, IProtoTypeMetadata> DiscoverProtosMetadata(IEnumerable<Type> types,
-                                                                            IProtoGenerationOptions protoGeneratorConfiguration)
+        public Dictionary<Type, IProtoTypeMetadata> DiscoverProtosMetadata(IEnumerable<Type> types,
+                                                                           IProtoGenerationOptions protoGeneratorConfiguration)
         {
             var userDefinedTypeMappers = componentsProvider.GetCustomTypeNameMappers();
 
