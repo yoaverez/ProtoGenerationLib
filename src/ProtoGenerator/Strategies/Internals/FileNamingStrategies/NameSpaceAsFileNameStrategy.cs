@@ -1,5 +1,6 @@
 ﻿using ProtoGenerator.Strategies.Abstracts;
 using System;
+using System.IO;
 
 namespace ProtoGenerator.Strategies.Internals.FileNamingStrategies
 {
@@ -11,7 +12,10 @@ namespace ProtoGenerator.Strategies.Internals.FileNamingStrategies
         /// <inheritdoc/>
         public string GetFilePath(Type type)
         {
-            return type.Namespace;
+            var namespaceComponents = type.Namespace.Split('.');
+            var lastComponent = namespaceComponents[namespaceComponents.Length - 1];
+            namespaceComponents[namespaceComponents.Length - 1] = $"{lastComponent}.proto";
+            return Path.Combine(namespaceComponents);
         }
     }
 }
