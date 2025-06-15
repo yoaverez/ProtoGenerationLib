@@ -29,9 +29,9 @@ namespace ProtoGenerator.Strategies.Internals.FieldsAndPropertiesExtractionStrat
         /// Create new instance of the <see cref="CompositeFieldsAndPropertiesExtractionStrategy"/> class.
         /// </summary>
         /// <param name="flattenedMembersStrategy"><inheritdoc cref="flattenedMembersStrategy" path="/node()"/></param>
-        public CompositeFieldsAndPropertiesExtractionStrategy(IFieldsAndPropertiesExtractionStrategy flattenedMembersStrategy)
+        public CompositeFieldsAndPropertiesExtractionStrategy(IFieldsAndPropertiesExtractionStrategy? flattenedMembersStrategy = null)
         {
-            this.flattenedMembersStrategy = flattenedMembersStrategy;
+            this.flattenedMembersStrategy = flattenedMembersStrategy ?? new FlattenedFieldsAndPropertiesExtractionStrategy();
         }
 
         /// <inheritdoc/>
