@@ -1,10 +1,6 @@
 ﻿using ProtoGenerator.Strategies.Abstracts;
 using ProtoGenerator.Strategies.Internals.TypeNamingStrategies;
-using ProtoGenerator.Utilities.TypeUtilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ProtoGenerator.Strategies.Internals.NewTypeNamingStrategy
 {

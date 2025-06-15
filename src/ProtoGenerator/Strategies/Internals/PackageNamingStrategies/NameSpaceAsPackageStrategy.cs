@@ -5,7 +5,7 @@ namespace ProtoGenerator.Strategies.Internals.PackageNamingStrategies
 {
     /// <summary>
     /// A package naming strategy where the package of a type is
-    /// it namespace.
+    /// its namespace.
     /// </summary>
     public class NameSpaceAsPackageStrategy : IPackageNamingStrategy
     {

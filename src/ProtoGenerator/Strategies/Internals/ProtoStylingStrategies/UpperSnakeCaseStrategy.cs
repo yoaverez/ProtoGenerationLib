@@ -1,6 +1,5 @@
 ﻿using ProtoGenerator.Strategies.Abstracts;
 using ProtoGenerator.Utilities;
-using System;
 
 namespace ProtoGenerator.Strategies.Internals.ProtoStylingStrategies
 {
