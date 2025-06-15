@@ -25,7 +25,7 @@ namespace ProtoGenerator.Strategies.Internals.NewTypeNamingStrategy
         /// </summary>
         public NewTypeNamingStrategy()
         {
-            typeNamingStrategy = new TypeNameAsTypeNameStrategy();
+            typeNamingStrategy = new TypeNameAsAlphaNumericTypeNameStrategy();
         }
 
         /// <inheritdoc/>

@@ -18,7 +18,7 @@ namespace ProtoGenerator.Tests.Strategies.Internals.TypeNamingStrategies
         public void GetTypeName_NameIsCorrect(Type type, string expectedName)
         {
             // Arrange
-            var strategy = new TypeNameAsTypeNameStrategy();
+            var strategy = new TypeNameAsAlphaNumericTypeNameStrategy();
 
             // Act
             var actualName = strategy.GetTypeName(type);

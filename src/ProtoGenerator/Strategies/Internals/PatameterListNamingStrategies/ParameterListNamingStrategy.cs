@@ -21,7 +21,7 @@ namespace ProtoGenerator.Strategies.Internals.PatameterListNamingStrategies
         /// </summary>
         public ParameterListNamingStrategy()
         {
-            typeNamingStrategy = new TypeNameAsTypeNameStrategy();
+            typeNamingStrategy = new TypeNameAsAlphaNumericTypeNameStrategy();
         }
 
         /// <inheritdoc/>

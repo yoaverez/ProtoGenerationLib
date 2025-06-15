@@ -8,7 +8,7 @@ namespace ProtoGenerator.Strategies.Internals.TypeNamingStrategies
     /// <summary>
     /// A type naming strategy where the proto name is the same as the type name.
     /// </summary>
-    public class TypeNameAsTypeNameStrategy : ITypeNamingStrategy
+    public class TypeNameAsAlphaNumericTypeNameStrategy : ITypeNamingStrategy
     {
         /// <inheritdoc/>
         public string GetTypeName(Type type)
