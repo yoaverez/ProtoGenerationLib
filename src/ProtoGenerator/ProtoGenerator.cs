@@ -8,7 +8,8 @@ using ProtoGenerator.Extractors.Abstracts;
 using ProtoGenerator.Extractors.Internals;
 using ProtoGenerator.Models.Abstracts.ProtoDefinitions;
 using ProtoGenerator.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerator.Utilities.CollectionUtilities;
+using ProtoGenerator.ProvidersAndRegistries.Abstracts.Registries;
+using ProtoGenerator.ProvidersAndRegistries.Internals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,11 @@ namespace ProtoGenerator
     /// </summary>
     public class ProtoGenerator
     {
+        /// <summary>
+        /// Registry for the registry of user customizations.
+        /// </summary>
+        public IRegistry Registry { get; }
+
         /// <inheritdoc cref="IProtoTypesExtractor"/>
         private IProtoTypesExtractor protoTypesExtractor;
 
@@ -42,15 +48,17 @@ namespace ProtoGenerator
         /// <param name="protoTypeMetadataDiscoverer"><inheritdoc cref="protoTypeMetadataDiscoverer" path="/node()"/></param>
         /// <param name="csharpToProtoTypesConverter"><inheritdoc cref="csharpToProtoTypesConverter" path="/node()"/></param>
         /// <param name="wellKnownTypes"><inheritdoc cref="wellKnownTypes" path="/node()"/></param>
-        public ProtoGenerator(IProvider componentsProvider,
+        public ProtoGenerator(IProvider? componentsProvider = null,
                               IProtoTypesExtractor? protoTypesExtractor = null,
                               IProtoTypeMetadataDiscoverer? protoTypeMetadataDiscoverer = null,
                               ICSharpToProtoTypesConverter? csharpToProtoTypesConverter = null,
                               ISet<Type>? wellKnownTypes = null)
         {
-            this.protoTypesExtractor = protoTypesExtractor ?? new ProtoTypesExtractor(componentsProvider);
-            this.protoTypeMetadataDiscoverer = protoTypeMetadataDiscoverer ?? new ProtoTypeMetadataDiscoverer(componentsProvider);
-            this.csharpToProtoTypesConverter = csharpToProtoTypesConverter ?? new CSharpToProtoConverter(componentsProvider);
+            IProvider provider = componentsProvider ?? DefaultServicesContainer.Instance;
+            Registry = DefaultServicesContainer.Instance;
+            this.protoTypesExtractor = protoTypesExtractor ?? new ProtoTypesExtractor(provider);
+            this.protoTypeMetadataDiscoverer = protoTypeMetadataDiscoverer ?? new ProtoTypeMetadataDiscoverer(provider);
+            this.csharpToProtoTypesConverter = csharpToProtoTypesConverter ?? new CSharpToProtoConverter(provider);
             this.wellKnownTypes = wellKnownTypes ?? new HashSet<Type>(WellKnownTypesConstants.WellKnownTypes.Keys);
         }
 
