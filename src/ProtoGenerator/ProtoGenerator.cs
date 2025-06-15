@@ -1,4 +1,5 @@
 ﻿using ProtoGenerator.Configurations.Abstracts;
+using ProtoGenerator.Configurations.Internals;
 using ProtoGenerator.Constants;
 using ProtoGenerator.Converters.Abstracts;
 using ProtoGenerator.Converters.Internals;
@@ -66,21 +67,23 @@ namespace ProtoGenerator
         /// Generate <see cref="IProtoDefinition"/> for the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to generate the protos from.</param>
-        /// <param name="generationOptions">The generation options.</param>
+        /// <param name="generationOptions">The generation options. Default to null will be converted to <see cref="ProtoGenerationOptions.Default"/>.</param>
         /// <returns>A mapping between file relative path to it proto file definition.</returns>
-        public IDictionary<string, IProtoDefinition> GenerateProtos(Type type, IProtoGenerationOptions generationOptions)
+        public IDictionary<string, IProtoDefinition> GenerateProtos(Type type, IProtoGenerationOptions? generationOptions = null)
         {
-            return GenerateProtos(new Type[] { type }, generationOptions);
+            return GenerateProtos(new Type[] { type }, generationOptions ?? ProtoGenerationOptions.Default);
         }
 
         /// <summary>
         /// Generate <see cref="IProtoDefinition"/> for the given <paramref name="types"/>.
         /// </summary>
         /// <param name="types">The types to generate the protos from.</param>
-        /// <param name="generationOptions">The generation options.</param>
+        /// <param name="generationOptions">The generation options. Default to null will be converted to <see cref="ProtoGenerationOptions.Default"/>.</param>
         /// <returns>A mapping between file relative path to it proto file definition.</returns>
-        public IDictionary<string, IProtoDefinition> GenerateProtos(IEnumerable<Type> types, IProtoGenerationOptions generationOptions)
+        public IDictionary<string, IProtoDefinition> GenerateProtos(IEnumerable<Type> types, IProtoGenerationOptions? generationOptions = null)
         {
+            generationOptions = generationOptions ?? ProtoGenerationOptions.Default;
+
             // Extract all the used c# types that are needed for the
             // proto generation.
             var usedTypes = protoTypesExtractor.ExtractProtoTypes(types, generationOptions, out var originTypeToNewTypeMapping);
