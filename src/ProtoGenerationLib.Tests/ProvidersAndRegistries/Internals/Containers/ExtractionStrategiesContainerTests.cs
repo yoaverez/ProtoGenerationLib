@@ -1,0 +1,108 @@
+﻿using Moq;
+using ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers;
+using ProtoGenerationLib.Strategies.Abstracts;
+
+namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
+{
+    [TestClass]
+    public class ExtractionStrategiesContainerTests
+    {
+        private ExtractionStrategiesContainer container;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            container = new ExtractionStrategiesContainer();
+        }
+
+        #region IExtractionStrategiesProvider Tests
+
+        #region GetFieldsAndPropertiesExtractionStrategy Tests
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetFieldsAndPropertiesExtractionStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Act
+            container.GetFieldsAndPropertiesExtractionStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetFieldsAndPropertiesExtractionStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Arrange
+            var strategy = new Mock<IFieldsAndPropertiesExtractionStrategy>();
+            container.RegisterFieldsAndPropertiesExtractionStrategy("a", strategy.Object);
+
+            // Act
+            container.GetFieldsAndPropertiesExtractionStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        public void GetFieldsAndPropertiesExtractionStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>().Object;
+            container.RegisterFieldsAndPropertiesExtractionStrategy("a", expectedStrategy);
+
+            // Act
+            var actualStrategy = container.GetFieldsAndPropertiesExtractionStrategy("a");
+
+            // Assert
+            Assert.AreSame(expectedStrategy, actualStrategy);
+        }
+
+        #endregion GetFieldsAndPropertiesExtractionStrategy Tests
+
+        #endregion IExtractionStrategiesProvider Tests
+
+        #region IExtractionStrategiesRegistry Tests
+
+        #region RegisterFieldsAndPropertiesExtractionStrategy Tests
+
+        [TestMethod]
+        public void RegisterFieldsAndPropertiesExtractionStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>().Object;
+            var strategyName = "a";
+
+            // Act
+            container.RegisterFieldsAndPropertiesExtractionStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            var actualStrategy = container.GetFieldsAndPropertiesExtractionStrategy(strategyName);
+            Assert.AreSame(expectedStrategy, actualStrategy);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterFieldsAndPropertiesExtractionStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>().Object;
+            var strategyName = "a";
+            container.RegisterFieldsAndPropertiesExtractionStrategy(strategyName, expectedStrategy);
+
+            // Act
+            container.RegisterFieldsAndPropertiesExtractionStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        #endregion RegisterFieldsAndPropertiesExtractionStrategy Tests
+
+        #endregion IExtractionStrategiesRegistry Tests
+    }
+}

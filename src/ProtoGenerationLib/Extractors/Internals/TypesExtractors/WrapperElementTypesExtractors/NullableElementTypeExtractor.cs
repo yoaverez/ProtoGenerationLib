@@ -1,0 +1,27 @@
+﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Extractors.Abstracts;
+using ProtoGenerationLib.Utilities.TypeUtilities;
+using System;
+using System.Collections.Generic;
+
+namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors
+{
+    /// <summary>
+    /// Extractor for extracting the element type from a <see cref="Nullable{T}"/> type.
+    /// </summary>
+    public class NullableElementTypeExtractor : BaseTypesExtractor
+    {
+        /// <inheritdoc/>
+        public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
+        {
+            return type.IsNullable();
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
+        {
+            type.TryGetElementOfNullableType(out var elementType);
+            return new Type[] { elementType };
+        }
+    }
+}
