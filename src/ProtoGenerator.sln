@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoGenerationLib.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "SampleApp\SampleApp.csproj", "{2AA2FA5D-AC4C-4F31-9AE8-B7FB184F2245}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp.GeneratedProtos", "SampleApp.GeneratedProtos\SampleApp.GeneratedProtos.csproj", "{52B2661B-4EE6-438B-BC5D-68B61C3BDEF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2AA2FA5D-AC4C-4F31-9AE8-B7FB184F2245}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AA2FA5D-AC4C-4F31-9AE8-B7FB184F2245}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AA2FA5D-AC4C-4F31-9AE8-B7FB184F2245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52B2661B-4EE6-438B-BC5D-68B61C3BDEF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52B2661B-4EE6-438B-BC5D-68B61C3BDEF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52B2661B-4EE6-438B-BC5D-68B61C3BDEF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52B2661B-4EE6-438B-BC5D-68B61C3BDEF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
