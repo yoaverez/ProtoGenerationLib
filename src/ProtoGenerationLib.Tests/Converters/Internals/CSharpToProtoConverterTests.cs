@@ -280,7 +280,9 @@ namespace ProtoGenerationLib.Tests.Converters.Internals
             protoTypesMetadatas.Add(testedTypes[4], new ProtoTypeMetadata("e", "pac", "pac.e", "path"));
             protoTypesMetadatas.Add(testedTypes[5], new ProtoTypeMetadata("f", "pac", "pac.f", "path"));
 
-            var dataImports = new string[] { "data-import1", "data-import2" };
+            // Lets add the path file import since all the types are in the same
+            // file and probably need other types that are defined in the same file.
+            var dataImports = new string[] { "data-import1", "data-import2", "path" };
             var expectedMessage1Definition = new MessageDefinition("e", "pac", dataImports.Take(1), Array.Empty<IFieldDefinition>(), Array.Empty<IMessageDefinition>(), Array.Empty<IEnumDefinition>());
             var expectedMessage2Definition = new MessageDefinition("f", "pac", dataImports.Skip(1), Array.Empty<IFieldDefinition>(), Array.Empty<IMessageDefinition>(), Array.Empty<IEnumDefinition>());
             mockDataTypeToMessageConverter.Setup(mockConverter => mockConverter.ConvertTypeToProtoDefinition(typeof(DataType1), It.IsAny<IReadOnlyDictionary<Type, IProtoTypeMetadata>>(), It.IsAny<IProtoGenerationOptions>()))
@@ -296,7 +298,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals
                     Enums = new List<IEnumDefinition> { expectedEnum1Definition, expectedEnum2Definition },
                     Services = new List<IServiceDefinition> { expectedService1Definition, expectedService2Definition },
                     Messages = new List<IMessageDefinition> { expectedMessage1Definition, expectedMessage2Definition },
-                    Imports = new HashSet<string>(contractImports.Concat(dataImports))
+                    Imports = new HashSet<string>(contractImports.Concat(dataImports).Where(x => !x.Equals("path")))
                 },
             };
 

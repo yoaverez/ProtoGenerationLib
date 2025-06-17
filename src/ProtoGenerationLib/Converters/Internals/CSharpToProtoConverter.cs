@@ -98,6 +98,9 @@ namespace ProtoGenerationLib.Converters.Internals
                 }
 
                 fileDefinition.Imports.AddRange(protoObject.Imports);
+
+                // We don't want the current file path in the imports.
+                fileDefinition.Imports.Remove(protoTypesMetadatas[type].FilePath!);
             }
 
             return fileToFileDefinition;
