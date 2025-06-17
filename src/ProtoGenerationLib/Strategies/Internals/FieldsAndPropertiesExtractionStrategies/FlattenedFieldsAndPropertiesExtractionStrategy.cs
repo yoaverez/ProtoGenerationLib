@@ -230,7 +230,10 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         private bool IsTypeEmpty(Type type, IAnalysisOptions analysisOptions, Dictionary<Type, bool> alreadyCheckedIsEmpty)
         {
             // Not a well known type and also does not have fields or properties.
-            return !WellKnownTypesConstants.WellKnownTypes.ContainsKey(type) && !ExtractFieldsAndProperties(type, analysisOptions, alreadyCheckedIsEmpty).Any();
+            return !WellKnownTypesConstants.WellKnownTypes.ContainsKey(type)
+                && !type.IsEnum
+                && !type.IsEnumerableType()
+                && !ExtractFieldsAndProperties(type, analysisOptions, alreadyCheckedIsEmpty).Any();
         }
     }
 }

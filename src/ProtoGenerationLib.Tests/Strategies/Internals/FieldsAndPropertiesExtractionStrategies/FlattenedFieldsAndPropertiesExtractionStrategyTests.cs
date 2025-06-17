@@ -4,6 +4,7 @@ using ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrat
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Attributes;
+using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 
 namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
 {
@@ -18,7 +19,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             strategy = new FlattenedFieldsAndPropertiesExtractionStrategy();
         }
 
-        #region TypeContainsOnlyEmptyMembers Tests
+        #region TypeContainsEmptyMembers Tests
 
         [TestMethod]
         public void ExtractFieldsAndProperties_TypeContainsOnlyEmptyMembers_ExtractedCorrectFieldsAndProperties()
@@ -32,7 +33,24 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers);
         }
 
-        #endregion TypeContainsOnlyEmptyMembers Tests
+        [TestMethod]
+        public void ExtractFieldsAndProperties_TypeContainsSomeImpostersEmptyMembers_ExtractedCorrectFieldsAndProperties()
+        {
+            // Arrange
+            var type = typeof(TypeContainsImpostersEmptyMembers);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetaData(typeof(int), "Prop1", type),
+                CreateFieldMetaData(typeof(Enum1), "Prop2", type),
+                CreateFieldMetaData(typeof(IEnumerable<string>), "Prop3", type),
+            };
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers);
+        }
+
+        #endregion TypeContainsEmptyMembers Tests
 
         #region TypeContainsASecondDegreeMembers Tests
 
