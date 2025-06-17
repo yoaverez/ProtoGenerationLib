@@ -111,9 +111,9 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
 
             var expectedFields = new List<IFieldDefinition>
             {
-                new FieldDefinition("a".ToUpperInvariant(), "Map<pac2.string, bool>", 1, FieldRule.None),
+                new FieldDefinition("a".ToUpperInvariant(), "map<pac2.string, bool>", 1, FieldRule.None),
                 new FieldDefinition("b".ToUpperInvariant(), "int", 2, FieldRule.None),
-                new FieldDefinition("c".ToUpperInvariant(), "Map<pac2.string, bool>", 3, FieldRule.None),
+                new FieldDefinition("c".ToUpperInvariant(), "map<pac2.string, bool>", 3, FieldRule.None),
             };
             var expectedDefinition = new MessageDefinition(type.Name, "pac", expectedImports, expectedFields, Array.Empty<IMessageDefinition>(), Array.Empty<IEnumDefinition>());
 

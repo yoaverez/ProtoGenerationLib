@@ -122,7 +122,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             {
                 var keyTypeShortName = GetTypeShortName(protoTypesMetadatas[keyType].FullName, filePackage, packageComponentsSeparator);
                 var valueTypeShortName = GetTypeShortName(protoTypesMetadatas[valueType].FullName, filePackage, packageComponentsSeparator);
-                typeName = $"Map<{keyTypeShortName}, {valueTypeShortName}>";
+                typeName = $"map<{keyTypeShortName}, {valueTypeShortName}>";
 
                 neededImports.Add(protoTypesMetadatas[keyType].FilePath!);
                 neededImports.Add(protoTypesMetadatas[valueType].FilePath!);
