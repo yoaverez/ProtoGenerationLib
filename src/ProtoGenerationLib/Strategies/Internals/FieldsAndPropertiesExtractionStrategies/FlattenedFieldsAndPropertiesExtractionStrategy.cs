@@ -196,12 +196,21 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                                                      .ToHashSet();
             foreach (var typeToCheck in typesToCheck)
             {
-                alreadyCheckedIsEmpty.Add(typeToCheck, false);
-                if (IsTypeEmpty(typeToCheck, analysisOptions, alreadyCheckedIsEmpty))
+                // The typeToCheck may already been check be previous iteration of this loop.
+                // So only check again if needed.
+                var isEmpty = false;
+                if (!alreadyCheckedIsEmpty.TryGetValue(typeToCheck, out isEmpty))
                 {
-                    alreadyCheckedIsEmpty[typeToCheck] = true;
+                    alreadyCheckedIsEmpty.Add(typeToCheck, false);
+                    if (IsTypeEmpty(typeToCheck, analysisOptions, alreadyCheckedIsEmpty))
+                    {
+                        alreadyCheckedIsEmpty[typeToCheck] = true;
+                        isEmpty = true;
+                    }
+                }
+
+                if (isEmpty)
                     typesToRemove.Add(typeToCheck);
-                };
             }
 
             fieldsAndProps.RemoveAll(member => typesToRemove.Contains(member.Type));

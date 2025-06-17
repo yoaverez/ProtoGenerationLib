@@ -291,6 +291,34 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
         #endregion TypeHasAttributedMembers Tests
 
+        #region Edge Cases
+
+        /// <summary>
+        /// This test check that when the removal of empty members happens,
+        /// There will be no exception due to adding a new value in the
+        /// alreadyCheckedIsEmpty dictionary that already exists in the dictionary.
+        /// This may happen due to the recursion manner of the RemoveAllEmptyMembers
+        /// that may call the ExtractFieldsAndProperties that calls RemoveAllEmptyMembers
+        /// again.
+        /// </summary>
+        [TestMethod]
+        public void ExtractFieldsAndProperties_TypeContainsFieldThatContainsOtherFieldType_ExtractedCorrectFieldsAndPropertiesAndDoesNotThrowException()
+        {
+            // Arrange
+            var type = typeof(TypeContainsFieldThatContainsOtherFieldType);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetaData(typeof(TypeContainsFieldThatContainsOtherFieldType.NestedClass1), "Prop1", type),
+                CreateFieldMetaData(typeof(TypeContainsFieldThatContainsOtherFieldType.NestedClass2), "Prop2", type),
+            };
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers);
+        }
+
+        #endregion Edge Cases
+
         private void ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(Type type, AnalysisOptions analysisOptions, List<IFieldMetadata> expectedMembers)
         {
             // Act
