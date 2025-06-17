@@ -54,7 +54,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             var rpcMethods = new List<IRpcDefinition>();
             foreach (var methodMetadata in intermediateType.Methods)
             {
-                rpcMethods.Add(CreateRpcFromMethodMetadata(methodMetadata, typeProtoMetadata.Package!, generationOptions, protoTypesMetadatas, out var rpcNeededImports));
+                rpcMethods.Add(CreateRpcFromMethodMetadata(methodMetadata, typeProtoMetadata.FullName!, generationOptions, protoTypesMetadatas, out var rpcNeededImports));
                 imports.AddRange(rpcNeededImports);
             }
 
@@ -65,7 +65,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
         /// Convert the given <paramref name="methodMetadata"/> to a <see cref="IRpcDefinition"/>.
         /// </summary>
         /// <param name="methodMetadata">The method meta data to convert.</param>
-        /// <param name="filePackage">The package of the file in which the rpc is defined.</param>
+        /// <param name="serviceFullName">The full name of the service in which the rpc is defined.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <param name="protoTypesMetadatas">Mapping between type to its proto type metadata.</param>
         /// <param name="neededImports">The imports needed in the file for the rpc.</param>
@@ -75,7 +75,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
         /// new type that represents the method parameter.
         /// </exception>
         private IRpcDefinition CreateRpcFromMethodMetadata(IMethodMetadata methodMetadata,
-                                                           string filePackage,
+                                                           string serviceFullName,
                                                            IProtoGenerationOptions generationOptions,
                                                            IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
                                                            out ISet<string> neededImports)
@@ -106,11 +106,11 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
 
             var requestTypeMetadata = GetTypeMetadata(requestType, protoTypesMetadatas);
             neededImports.Add(requestTypeMetadata.FilePath!);
-            var requestTypeName = GetTypeShortName(requestTypeMetadata.FullName, filePackage, packageComponentsSeparator);
+            var requestTypeName = GetTypeShortName(requestTypeMetadata.FullName, serviceFullName, packageComponentsSeparator);
 
             var returnTypeMetadata = GetTypeMetadata(methodMetadata.ReturnType, protoTypesMetadatas);
             neededImports.Add(returnTypeMetadata.FilePath!);
-            var responseTypeName = GetTypeShortName(returnTypeMetadata.FullName, filePackage, packageComponentsSeparator);
+            var responseTypeName = GetTypeShortName(returnTypeMetadata.FullName, serviceFullName, packageComponentsSeparator);
 
             var rpcAttributeType = generationOptions.AnalysisOptions.ProtoRpcAttribute;
             var attribute = methodMetadata.MethodInfo.GetCustomAttribute<ProtoRpcAttribute>(rpcAttributeType.IsAttributeInherited());

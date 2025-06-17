@@ -52,7 +52,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             var numOfFields = intermediateType.Fields.Count();
             for (int fieldIdx = 0; fieldIdx < numOfFields; fieldIdx++)
             {
-                fields.Add(CreateFieldDefinitionFromFieldMetadata(intermediateType.Fields.ElementAt(fieldIdx), fieldIdx, numOfFields, protoTypeMetadata.Package!, generationOptions, protoTypesMetadatas, out var neededImports));
+                fields.Add(CreateFieldDefinitionFromFieldMetadata(intermediateType.Fields.ElementAt(fieldIdx), fieldIdx, numOfFields, protoTypeMetadata.FullName!, generationOptions, protoTypesMetadatas, out var neededImports));
                 imports.AddRange(neededImports);
             }
 
@@ -94,7 +94,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
         /// <param name="fieldMetadata">The field metadata from which to create the <see cref="IFieldDefinition"/>.</param>
         /// <param name="fieldIndex">The index of the field.</param>
         /// <param name="numOfFields">The total number of fields.</param>
-        /// <param name="filePackage">The package of the file in which this field will be declared.</param>
+        /// <param name="messageFullName">The full name of the message in which this field will be declared.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <param name="protoTypesMetadatas">A mapping between type to its proto type metadata.</param>
         /// <param name="neededImports">The imports that are needed in the file in order to use the field type.</param>
@@ -104,7 +104,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
         private IFieldDefinition CreateFieldDefinitionFromFieldMetadata(IFieldMetadata fieldMetadata,
                                                                         int fieldIndex,
                                                                         int numOfFields,
-                                                                        string filePackage,
+                                                                        string messageFullName,
                                                                         IProtoGenerationOptions generationOptions,
                                                                         IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
                                                                         out ISet<string> neededImports)
@@ -120,8 +120,8 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             var fieldRule = FieldRule.None;
             if (fieldMetadata.Type.TryGetElementsOfKeyValuePairEnumerableType(out var keyType, out var valueType))
             {
-                var keyTypeShortName = GetTypeShortName(protoTypesMetadatas[keyType].FullName, filePackage, packageComponentsSeparator);
-                var valueTypeShortName = GetTypeShortName(protoTypesMetadatas[valueType].FullName, filePackage, packageComponentsSeparator);
+                var keyTypeShortName = GetTypeShortName(protoTypesMetadatas[keyType].FullName, messageFullName, packageComponentsSeparator);
+                var valueTypeShortName = GetTypeShortName(protoTypesMetadatas[valueType].FullName, messageFullName, packageComponentsSeparator);
                 typeName = $"map<{keyTypeShortName}, {valueTypeShortName}>";
 
                 neededImports.Add(protoTypesMetadatas[keyType].FilePath!);
@@ -130,14 +130,14 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             else if (!fieldMetadata.Type.IsMultiDimensionalOrJaggedArray() && fieldMetadata.Type.TryGetElementOfEnumerableType(out var elementType))
             {
                 fieldRule = FieldRule.Repeated;
-                typeName = GetTypeShortName(protoTypesMetadatas[elementType].FullName, filePackage, packageComponentsSeparator);
+                typeName = GetTypeShortName(protoTypesMetadatas[elementType].FullName, messageFullName, packageComponentsSeparator);
 
                 neededImports.Add(protoTypesMetadatas[elementType].FilePath!);
             }
             else if (fieldMetadata.Type.TryGetElementOfNullableType(out var nullableElementType))
             {
                 fieldRule = FieldRule.Optional;
-                typeName = GetTypeShortName(protoTypesMetadatas[nullableElementType].FullName, filePackage, packageComponentsSeparator);
+                typeName = GetTypeShortName(protoTypesMetadatas[nullableElementType].FullName, messageFullName, packageComponentsSeparator);
 
                 neededImports.Add(protoTypesMetadatas[nullableElementType].FilePath!);
             }
@@ -148,7 +148,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
                     fieldRule = FieldRule.Optional;
                 }
 
-                typeName = GetTypeShortName(protoTypesMetadatas[fieldMetadata.Type].FullName, filePackage, packageComponentsSeparator);
+                typeName = GetTypeShortName(protoTypesMetadatas[fieldMetadata.Type].FullName, messageFullName, packageComponentsSeparator);
 
                 neededImports.Add(protoTypesMetadatas[fieldMetadata.Type].FilePath!);
             }

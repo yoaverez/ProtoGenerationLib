@@ -6,19 +6,19 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
     public class IntermediateToProtoDefinitionUtilsTests
     {
         [DataRow("", "a", ".", "")]
-        [DataRow("a", "a", ".", "")]
+        [DataRow("a", "a", ".", "a")]
         [DataRow("a.b", "a", ".", "b")]
         [DataRow("a.b.c", "a", ".", "b.c")]
         [DataRow("a.b.c", "a.d.e", ".", "b.c")]
         [DataRow("a.b.c", "a.d.e", "_", "a.b.c")]
         [TestMethod]
-        public void GetTypeShortName_ShortNameIsCorrect(string typeFullName,
-                                                        string filePackage,
+        public void GetTypeShortName_ShortNameIsCorrect(string innerTypeFullName,
+                                                        string outerTypeFullName,
                                                         string packageComponentsSeparator,
                                                         string expectedResult)
         {
             // Act
-            var actualResult = IntermediateToProtoDefinitionUtils.GetTypeShortName(typeFullName, filePackage, packageComponentsSeparator);
+            var actualResult = IntermediateToProtoDefinitionUtils.GetTypeShortName(innerTypeFullName, outerTypeFullName, packageComponentsSeparator);
 
             // Assert
             Assert.AreEqual(expectedResult, actualResult);
