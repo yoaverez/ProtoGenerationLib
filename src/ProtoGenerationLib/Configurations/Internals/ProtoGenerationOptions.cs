@@ -107,6 +107,7 @@ namespace ProtoGenerationLib.Configurations.Internals
                 includeFields: false,
                 includePrivates: false,
                 includeStatics: false,
+                removeEmptyMembers: true,
                 fieldsAndPropertiesExtractionStrategy: StrategyNamesLookup.FieldsAndPropertiesExtractionStrategiesLookup[FieldsAndPropertiesExtractionStrategyKind.Composite],
                 ignoreFieldOrPropertyAttribute: typeof(ProtoIgnoreAttribute),
                 dataTypeConstructorAttribute: typeof(ProtoMessageConstructorAttribute),

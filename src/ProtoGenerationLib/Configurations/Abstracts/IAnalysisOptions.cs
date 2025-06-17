@@ -26,6 +26,14 @@ namespace ProtoGenerationLib.Configurations.Abstracts
         bool IncludeStatics { get; }
 
         /// <summary>
+        /// Whether or not to remove properties or fields with types
+        /// that are considered empty.
+        /// e.g. If Type A contains Property with type B and type B contains no properties,
+        /// then Type B is considered empty and will be removes from Type A Members list.
+        /// </summary>
+        bool RemoveEmptyMembers { get; }
+
+        /// <summary>
         /// The name of the strategy for extracting fields from csharp types.
         /// </summary>
         string FieldsAndPropertiesExtractionStrategy { get; }

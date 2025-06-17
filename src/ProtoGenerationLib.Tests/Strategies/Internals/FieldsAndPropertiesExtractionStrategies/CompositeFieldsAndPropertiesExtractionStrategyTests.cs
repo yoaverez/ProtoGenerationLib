@@ -45,13 +45,43 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
         }
 
         [TestMethod]
-        public void ExtractFieldsAndProperties_TypeWithEmptyBaseType_ReturnSameAsFlattenedStrategy()
+        public void ExtractFieldsAndProperties_TypeWithEmptyBaseTypeAndShouldRemoveEmptyTypes_ReturnSameAsFlattenedStrategy()
         {
             // Arrange
             var type = typeof(TypeWithBaseType);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
+            analysisOptions.RemoveEmptyMembers = true;
+
             var expectedMembers = new List<IFieldMetadata>
             {
+                CreateFieldMetaData(typeof(int), "a", type),
+                CreateFieldMetaData(typeof(bool), "b", type),
+            };
+
+            // Mock the base type.
+            mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>()))
+                                 .Returns(new List<IFieldMetadata>());
+
+            // Mock the rest of the types.
+            mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => !type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>()))
+                                 .Returns(expectedMembers.ToList());
+
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers);
+        }
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_TypeWithEmptyBaseTypeAndShouldNotRemoveEmptyTypes_ReturnSameAsFlattenedStrategyWithTheAdditionOfBaseType()
+        {
+            // Arrange
+            var type = typeof(TypeWithBaseType);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+            analysisOptions.RemoveEmptyMembers = false;
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetaData(typeof(TypeWithoutBaseType), "TypeWithoutBaseType", type),
                 CreateFieldMetaData(typeof(int), "a", type),
                 CreateFieldMetaData(typeof(bool), "b", type),
             };

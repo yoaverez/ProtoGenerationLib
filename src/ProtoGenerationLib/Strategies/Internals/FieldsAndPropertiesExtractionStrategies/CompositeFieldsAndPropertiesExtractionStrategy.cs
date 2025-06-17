@@ -47,7 +47,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
             else
             {
                 // Get the none empty base type if it exists.
-                var baseTypes = GetNoneEmptyBaseType(type, analysisOptions, out var baseTypeMembersNames);
+                var baseTypes = GetBaseType(type, analysisOptions, out var baseTypeMembersNames);
 
                 // Convert the base types to members i.e. type and name.
                 var baseTypesAsMembers = baseTypes.Select(baseType => new FieldMetadata
@@ -90,17 +90,17 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         }
 
         /// <summary>
-        /// Get all the none empty base types (there can be either 0 or 1)
+        /// Get all the base types (there can be either 0 or 1)
         /// of the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type whose base type to get.</param>
         /// <param name="analysisOptions">The analysis options.</param>
         /// <param name="baseTypeMembersNames">Will contain the names of all the base type members.</param>
         /// <returns>
-        /// All the none empty base types (there can be either 0 or 1)
+        /// All the base types (there can be either 0 or 1)
         /// of the given <paramref name="type"/>.
         /// </returns>
-        private IEnumerable<Type> GetNoneEmptyBaseType(Type type, IAnalysisOptions analysisOptions, out IEnumerable<string> baseTypeMembersNames)
+        private IEnumerable<Type> GetBaseType(Type type, IAnalysisOptions analysisOptions, out IEnumerable<string> baseTypeMembersNames)
         {
             var result = new HashSet<Type>();
             var membersNames = new HashSet<string>();
@@ -111,6 +111,14 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 {
                     result.Add(baseType);
                     membersNames.AddRange(members.Select(member => member.Name));
+                }
+                else
+                {
+                    // There are no members meaning that the base type is empty.
+                    // So if empty members should not be removed,
+                    // Add the empty base type.
+                    if (!analysisOptions.RemoveEmptyMembers)
+                        result.Add(baseType);
                 }
             }
 

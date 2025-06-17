@@ -54,9 +54,10 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 fieldsAndProps = props.Concat(fields).ToList();
             }
 
-            // Remove all empty members that was not already analyzed
-            // in order to prevent endless recursion.
-            RemoveAllEmptyMembers(fieldsAndProps, analysisOptions, alreadyCheckedIsEmpty);
+            if (analysisOptions.RemoveEmptyMembers)
+                // Remove all empty members that was not already analyzed
+                // in order to prevent endless recursion.
+                RemoveAllEmptyMembers(fieldsAndProps, analysisOptions, alreadyCheckedIsEmpty);
 
             return fieldsAndProps;
         }

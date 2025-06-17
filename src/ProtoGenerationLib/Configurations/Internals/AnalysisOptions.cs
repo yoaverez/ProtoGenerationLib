@@ -16,6 +16,9 @@ namespace ProtoGenerationLib.Configurations.Internals
         public bool IncludeStatics { get; set; }
 
         /// <inheritdoc/>
+        public bool RemoveEmptyMembers { get; set; }
+
+        /// <inheritdoc/>
         public string FieldsAndPropertiesExtractionStrategy { get; set; }
 
         /// <inheritdoc/>
@@ -47,6 +50,7 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <param name="includeFields"><inheritdoc cref="IncludeFields" path="/node()"/></param>
         /// <param name="includePrivates"><inheritdoc cref="IncludePrivates" path="/node()"/></param>
         /// <param name="includeStatics"><inheritdoc cref="IncludeStatics" path="/node()"/></param>
+        /// <param name="removeEmptyMembers"><inheritdoc cref="RemoveEmptyMembers" path="/node()"/></param>
         /// <param name="fieldsAndPropertiesExtractionStrategy"><inheritdoc cref="FieldsAndPropertiesExtractionStrategy" path="/node()"/></param>
         /// <param name="ignoreFieldOrPropertyAttribute"><inheritdoc cref="IgnoreFieldOrPropertyAttribute" path="/node()"/></param>
         /// <param name="dataTypeConstructorAttribute"><inheritdoc cref="DataTypeConstructorAttribute" path="/node()"/></param>
@@ -56,6 +60,7 @@ namespace ProtoGenerationLib.Configurations.Internals
         public AnalysisOptions(bool includeFields,
                                bool includePrivates,
                                bool includeStatics,
+                               bool removeEmptyMembers,
                                string fieldsAndPropertiesExtractionStrategy,
                                Type ignoreFieldOrPropertyAttribute,
                                Type dataTypeConstructorAttribute,
@@ -66,6 +71,7 @@ namespace ProtoGenerationLib.Configurations.Internals
             IncludeFields = includeFields;
             IncludePrivates = includePrivates;
             IncludeStatics = includeStatics;
+            RemoveEmptyMembers = removeEmptyMembers;
             FieldsAndPropertiesExtractionStrategy = fieldsAndPropertiesExtractionStrategy;
             IgnoreFieldOrPropertyAttribute = ignoreFieldOrPropertyAttribute;
             DataTypeConstructorAttribute = dataTypeConstructorAttribute;

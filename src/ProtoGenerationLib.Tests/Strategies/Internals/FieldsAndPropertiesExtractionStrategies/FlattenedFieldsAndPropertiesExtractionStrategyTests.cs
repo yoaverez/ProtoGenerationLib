@@ -22,12 +22,32 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
         #region TypeContainsEmptyMembers Tests
 
         [TestMethod]
-        public void ExtractFieldsAndProperties_TypeContainsOnlyEmptyMembers_ExtractedCorrectFieldsAndProperties()
+        public void ExtractFieldsAndProperties_TypeContainsOnlyEmptyMembersAndShouldRemoveEmptyTypes_ExtractedCorrectFieldsAndProperties()
         {
             // Arrange
             var type = typeof(TypeContainsOnlyEmptyMembers);
             var analysisOptions = CreateAnalysisOptions(false, false, false);
+            analysisOptions.RemoveEmptyMembers = true;
+
             var expectedMembers = new List<IFieldMetadata>();
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers);
+        }
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_TypeContainsOnlyEmptyMembersAndShouldNotRemoveEmptyTypes_ExtractedCorrectFieldsAndProperties()
+        {
+            // Arrange
+            var type = typeof(TypeContainsOnlyEmptyMembers);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+            analysisOptions.RemoveEmptyMembers = false;
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetaData(typeof(TypeContainsOnlyEmptyMembers.I1), nameof(TypeContainsOnlyEmptyMembers.I1Prop), type),
+                CreateFieldMetaData(typeof(TypeContainsOnlyEmptyMembers.C1), nameof(TypeContainsOnlyEmptyMembers.C1Prop), type),
+            };
 
             // Act + Assert
             ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers);
