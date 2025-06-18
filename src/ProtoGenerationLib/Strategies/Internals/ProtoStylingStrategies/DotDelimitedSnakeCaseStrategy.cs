@@ -1,6 +1,5 @@
 ﻿using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Utilities;
-using System;
 using System.Linq;
 
 namespace ProtoGenerationLib.Strategies.Internals.ProtoStylingStrategies
