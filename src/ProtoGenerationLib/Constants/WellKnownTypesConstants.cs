@@ -28,7 +28,7 @@ namespace ProtoGenerationLib.Constants
         /// Constant holding the directory in which
         /// all the google well known types exists.
         /// </summary>
-        private const string GOOGLE_PROTOBUF_DIR = "google/protobuf";
+        public const string GOOGLE_PROTOBUF_DIR = "google/protobuf";
 
         /// <summary>
         /// Constant holding the package in which

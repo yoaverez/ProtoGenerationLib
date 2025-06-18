@@ -2,6 +2,7 @@
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
 using ProtoGenerationLib.Serialization;
 using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
+using ProtoGenerationLib.Constants;
 
 namespace ProtoGenerationLib.Tests.Serialization
 {
@@ -10,17 +11,18 @@ namespace ProtoGenerationLib.Tests.Serialization
     {
         private static SerializationOptions serializationOptions;
 
+        private ProtoDefinition protoDefinition;
+
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
         {
             serializationOptions = new SerializationOptions(indentSize: 4);
         }
 
-        [TestMethod]
-        public void WriteToString_MultipleComponents_StringIsCorrect()
+        [TestInitialize]
+        public void TestInitialize()
         {
-            // Arrange
-            var protoDefinition = new ProtoDefinition
+            protoDefinition = new ProtoDefinition
             {
                 Syntax = "SyntaxDummy",
                 Package = "a.b.c",
@@ -165,7 +167,12 @@ namespace ProtoGenerationLib.Tests.Serialization
                             },
                 },
             };
+        }
 
+        [TestMethod]
+        public void WriteToString_MultipleComponents_StringIsCorrect()
+        {
+            // Arrange
             var expectedString =
 @"syntax = ""SyntaxDummy"";
 
@@ -254,7 +261,205 @@ enum DEnum {
 ";
 
             // Act
-            var actualString = ProtoDefinitionToStringWriter.WriteToString(protoDefinition, serializationOptions);
+            var actualString = ProtoDefinitionToStringWriter.WriteToString(protoDefinition, "", serializationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedString, actualString);
+        }
+
+        [TestMethod]
+        public void WriteToString_MultipleComponentsWithPathFromProtoRoot_StringIsCorrect()
+        {
+            // Arrange
+            protoDefinition.Imports.Add($"{WellKnownTypesConstants.GOOGLE_PROTOBUF_DIR}/file");
+            var pathFromProtoRoot = "path/from/proto_root";
+            var expectedString =
+@"syntax = ""SyntaxDummy"";
+
+package a.b.c;
+
+import ""google/protobuf/file"";
+import ""path/from/proto_root/aImport"";
+import ""path/from/proto_root/import1"";
+
+service BService1 {
+    rpc Rpc(RequestType) returns (ResponseType);
+}
+
+service DService1 {
+    rpc ARpc(stream RequestType2) returns (ResponseType2);
+
+    rpc BRpc(RequestType3) returns (stream ResponseType3);
+
+    rpc CRpc(stream RequestType4) returns (stream ResponseType4);
+
+    rpc DRpc(RequestType1) returns (ResponseType1);
+}
+
+message AMessage {
+    repeated CType CField2 = 2;
+
+    optional BType BField2 = 3;
+
+    DType DField2 = 4;
+}
+
+message DMessage {
+    message DInnerMessage {
+        message DInnerInnerMessage {
+            repeated CType CInnerInnerField = 2;
+
+            optional BType BInnerInnerField = 3;
+
+            DType DInnerInnerField = 4;
+        }
+
+        enum DInnerInnerEnum {
+            cInnerInner = 0;
+
+            aInnerInner = -1;
+
+            bInnerInner = 1;
+        }
+
+        repeated CType CInnerField = 2;
+
+        optional BType BInnerField = 3;
+
+        DType DInnerField = 4;
+    }
+
+    enum DInnerEnum {
+        cInner = 0;
+
+        bInner = -1;
+
+        aInner = 1;
+    }
+
+    repeated CType CField = 2;
+
+    optional BType BField = 3;
+
+    DType DField = 4;
+}
+
+enum BEnum {
+    b2 = 0;
+
+    a2 = -101;
+
+    c2 = 400;
+}
+
+enum DEnum {
+    c1 = 0;
+
+    b1 = -500;
+
+    a1 = 1;
+}
+";
+
+            // Act
+            var actualString = ProtoDefinitionToStringWriter.WriteToString(protoDefinition, pathFromProtoRoot, serializationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedString, actualString);
+        }
+
+        [TestMethod]
+        public void WriteToString_MultipleComponentsWithNoImports_StringIsCorrect()
+        {
+            // Arrange
+            protoDefinition.Imports.Clear();
+            var pathFromProtoRoot = "";
+            var expectedString =
+@"syntax = ""SyntaxDummy"";
+
+package a.b.c;
+
+service BService1 {
+    rpc Rpc(RequestType) returns (ResponseType);
+}
+
+service DService1 {
+    rpc ARpc(stream RequestType2) returns (ResponseType2);
+
+    rpc BRpc(RequestType3) returns (stream ResponseType3);
+
+    rpc CRpc(stream RequestType4) returns (stream ResponseType4);
+
+    rpc DRpc(RequestType1) returns (ResponseType1);
+}
+
+message AMessage {
+    repeated CType CField2 = 2;
+
+    optional BType BField2 = 3;
+
+    DType DField2 = 4;
+}
+
+message DMessage {
+    message DInnerMessage {
+        message DInnerInnerMessage {
+            repeated CType CInnerInnerField = 2;
+
+            optional BType BInnerInnerField = 3;
+
+            DType DInnerInnerField = 4;
+        }
+
+        enum DInnerInnerEnum {
+            cInnerInner = 0;
+
+            aInnerInner = -1;
+
+            bInnerInner = 1;
+        }
+
+        repeated CType CInnerField = 2;
+
+        optional BType BInnerField = 3;
+
+        DType DInnerField = 4;
+    }
+
+    enum DInnerEnum {
+        cInner = 0;
+
+        bInner = -1;
+
+        aInner = 1;
+    }
+
+    repeated CType CField = 2;
+
+    optional BType BField = 3;
+
+    DType DField = 4;
+}
+
+enum BEnum {
+    b2 = 0;
+
+    a2 = -101;
+
+    c2 = 400;
+}
+
+enum DEnum {
+    c1 = 0;
+
+    b1 = -500;
+
+    a1 = 1;
+}
+";
+
+            // Act
+            var actualString = ProtoDefinitionToStringWriter.WriteToString(protoDefinition, pathFromProtoRoot, serializationOptions);
 
             // Assert
             Assert.AreEqual(expectedString, actualString);

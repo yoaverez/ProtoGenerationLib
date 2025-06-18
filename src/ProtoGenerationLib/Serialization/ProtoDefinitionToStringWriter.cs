@@ -1,5 +1,7 @@
 ﻿using ProtoGenerationLib.Attributes;
+using ProtoGenerationLib.Constants;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
+using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +23,22 @@ namespace ProtoGenerationLib.Serialization
         /// Write the given <paramref name="protoDefinition"/> to string.
         /// </summary>
         /// <param name="protoDefinition">The <see cref="IProtoDefinition"/> to write to string.</param>
+        /// <param name="pathFromProtoRoot">
+        /// The path from the proto root (The default of the proto root is the c# project
+        /// directory in which the proto is compiled).
+        /// <see href="https://chromium.googlesource.com/external/github.com/grpc/grpc/+/HEAD/src/csharp/BUILD-INTEGRATION.md">
+        /// For more information see ProtoRoot in Protocol Buffers/gRPC Codegen Integration Into .NET Build.
+        /// </see>
+        /// </param>
         /// <param name="serializationOptions">The serialization options.</param>
         /// <returns>The string that represents the given <paramref name="protoDefinition"/>.</returns>
-        public static string WriteToString(IProtoDefinition protoDefinition, ISerializationOptions serializationOptions)
+        /// <remarks>
+        /// The <paramref name="pathFromProtoRoot"/> is very important because it effects
+        /// all the imports in the protos.
+        /// <b>Note that the directories in the <paramref name="pathFromProtoRoot"/> should be separated
+        /// by a forward slash (/).</b>
+        /// </remarks>
+        public static string WriteToString(IProtoDefinition protoDefinition, string pathFromProtoRoot, ISerializationOptions serializationOptions)
         {
             var writer = new StringBuilder();
             uint indentLevel = 0;
@@ -38,19 +53,7 @@ namespace ProtoGenerationLib.Serialization
                 writer.AppendLine($"package {protoDefinition.Package};");
             }
 
-            if (protoDefinition.Imports.Any())
-                writer.AppendLine();
-
-            // Write imports.
-            // We sort the imports in order to get the same result for the same imports
-            // regardless of their order.
-            var imports = protoDefinition.Imports.ToList();
-            imports.Sort();
-            foreach (var import in imports)
-            {
-                if (!string.IsNullOrEmpty(import))
-                    writer.AppendLine($"import \"{import}\";");
-            }
+            WriteImports(writer, protoDefinition.Imports, pathFromProtoRoot);
 
             if (protoDefinition.Services.Any())
                 writer.AppendLine();
@@ -68,6 +71,40 @@ namespace ProtoGenerationLib.Serialization
             WriteEnums(writer, protoDefinition.Enums, indentLevel, serializationOptions);
 
             return writer.ToString();
+        }
+
+        /// <summary>
+        /// Write the given <paramref name="protoImports"/> to the given <paramref name="writer"/>.
+        /// </summary>
+        /// <param name="writer">The writer to write the <paramref name="protoImports"/> to.</param>
+        /// <param name="protoImports">The imports to write.</param>
+        /// <param name="pathFromProtoRoot">The path of the file from the proto root to the relative file location.</param>
+        private static void WriteImports(StringBuilder writer, ISet<string> protoImports, string pathFromProtoRoot)
+        {
+            var imports = protoImports.ToList();
+            imports.Remove(string.Empty);
+
+            if (imports.Any())
+                writer.AppendLine();
+
+            var protoPathPrefixAddition = string.IsNullOrEmpty(pathFromProtoRoot) ? "" : $"{pathFromProtoRoot}/";
+            var prefixedImports = new List<string>();
+            foreach (var import in imports)
+            {
+                // Add the prefix to only generated types.
+                if (!import.StartsWith(WellKnownTypesConstants.GOOGLE_PROTOBUF_DIR))
+                    prefixedImports.Add($"{protoPathPrefixAddition}{import}");
+                else
+                    prefixedImports.Add($"{import}");
+            }
+
+            // We sort the imports in order to get the same result for the same imports
+            // regardless of their order.
+            prefixedImports.Sort();
+            foreach (var import in prefixedImports)
+            {
+                writer.AppendLine($"import \"{import}\";");
+            }
         }
 
         /// <summary>
