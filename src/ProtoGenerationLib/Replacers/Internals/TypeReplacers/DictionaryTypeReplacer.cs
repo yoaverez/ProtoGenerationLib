@@ -44,7 +44,7 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(unifiedDictionaryType);
 
             var props = new List<(Type, string)> { (unifiedDictionaryType, "mapping") };
-            var newType = TypeCreator.CreateDataType(newTypeName, props);
+            var newType = TypeCreator.CreateDataType(newTypeName, props, nameSpace: valueType.Namespace);
             return newType;
         }
     }

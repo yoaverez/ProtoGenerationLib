@@ -42,7 +42,8 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
 
             var props = new List<(Type, string)> { (type, "value") };
-            var newType = TypeCreator.CreateDataType(newTypeName, props);
+            type.TryGetElementOfNullableType(out var elementType);
+            var newType = TypeCreator.CreateDataType(newTypeName, props, nameSpace: elementType.Namespace);
             return newType;
         }
     }

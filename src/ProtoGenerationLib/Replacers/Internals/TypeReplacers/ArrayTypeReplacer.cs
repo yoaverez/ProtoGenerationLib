@@ -45,14 +45,14 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
             if (type.IsSingleDimensionalArray())
             {
                 var props = new List<(Type, string)> { (type, "items") };
-                newType = TypeCreator.CreateDataType(newTypeName, props);
+                newType = TypeCreator.CreateDataType(newTypeName, props, nameSpace: type.GetArrayElementType().Namespace);
             }
 
             // Multi dimensional array or a jagged array.
             else
             {
                 var elementType = type.GetArrayElementType();
-                newType = TypeCreator.CreateArrayType(elementType, newTypeName);
+                newType = TypeCreator.CreateArrayType(elementType, newTypeName, nameSpace: elementType.Namespace);
             }
 
             return newType;

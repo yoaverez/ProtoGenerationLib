@@ -58,7 +58,7 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(arrayType);
 
             var props = new List<(Type, string)> { (arrayType, "items") };
-            var newType = TypeCreator.CreateDataType(newTypeName, props);
+            var newType = TypeCreator.CreateDataType(newTypeName, props, nameSpace: arrayType.Namespace);
             return newType;
         }
     }

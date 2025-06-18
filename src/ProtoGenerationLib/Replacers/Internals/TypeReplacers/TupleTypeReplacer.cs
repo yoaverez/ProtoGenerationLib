@@ -47,7 +47,12 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
             var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
 
             var props = GetItems(type);
-            var newType = TypeCreator.CreateDataType(newTypeName, props);
+
+            // Since tuple can contain multiple different types,
+            // In order to not have a recursive imports in the protos,
+            // the new tuple type will be assigned a unique namespace.
+            var nameSpace = $"{TypeCreator.DEFAULT_NAMESPACE_NAME}.{newTypeName}Lib";
+            var newType = TypeCreator.CreateDataType(newTypeName, props, nameSpace: nameSpace);
             return newType;
         }
 

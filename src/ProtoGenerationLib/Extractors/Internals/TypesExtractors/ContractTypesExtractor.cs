@@ -52,7 +52,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
                 {
                     var parameters = methodParameters.Select(parameterInfo => (parameterInfo.ParameterType, parameterInfo.Name));
                     var newTypeName = parameterListNamingStrategy.GetNewParametersListTypeName(method);
-                    var newType = TypeCreator.CreateDataType(newTypeName, parameters);
+                    var newType = TypeCreator.CreateDataType(newTypeName, parameters, nameSpace: type.Namespace);
                     types.Add(newType);
                 }
                 else if (methodParameters.Length == 1)

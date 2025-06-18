@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Xml.Linq;
 
 namespace ProtoGenerationLib.Utilities.TypeUtilities
 {
@@ -11,6 +12,11 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
     public class TypeCreator
     {
         /// <summary>
+        /// The default namespace name of the newly created types.
+        /// </summary>
+        public const string DEFAULT_NAMESPACE_NAME = "ProtoGenerator.DynamicTypes";
+
+        /// <summary>
         /// The assembly name of the newly created types.
         /// </summary>
         private const string DYNAMIC_TYPE_ASSEMBLY_NAME = "DynamicAssembly";
@@ -19,11 +25,6 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
         /// The module name of the newly created types.
         /// </summary>
         private const string DYNAMIC_TYPE_MODULE_NAME = "DynamicModule";
-
-        /// <summary>
-        /// The namespace name of the newly created types.
-        /// </summary>
-        private const string NAMESPACE_NAME = "ProtoGenerator.DynamicTypes";
 
         /// <summary>
         /// A builder that can create type builders.
@@ -57,8 +58,12 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
         /// </summary>
         /// <param name="typeName">The name of the new type.</param>
         /// <param name="Properties">The properties of the new type.</param>
+        /// <param name="nameSpace">
+        /// The name space of the new type. It is recommended to give the name space
+        /// of the type that caused this creation to prevent recursive references.
+        /// </param>
         /// <returns>A new type that contains all the given <paramref name="Properties"/>.</returns>
-        public static Type CreateDataType(string typeName, IEnumerable<(Type Type, string Name)> Properties)
+        public static Type CreateDataType(string typeName, IEnumerable<(Type Type, string Name)> Properties, string nameSpace = DEFAULT_NAMESPACE_NAME)
         {
             if (CreatedTypes.TryGetValue(typeName, out var value))
             {
@@ -66,7 +71,7 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
             }
 
             // Create a type builder.
-            var typeBuilder = moduleBuilder.DefineType($"{NAMESPACE_NAME}.{typeName}", TypeAttributes.Public | TypeAttributes.Class);
+            var typeBuilder = moduleBuilder.DefineType($"{nameSpace}.{typeName}", TypeAttributes.Public | TypeAttributes.Class);
 
             // Add fields.
             foreach (var fieldData in Properties)
@@ -85,12 +90,16 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
         /// </summary>
         /// <param name="elementType">The element type of the array.</param>
         /// <param name="newTypeName">The name of the resulted type.</param>
+        /// <param name="nameSpace">
+        /// The name space of the new type. It is recommended to give the name space
+        /// of the type that caused this creation to prevent recursive references.
+        /// </param>
         /// <returns>
         /// A new type representing a multi dimensions array of the given
         /// <paramref name="elementType"/> in a one dimensional manner.
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when the given <paramref name="elementType"/> is an array.</exception>
-        public static Type CreateArrayType(Type elementType, string newTypeName)
+        public static Type CreateArrayType(Type elementType, string newTypeName, string nameSpace = DEFAULT_NAMESPACE_NAME)
         {
             if (elementType.IsArray)
                 throw new ArgumentException($"The given {nameof(elementType)} is an array", nameof(elementType));
@@ -101,7 +110,7 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
             }
 
             // Create a type builder.
-            var typeBuilder = moduleBuilder.DefineType($"{NAMESPACE_NAME}.{newTypeName}", TypeAttributes.Public | TypeAttributes.Class);
+            var typeBuilder = moduleBuilder.DefineType($"{nameSpace}.{newTypeName}", TypeAttributes.Public | TypeAttributes.Class);
 
             var arrayOfElementsType = elementType.MakeArrayType();
 
