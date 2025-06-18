@@ -7,6 +7,10 @@ namespace ProtoGenerationLib.Strategies.Internals.FileNamingStrategies
     /// <summary>
     /// A file name strategy that groups types by their namespace.
     /// </summary>
+    /// <remarks>
+    /// This is a risky strategy that if the user dtos are not structured correctly,
+    /// may get a recursive import to happen inside the proto files.
+    /// </remarks>
     public class NameSpaceAsFileNameStrategy : IFileNamingStrategy
     {
         /// <inheritdoc/>
@@ -15,7 +19,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FileNamingStrategies
             var namespaceComponents = type.Namespace.Split('.');
             var lastComponent = namespaceComponents[namespaceComponents.Length - 1];
             namespaceComponents[namespaceComponents.Length - 1] = $"{lastComponent}.proto";
-            return Path.Combine(namespaceComponents);
+            return string.Join("/", namespaceComponents);
         }
     }
 }
