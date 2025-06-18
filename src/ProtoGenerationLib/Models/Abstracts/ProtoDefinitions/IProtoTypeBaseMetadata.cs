@@ -20,6 +20,10 @@
         /// The file relative path (relative to the project you ran this)
         /// in which this proto type is defined.
         /// </summary>
+        /// <remarks>
+        /// <b>Note that the file path components should be separated by
+        /// forward slash (/).</b>
+        /// </remarks>
         string? FilePath { get; }
     }
 }

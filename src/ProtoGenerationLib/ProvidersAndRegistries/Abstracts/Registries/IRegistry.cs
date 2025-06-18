@@ -44,6 +44,10 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
         /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterPackageStylingStrategy(string, IPackageStylingStrategy)"/>
         IRegistry RegisterPackageStylingStrategy(string strategyName, IPackageStylingStrategy strategy);
 
+        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
+        /// <inheritdoc cref="IProtoStylingConventionsStrategiesRegistry.RegisterFilePathStylingStrategy(string, IFilePathStylingStrategy)"/>
+        IRegistry RegisterFilePathStylingStrategy(string strategyName, IFilePathStylingStrategy strategy);
+
         #endregion Proto Styling Conventions Strategies Registry
 
         #region Proto Naming Strategies Registry

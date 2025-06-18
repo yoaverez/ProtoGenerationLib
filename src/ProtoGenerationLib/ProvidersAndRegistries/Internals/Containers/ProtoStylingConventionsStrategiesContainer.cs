@@ -22,12 +22,18 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         private Dictionary<string, IPackageStylingStrategy> packageStylingStrategies;
 
         /// <summary>
+        /// A mapping between strategy name to its file path styling strategy.
+        /// </summary>
+        private Dictionary<string, IFilePathStylingStrategy> filePathStylingStrategies;
+
+        /// <summary>
         /// Create new instance of the <see cref="ProtoStylingConventionsStrategiesContainer"/> class.
         /// </summary>
         public ProtoStylingConventionsStrategiesContainer()
         {
             stylingStrategies = new Dictionary<string, IProtoStylingStrategy>();
             packageStylingStrategies = new Dictionary<string, IPackageStylingStrategy>();
+            filePathStylingStrategies = new Dictionary<string, IFilePathStylingStrategy>();
         }
 
         #region IProtoStylingConventionsStrategiesProvider Implementation
@@ -42,6 +48,12 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         public IPackageStylingStrategy GetPackageStylingStrategy(string strategyName)
         {
             return GetStrategy(packageStylingStrategies, strategyName);
+        }
+
+        /// <inheritdoc/>
+        public IFilePathStylingStrategy GetFilePathStylingStrategy(string strategyName)
+        {
+            return GetStrategy(filePathStylingStrategies, strategyName);
         }
 
         #endregion IProtoStylingConventionsStrategiesProvider Implementation
@@ -60,6 +72,12 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
             // Package strategy is also a regular styling strategy.
             RegisterStrategy(stylingStrategies, strategyName, strategy);
             RegisterStrategy(packageStylingStrategies, strategyName, strategy);
+        }
+
+        /// <inheritdoc/>
+        public void RegisterFilePathStylingStrategy(string strategyName, IFilePathStylingStrategy strategy)
+        {
+            RegisterStrategy(filePathStylingStrategies, strategyName, strategy);
         }
 
         #endregion IProtoStylingConventionsStrategiesRegistry Implementation

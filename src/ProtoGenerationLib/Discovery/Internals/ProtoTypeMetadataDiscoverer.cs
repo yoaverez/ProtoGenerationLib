@@ -34,6 +34,12 @@ namespace ProtoGenerationLib.Discovery.Internals
         private const string PACKAGE_COMPONENTS_SEPARATOR = ".";
 
         /// <summary>
+        /// The separator that should be used by the user and by the library in order
+        /// to separate file path components.
+        /// </summary>
+        private const string FILE_PATH_COMPONENTS_SEPARATOR = "/";
+
+        /// <summary>
         /// Create new instance of the <see cref="ProtoTypeMetadataDiscoverer"/> class.
         /// </summary>
         /// <param name="componentsProvider"><inheritdoc cref="componentsProvider" path="/node()"/></param>
@@ -225,9 +231,11 @@ namespace ProtoGenerationLib.Discovery.Internals
         {
             var styledName = StyleProtoName(type, unstyledBaseMetadata.Name!, generationOptions);
 
-            var styledPackage = StyleProtoPackage(type, unstyledBaseMetadata.Package!, generationOptions);
+            var styledPackage = StyleProtoPackage(unstyledBaseMetadata.Package!, generationOptions);
 
-            return new ProtoTypeBaseMetadata(styledName, styledPackage, unstyledBaseMetadata.FilePath!);
+            var styledFilePath = StyleProtoFile(unstyledBaseMetadata.FilePath!, generationOptions);
+
+            return new ProtoTypeBaseMetadata(styledName, styledPackage, styledFilePath);
         }
 
         /// <summary>
@@ -261,28 +269,51 @@ namespace ProtoGenerationLib.Discovery.Internals
         /// <summary>
         /// Get the styled proto type package of the given <paramref name="unstyledPackage"/>.
         /// </summary>
-        /// <param name="type">The type whose proto unstyled package is the given <paramref name="unstyledPackage"/>.</param>
         /// <param name="unstyledPackage">The unstyled proto package of the given <paramref name="type"/>.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>The style proto type package of the given <paramref name="unstyledPackage"/>.</returns>
-        private string StyleProtoPackage(Type type, string unstyledPackage, IProtoGenerationOptions generationOptions)
+        private string StyleProtoPackage(string unstyledPackage, IProtoGenerationOptions generationOptions)
         {
             var packageComponents = unstyledPackage.Split(new string[] { PACKAGE_COMPONENTS_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
-            return StyleProtoPackage(type, packageComponents, generationOptions);
+            return StyleProtoPackage(packageComponents, generationOptions);
         }
 
         /// <summary>
-        /// Get the styled proto type package of the given <paramref name="unstyledPackage"/>.
+        /// Get the styled proto type package of the given <paramref name="packageComponents"/>.
         /// </summary>
-        /// <param name="type">The type whose proto unstyled package is the given <paramref name="unstyledPackage"/>.</param>
         /// <param name="packageComponents">The unstyled proto package components of the given <paramref name="type"/>.</param>
         /// <param name="generationOptions">The proto generation options.</param>
-        /// <returns>The style proto type package of the given <paramref name="unstyledPackage"/>.</returns>
-        private string StyleProtoPackage(Type type, string[] packageComponents, IProtoGenerationOptions generationOptions)
+        /// <returns>The style proto type package of the given <paramref name="packageComponents"/>.</returns>
+        private string StyleProtoPackage(string[] packageComponents, IProtoGenerationOptions generationOptions)
         {
             var packageStylingStrategy = componentsProvider.GetPackageStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy);
             var styledPackage = packageStylingStrategy.ToProtoStyle(packageComponents);
             return styledPackage;
+        }
+
+        /// <summary>
+        /// Get the styled proto type file path of the given <paramref name="unstyledFilePath"/>.
+        /// </summary>
+        /// <param name="unstyledFilePath">The unstyled proto file path of the given <paramref name="type"/>.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
+        /// <returns>The style proto type file path of the given <paramref name="unstyledFilePath"/>.</returns>
+        private string StyleProtoFile(string unstyledFilePath, IProtoGenerationOptions generationOptions)
+        {
+            var packageComponents = unstyledFilePath.Split(new string[] { FILE_PATH_COMPONENTS_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
+            return StyleProtoFile(packageComponents, generationOptions);
+        }
+
+        /// <summary>
+        /// Get the styled proto type file path of the given <paramref name="filePathComponents"/>.
+        /// </summary>
+        /// <param name="filePathComponents">The unstyled proto file path components of the given <paramref name="type"/>.</param>
+        /// <param name="generationOptions">The proto generation options.</param>
+        /// <returns>The style proto type file path of the given <paramref name="filePathComponents"/>.</returns>
+        private string StyleProtoFile(string[] filePathComponents, IProtoGenerationOptions generationOptions)
+        {
+            var filePathStylingStrategy = componentsProvider.GetFilePathStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.FilePathStylingStrategy);
+            var styledFilePath = filePathStylingStrategy.ToProtoStyle(filePathComponents);
+            return styledFilePath;
         }
 
         #endregion Name Styling Auxiliaries
@@ -302,6 +333,7 @@ namespace ProtoGenerationLib.Discovery.Internals
         {
             var styledName = mapperBaseMetadata.Name;
             var styledPackage = mapperBaseMetadata.Package;
+            var styledFilePath = mapperBaseMetadata.FilePath;
 
             if (styledName is null)
             {
@@ -312,10 +344,15 @@ namespace ProtoGenerationLib.Discovery.Internals
             if (styledPackage is null)
             {
                 var unstyledPackage = GetPackageName(type, protoGeneratorConfiguration);
-                styledPackage = StyleProtoPackage(type, unstyledPackage, protoGeneratorConfiguration);
+                styledPackage = StyleProtoPackage(unstyledPackage, protoGeneratorConfiguration);
             }
-            var filePath = mapperBaseMetadata.FilePath ?? GetFilePath(type, protoGeneratorConfiguration);
-            var styledBaseMetadata = new ProtoTypeBaseMetadata(styledName, styledPackage, filePath);
+
+            if(styledFilePath is null)
+            {
+                var ustyledFilePath = GetFilePath(type, protoGeneratorConfiguration);
+                styledFilePath = StyleProtoFile(ustyledFilePath, protoGeneratorConfiguration);
+            }
+            var styledBaseMetadata = new ProtoTypeBaseMetadata(styledName, styledPackage, styledFilePath);
             return styledBaseMetadata;
         }
 

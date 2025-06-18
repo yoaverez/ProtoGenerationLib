@@ -26,6 +26,9 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <inheritdoc/>
         public string RpcStylingStrategy { get; set; }
 
+        /// <inheritdoc/>
+        public string FilePathStylingStrategy { get; set; }
+
         /// <summary>
         /// Create new instance of the <see cref="ProtoStylingConventionsStrategiesOptions"/> class.
         /// </summary>
@@ -44,13 +47,15 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <param name="fieldStylingStrategy"><inheritdoc cref="FieldStylingStrategy" path="/node()"/></param>
         /// <param name="packageStylingStrategy"><inheritdoc cref="PackageStylingStrategy" path="/node()"/></param>
         /// <param name="rpcStylingStrategy"><inheritdoc cref="RpcStylingStrategy" path="/node()"/></param>
+        /// <param name="filePathStylingStrategy"><inheritdoc cref="FilePathStylingStrategy" path="/node()"/></param>
         public ProtoStylingConventionsStrategiesOptions(string messageStylingStrategy,
                                                         string enumStylingStrategy,
                                                         string enumValueStylingStrategy,
                                                         string serviceStylingStrategy,
                                                         string fieldStylingStrategy,
                                                         string packageStylingStrategy,
-                                                        string rpcStylingStrategy)
+                                                        string rpcStylingStrategy,
+                                                        string filePathStylingStrategy)
         {
             MessageStylingStrategy = messageStylingStrategy;
             EnumStylingStrategy = enumStylingStrategy;
@@ -59,6 +64,7 @@ namespace ProtoGenerationLib.Configurations.Internals
             FieldStylingStrategy = fieldStylingStrategy;
             PackageStylingStrategy = packageStylingStrategy;
             RpcStylingStrategy = rpcStylingStrategy;
+            FilePathStylingStrategy = filePathStylingStrategy;
         }
     }
 }

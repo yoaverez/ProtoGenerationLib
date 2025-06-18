@@ -75,6 +75,7 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals
                 new object[] { typeof(IProtoStylingStrategy), StrategyNamesLookup.ProtoStylingStrategiesLookup.Values },
                 new object[] { typeof(IPackageStylingStrategy), StrategyNamesLookup.PackageStylingStrategiesLookup.Values },
                 new object[] { typeof(ITypeNamingStrategy), StrategyNamesLookup.TypeNamingStrategiesLookup.Values },
+                new object[] { typeof(IFilePathStylingStrategy), StrategyNamesLookup.FilePathStylingStrategiesLookup.Values },
             };
         }
     }

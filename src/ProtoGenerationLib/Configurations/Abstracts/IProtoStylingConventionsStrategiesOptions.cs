@@ -38,6 +38,11 @@
         /// <summary>
         /// The name of the rpc name styling strategy.
         /// </summary>
-        string RpcStylingStrategy { get; set; }
+        string RpcStylingStrategy { get; }
+
+        /// <summary>
+        /// The name of the file path styling strategy.
+        /// </summary>
+        string FilePathStylingStrategy { get; }
     }
 }

@@ -77,6 +77,9 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals
             container.RegisterProtoStylingStrategy(StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperCamelCase], new UpperCamelCaseStrategy());
             container.RegisterProtoStylingStrategy(StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperSnakeCase], new UpperSnakeCaseStrategy());
 
+            // Register file styling strategies.
+            container.RegisterFilePathStylingStrategy(StrategyNamesLookup.FilePathStylingStrategiesLookup[FilePathStylingStrategyKind.ForwardSlashDelimitedSnakeCase], new ForwardSlashDelimitedSnakeCaseStrategy());
+
             // Register package styling strategies.
             container.RegisterPackageStylingStrategy(StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.DotDelimitedSnakeCase], new DotDelimitedSnakeCaseStrategy());
 

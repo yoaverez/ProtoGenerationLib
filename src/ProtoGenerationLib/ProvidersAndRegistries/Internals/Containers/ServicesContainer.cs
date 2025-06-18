@@ -105,6 +105,12 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
             return protoStylingConventionsStrategiesContainer.GetPackageStylingStrategy(strategyName);
         }
 
+        /// <inheritdoc/>
+        public IFilePathStylingStrategy GetFilePathStylingStrategy(string strategyName)
+        {
+            return protoStylingConventionsStrategiesContainer.GetFilePathStylingStrategy(strategyName);
+        }
+
         #endregion IProtoStylingConventionsStrategiesProvider Implementation
 
         #region INumberingStrategiesProvider Implementation
@@ -224,6 +230,13 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         public IRegistry RegisterPackageStylingStrategy(string strategyName, IPackageStylingStrategy strategy)
         {
             protoStylingConventionsStrategiesContainer.RegisterPackageStylingStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterFilePathStylingStrategy(string strategyName, IFilePathStylingStrategy strategy)
+        {
+            protoStylingConventionsStrategiesContainer.RegisterFilePathStylingStrategy(strategyName, strategy);
             return this;
         }
 

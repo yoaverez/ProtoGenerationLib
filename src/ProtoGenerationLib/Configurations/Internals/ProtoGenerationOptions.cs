@@ -92,7 +92,8 @@ namespace ProtoGenerationLib.Configurations.Internals
                 StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperCamelCase],
                 StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.SnakeCase],
                 StrategyNamesLookup.PackageStylingStrategiesLookup[PackageStylingStrategyKind.DotDelimitedSnakeCase],
-                StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperCamelCase]);
+                StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperCamelCase],
+                StrategyNamesLookup.FilePathStylingStrategiesLookup[FilePathStylingStrategyKind.ForwardSlashDelimitedSnakeCase]);
 
             var namingOptions = new ProtoNamingStrategiesOptions(
                 StrategyNamesLookup.TypeNamingStrategiesLookup[TypeNamingStrategyKind.TypeNameAsAlphaNumericTypeName],

@@ -29,6 +29,11 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.External
         public static readonly IReadOnlyDictionary<FilePathStrategyKind, string> FilePathStrategiesLookup;
 
         /// <summary>
+        /// A lookup table for file path styling strategies names.
+        /// </summary>
+        public static readonly IReadOnlyDictionary<FilePathStylingStrategyKind, string> FilePathStylingStrategiesLookup;
+
+        /// <summary>
         /// A lookup table for new type naming strategies names.
         /// </summary>
         public static readonly IReadOnlyDictionary<NewTypeNamingStrategyKind, string> NewTypeNamingStrategiesLookup;
@@ -85,6 +90,11 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.External
                 [FilePathStrategyKind.NameSpace] = "FileNameAsNameSpace",
                 [FilePathStrategyKind.SingleFileNamedProtos] = "SingleFileNamedProtos",
                 [FilePathStrategyKind.TypeName] = "FileNameAsTypeName",
+            };
+
+            FilePathStylingStrategiesLookup = new Dictionary<FilePathStylingStrategyKind, string>
+            {
+                [FilePathStylingStrategyKind.ForwardSlashDelimitedSnakeCase] = "ForwardSlashDelimitedSnakeCase",
             };
 
             NewTypeNamingStrategiesLookup = new Dictionary<NewTypeNamingStrategyKind, string>

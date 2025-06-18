@@ -35,6 +35,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
         private Mock<IPackageStylingStrategy> mockPackageStylingStrategy;
 
+        private Mock<IFilePathStylingStrategy> mockFilePathStylingStrategy;
+
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
@@ -52,6 +54,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                     ServiceStylingStrategy = "5",
                     EnumStylingStrategy = "6",
                     PackageStylingStrategy = "7",
+                    FilePathStylingStrategy = "8",
                 },
                 AnalysisOptions = new AnalysisOptions
                 {
@@ -96,6 +99,10 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
             mockPackageStylingStrategy = new Mock<IPackageStylingStrategy>();
             mockIProvider.Setup(provider => provider.GetPackageStylingStrategy("7"))
                          .Returns(mockPackageStylingStrategy.Object);
+
+            mockFilePathStylingStrategy = new Mock<IFilePathStylingStrategy>();
+            mockIProvider.Setup(provider => provider.GetFilePathStylingStrategy("8"))
+                         .Returns(mockFilePathStylingStrategy.Object);
         }
 
         [TestMethod]
@@ -222,8 +229,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
             var filledTypeName = "type name";
             var filledPackageName = new string[] { "package", "name" };
-            var filledFilePath = "file path";
-            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs));
+            var filledFilePath = "file/path.proto";
+            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs), filePathComponents => string.Join("-", filePathComponents));
 
             var correctBaseMetadata = new ProtoTypeBaseMetadata(protoTypeBaseMetadata);
             if (protoTypeBaseMetadata.Name is null)
@@ -233,7 +240,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 correctBaseMetadata.Package = string.Join(".", filledPackageName);
 
             if (protoTypeBaseMetadata.FilePath is null)
-                correctBaseMetadata.FilePath = filledFilePath;
+                correctBaseMetadata.FilePath = string.Join("-", filledFilePath.Split("/"));
 
             var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, $"{correctBaseMetadata.Package}.{correctBaseMetadata.Name}");
             var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>
@@ -262,8 +269,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
             var filledTypeName = "type name";
             var filledPackageName = new string[] { "package", "name" };
-            var filledFilePath = "file path";
-            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs));
+            var filledFilePath = "file/path.proto";
+            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs), filePathComponents => string.Join("-", filePathComponents));
 
             var correctBaseMetadata = new ProtoTypeBaseMetadata(protoTypeBaseMetadata);
             if (protoTypeBaseMetadata.Name is null)
@@ -273,7 +280,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 correctBaseMetadata.Package = string.Join(".", filledPackageName);
 
             if (protoTypeBaseMetadata.FilePath is null)
-                correctBaseMetadata.FilePath = filledFilePath;
+                correctBaseMetadata.FilePath = string.Join("-", filledFilePath.Split("/"));
 
             var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, $"{correctBaseMetadata.Package}.{correctBaseMetadata.Name}");
             var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>
@@ -301,10 +308,10 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
             var filledTypeName = "type name";
             var filledPackageName = new string[] { "package", "name" };
-            var filledFilePath = "file path";
-            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs));
+            var filledFilePath = "file/path.proto";
+            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs), filePathComponents => string.Join("-", filePathComponents));
 
-            var correctBaseMetadata = new ProtoTypeBaseMetadata(filledTypeName.ToUpperInvariant(), string.Join(".", filledPackageName), filledFilePath);
+            var correctBaseMetadata = new ProtoTypeBaseMetadata(filledTypeName.ToUpperInvariant(), string.Join(".", filledPackageName), string.Join("-", filledFilePath.Split("/")));
             var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, $"{correctBaseMetadata.Package}.{correctBaseMetadata.Name}");
             var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>
             {
@@ -546,7 +553,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                                      string[] PackageComponents,
                                      string filePath,
                                      Func<string, string> namesStylingStrategy,
-                                     Func<string[], string> packageStylingStrategy)
+                                     Func<string[], string> packageStylingStrategy,
+                                     Func<string[], string> filePathStylingStrategy)
         {
             mockITypeNamingStrategy.Setup(strategy => strategy.GetTypeName(It.IsAny<Type>()))
                                    .Returns(typeName);
@@ -568,6 +576,9 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
             mockPackageStylingStrategy.Setup(strategy => strategy.ToProtoStyle(It.IsAny<string[]>()))
                                       .Returns<string[]>(name => packageStylingStrategy(name));
+
+            mockFilePathStylingStrategy.Setup(strategy => strategy.ToProtoStyle(It.IsAny<string[]>()))
+                                       .Returns<string[]>(name => filePathStylingStrategy(name));
         }
 
         #endregion Auxiliary Methods

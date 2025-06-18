@@ -109,6 +109,52 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
 
         #endregion GetPackageStylingStrategy Tests
 
+        #region GetFilePathStylingStrategy Tests
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetFilePathStylingStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Act
+            container.GetFilePathStylingStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetFilePathStylingStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Arrange
+            var strategy = new Mock<IFilePathStylingStrategy>();
+            container.RegisterFilePathStylingStrategy("a", strategy.Object);
+
+            // Act
+            container.GetFilePathStylingStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        public void GetFilePathStylingStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IFilePathStylingStrategy>().Object;
+            container.RegisterFilePathStylingStrategy("a", expectedStrategy);
+
+            // Act
+            var actualStrategy = container.GetFilePathStylingStrategy("a");
+
+            // Assert
+            Assert.AreSame(expectedStrategy, actualStrategy);
+        }
+
+        #endregion GetFilePathStylingStrategy Tests
+
         #endregion IProtoStylingConventionsStrategiesProvider Tests
 
         #region IProtoStylingConventionsStrategiesRegistry Tests
@@ -179,6 +225,42 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
 
             // Act
             container.RegisterPackageStylingStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        #endregion RegisterPackageStylingStrategy Tests
+
+        #region RegisterFilePathStylingStrategy Tests
+
+        [TestMethod]
+        public void RegisterFilePathStylingStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IFilePathStylingStrategy>().Object;
+            var strategyName = "a";
+
+            // Act
+            container.RegisterFilePathStylingStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            var actualStrategy = container.GetFilePathStylingStrategy(strategyName);
+            Assert.AreSame(expectedStrategy, actualStrategy);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterFilePathStylingStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IFilePathStylingStrategy>().Object;
+            var strategyName = "a";
+            container.RegisterFilePathStylingStrategy(strategyName, expectedStrategy);
+
+            // Act
+            container.RegisterFilePathStylingStrategy(strategyName, expectedStrategy);
 
             // Assert
             // Noting to do.
