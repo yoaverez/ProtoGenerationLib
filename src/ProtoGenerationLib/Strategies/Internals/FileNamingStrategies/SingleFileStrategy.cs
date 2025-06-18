@@ -11,7 +11,10 @@ namespace ProtoGenerationLib.Strategies.Internals.FileNamingStrategies
         /// <summary>
         /// The proto file relative path.
         /// </summary>
-        /// <remarks>Relative to the base directory that we generate the protos to.</remarks>
+        /// <remarks>
+        /// Relative to the path from the proto root directory in which to generate the protos to.<br/>
+        /// <b>Note that the path components should be separated by forward slash (/).</b>
+        /// </remarks>
         private string relativeFilePath;
 
         /// <summary>
