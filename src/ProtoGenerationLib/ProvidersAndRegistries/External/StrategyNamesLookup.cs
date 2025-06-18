@@ -90,6 +90,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.External
                 [FilePathStrategyKind.NameSpace] = "FileNameAsNameSpace",
                 [FilePathStrategyKind.SingleFileNamedProtos] = "SingleFileNamedProtos",
                 [FilePathStrategyKind.TypeName] = "FileNameAsTypeName",
+                [FilePathStrategyKind.NameSpaceAndTypeName] = "FileNameAsNameSpaceAndTypeName",
             };
 
             FilePathStylingStrategiesLookup = new Dictionary<FilePathStylingStrategyKind, string>

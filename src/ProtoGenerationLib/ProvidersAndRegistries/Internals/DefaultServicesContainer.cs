@@ -60,6 +60,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals
             container.RegisterFileNamingStrategy(StrategyNamesLookup.FilePathStrategiesLookup[FilePathStrategyKind.NameSpace], new NameSpaceAsFileNameStrategy());
             container.RegisterFileNamingStrategy(StrategyNamesLookup.FilePathStrategiesLookup[FilePathStrategyKind.SingleFileNamedProtos], new SingleFileStrategy("protos.proto"));
             container.RegisterFileNamingStrategy(StrategyNamesLookup.FilePathStrategiesLookup[FilePathStrategyKind.TypeName], new TypeNameAsFileNameStrategy());
+            container.RegisterFileNamingStrategy(StrategyNamesLookup.FilePathStrategiesLookup[FilePathStrategyKind.NameSpaceAndTypeName], new NameSpaceAndTypeNameAsFileNameStrategy());
 
             // Register new type naming strategies.
             container.RegisterNewTypeNamingStrategy(StrategyNamesLookup.NewTypeNamingStrategiesLookup[NewTypeNamingStrategyKind.NameAsAlphaNumericTypeName], new NewTypeNamingStrategy());
