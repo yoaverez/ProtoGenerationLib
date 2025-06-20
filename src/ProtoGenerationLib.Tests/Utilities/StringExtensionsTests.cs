@@ -41,6 +41,7 @@ namespace ProtoGenerationLib.Tests.Utilities
         [DataRow("kabab-case", "KababCase")]
         [DataRow("av1M", "Av1M")]
         [DataRow("av1m", "Av1m")]
+        [DataRow("IService", "IService")]
         [TestMethod]
         public void ToUpperCamelCaseTests(string input, string expectedOutput)
         {

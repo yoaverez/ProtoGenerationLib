@@ -125,6 +125,10 @@ namespace ProtoGenerationLib.Utilities
             // Separate none capital letter from its following capital letter.
             var allWordsAreSeparated = Regex.Replace(onlyAlphaNumericAndSeparator, @"([^A-Z])([A-Z])", $"$1{separator}$2");
 
+            // Separate capital letter from its following capital letter that is followed by small
+            // letters.
+            allWordsAreSeparated = Regex.Replace(allWordsAreSeparated, @"([A-Z])([A-Z][a-z])", $"$1{separator}$2");
+
             // Split by the separator.
             string[] words = allWordsAreSeparated.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
             return words;
