@@ -588,7 +588,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
         private static IEnumerable<object[]> GetAllMissingPropsOptions()
         {
             var baseMetadataType = typeof(DummyIProtoTypeBaseMetadata);
-            var props = baseMetadataType.GetProperties();
+            var props = baseMetadataType.GetProperties().Where(prop => !prop.Name.Equals(nameof(IProtoTypeBaseMetadata.ShouldCreateProtoType))).ToArray();
             var numOfProps = props.Length;
 
             // Since each prop can be either missing or not missing,

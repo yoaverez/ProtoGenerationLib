@@ -110,7 +110,11 @@ namespace ProtoGenerationLib.Constants
         /// <returns>The metadata of the primitive type.</returns>
         private static IProtoTypeMetadata CreatePrimitiveTypeMetadata(string primitiveProtoName)
         {
-            return new ProtoTypeMetadata(primitiveProtoName, string.Empty, primitiveProtoName, string.Empty);
+            return new ProtoTypeMetadata(primitiveProtoName,
+                                         string.Empty,
+                                         primitiveProtoName,
+                                         string.Empty,
+                                         shouldCreateProtoType: false);
         }
 
         /// <summary>
@@ -121,7 +125,11 @@ namespace ProtoGenerationLib.Constants
         /// <returns>The metadata of the well known type.</returns>
         private static IProtoTypeMetadata CreateProtobufWellKnownTypeMetadata(string typeName, string fileName)
         {
-            return new ProtoTypeMetadata(typeName, GOOGLE_PROTOBUF_PACKAGE, $"{GOOGLE_PROTOBUF_PACKAGE}.{typeName}", $"{EXTERNAL_FILE_PATH_PREFIX}{GOOGLE_PROTOBUF_DIR}/{fileName}.{FILE_EXTENSION}");
+            return new ProtoTypeMetadata(typeName,
+                                         GOOGLE_PROTOBUF_PACKAGE,
+                                         $"{GOOGLE_PROTOBUF_PACKAGE}.{typeName}",
+                                         $"{EXTERNAL_FILE_PATH_PREFIX}{GOOGLE_PROTOBUF_DIR}/{fileName}.{FILE_EXTENSION}",
+                                         shouldCreateProtoType: false);
         }
     }
 }

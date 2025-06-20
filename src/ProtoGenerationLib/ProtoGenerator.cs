@@ -37,30 +37,22 @@ namespace ProtoGenerationLib
         private ICSharpToProtoTypesConverter csharpToProtoTypesConverter;
 
         /// <summary>
-        /// A set of all the well known types in protobuf language.
-        /// </summary>
-        private ISet<Type> wellKnownTypes;
-
-        /// <summary>
         /// Create new instance of the <see cref="ProtoGenerator"/> class.
         /// </summary>
         /// <param name="componentsProvider">A provider of all the proto generator customizations.</param>
         /// <param name="protoTypesExtractor"><inheritdoc cref="protoTypesExtractor" path="/node()"/></param>
         /// <param name="protoTypeMetadataDiscoverer"><inheritdoc cref="protoTypeMetadataDiscoverer" path="/node()"/></param>
         /// <param name="csharpToProtoTypesConverter"><inheritdoc cref="csharpToProtoTypesConverter" path="/node()"/></param>
-        /// <param name="wellKnownTypes"><inheritdoc cref="wellKnownTypes" path="/node()"/></param>
         public ProtoGenerator(IProvider? componentsProvider = null,
                               IProtoTypesExtractor? protoTypesExtractor = null,
                               IProtoTypeMetadataDiscoverer? protoTypeMetadataDiscoverer = null,
-                              ICSharpToProtoTypesConverter? csharpToProtoTypesConverter = null,
-                              ISet<Type>? wellKnownTypes = null)
+                              ICSharpToProtoTypesConverter? csharpToProtoTypesConverter = null)
         {
             IProvider provider = componentsProvider ?? DefaultServicesContainer.Instance;
             Registry = DefaultServicesContainer.Instance;
             this.protoTypesExtractor = protoTypesExtractor ?? new ProtoTypesExtractor(provider);
             this.protoTypeMetadataDiscoverer = protoTypeMetadataDiscoverer ?? new ProtoTypeMetadataDiscoverer(provider);
             this.csharpToProtoTypesConverter = csharpToProtoTypesConverter ?? new CSharpToProtoConverter(provider);
-            this.wellKnownTypes = wellKnownTypes ?? new HashSet<Type>(WellKnownTypesConstants.WellKnownTypes.Keys);
         }
 
         /// <summary>
@@ -95,10 +87,9 @@ namespace ProtoGenerationLib
             // with a new type in order to become proto type.
             AddOriginTypesMetadata(typesToMetadatas, originTypeToNewTypeMapping);
 
-            // Remove the well known types from the used types
-            // in order to get all the types that needs to be
-            // created in protobuf.
-            var neededProtoTypes = usedTypes.Where(type => !wellKnownTypes.Contains(type)).ToArray();
+            // Take only the types whose proto type should
+            // be generated.
+            var neededProtoTypes = usedTypes.Where(type => typesToMetadatas[type].ShouldCreateProtoType).ToArray();
 
             // Convert all the needed proto types to proto file definitions.
             var fileRelativePathToProtoDefinitions = csharpToProtoTypesConverter.Convert(neededProtoTypes,

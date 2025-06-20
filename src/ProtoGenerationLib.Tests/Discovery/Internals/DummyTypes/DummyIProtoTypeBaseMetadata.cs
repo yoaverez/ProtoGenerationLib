@@ -9,5 +9,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals.DummyTypes
         public string? Package { get; set; }
 
         public string? FilePath { get; set; }
+
+        public bool ShouldCreateProtoType { get; set; }
     }
 }

@@ -25,5 +25,14 @@
         /// forward slash (/).</b>
         /// </remarks>
         string? FilePath { get; }
+
+        /// <summary>
+        /// Whether or not a new proto type should be created.
+        /// </summary>
+        /// <remarks>
+        /// This property should be false if and only if the type is well known type or primitive or
+        /// if the proto type is already defined in an external file.
+        /// </remarks>
+        bool ShouldCreateProtoType { get; }
     }
 }

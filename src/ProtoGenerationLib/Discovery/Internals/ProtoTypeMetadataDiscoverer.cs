@@ -352,7 +352,7 @@ namespace ProtoGenerationLib.Discovery.Internals
                 var ustyledFilePath = GetFilePath(type, protoGeneratorConfiguration);
                 styledFilePath = StyleProtoFile(ustyledFilePath, protoGeneratorConfiguration);
             }
-            var styledBaseMetadata = new ProtoTypeBaseMetadata(styledName, styledPackage, styledFilePath);
+            var styledBaseMetadata = new ProtoTypeBaseMetadata(styledName, styledPackage, styledFilePath, mapperBaseMetadata.ShouldCreateProtoType);
             return styledBaseMetadata;
         }
 

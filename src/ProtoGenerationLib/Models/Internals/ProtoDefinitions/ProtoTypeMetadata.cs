@@ -34,13 +34,14 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         /// <param name="fullName"><inheritdoc cref="FullName" path="/node()"/></param>
         /// <param name="isNested"><inheritdoc cref="IsNested" path="/node()"/></param>
         /// <param name="nestedTypes"><inheritdoc cref="NestedTypes" path="/node()"/></param>
-        /// <inheritdoc cref="ProtoTypeBaseMetadata(string, string, string)" path="/param"/>
+        /// <inheritdoc cref="ProtoTypeBaseMetadata(string, string, string, bool)" path="/param"/>
         public ProtoTypeMetadata(string name,
                                  string package,
                                  string fullName,
                                  string filePath,
+                                 bool shouldCreateProtoType = true,
                                  bool isNested = false,
-                                 ISet<Type>? nestedTypes = null) : base(name, package, filePath)
+                                 ISet<Type>? nestedTypes = null) : base(name, package, filePath, shouldCreateProtoType)
         {
             FullName = fullName;
             IsNested = isNested;

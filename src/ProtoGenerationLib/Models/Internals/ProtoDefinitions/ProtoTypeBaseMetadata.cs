@@ -15,6 +15,9 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         /// <inheritdoc/>
         public string? FilePath { get; set; }
 
+        /// <inheritdoc/>
+        public bool ShouldCreateProtoType { get; set; }
+
         #region Constructors
 
         /// <summary>
@@ -25,6 +28,7 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
             Name = null;
             Package = null;
             FilePath = null;
+            ShouldCreateProtoType = true;
         }
 
         /// <summary>
@@ -33,11 +37,13 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         /// <param name="name"><inheritdoc cref="Name" path="/node()"/></param>
         /// <param name="package"><inheritdoc cref="Package" path="/node()"/></param>
         /// <param name="filePath"><inheritdoc cref="FilePath" path="/node()"/></param>
-        public ProtoTypeBaseMetadata(string name, string package, string filePath)
+        /// <param name="shouldCreateProtoType"><inheritdoc cref="ShouldCreateProtoType" path="/node()"/> Default to <see langword="true"/>.</param>
+        public ProtoTypeBaseMetadata(string name, string package, string filePath, bool shouldCreateProtoType = true)
         {
             Name = name;
             Package = package;
             FilePath = filePath;
+            ShouldCreateProtoType = shouldCreateProtoType;
         }
 
         /// <summary>
@@ -50,6 +56,7 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
             Name = other.Name;
             Package = other.Package;
             FilePath = other.FilePath;
+            ShouldCreateProtoType = other.ShouldCreateProtoType;
         }
 
         #endregion Constructors
@@ -63,7 +70,8 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
             return other != null
                    && EqualityComparer<string?>.Default.Equals(Name, other.Name)
                    && EqualityComparer<string?>.Default.Equals(Package, other.Package)
-                   && EqualityComparer<string?>.Default.Equals(FilePath, other.FilePath);
+                   && EqualityComparer<string?>.Default.Equals(FilePath, other.FilePath)
+                   && EqualityComparer<bool>.Default.Equals(ShouldCreateProtoType, other.ShouldCreateProtoType);
         }
 
         /// <inheritdoc/>
@@ -71,7 +79,8 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         {
             return (Name,
                     Package,
-                    FilePath).GetHashCode();
+                    FilePath,
+                    ShouldCreateProtoType).GetHashCode();
         }
 
         #endregion Object Overrides

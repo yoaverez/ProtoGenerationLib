@@ -20,8 +20,6 @@ namespace ProtoGenerationLib.Tests
 
         private Mock<ICSharpToProtoTypesConverter> mockCSharpToProtoTypesConverter;
 
-        private HashSet<Type> wellKnownTypes;
-
         private ProtoGenerator protoGenerator;
 
         private ProtoGenerationOptions generationOptions;
@@ -32,15 +30,13 @@ namespace ProtoGenerationLib.Tests
             mockProtoTypesExtractor = new Mock<IProtoTypesExtractor>();
             mockProtoTypeMetadataDiscoverer = new Mock<IProtoTypeMetadataDiscoverer>();
             mockCSharpToProtoTypesConverter = new Mock<ICSharpToProtoTypesConverter>();
-            wellKnownTypes = new HashSet<Type>();
 
             var mockIProvider = new Mock<IProvider>();
 
             protoGenerator = new ProtoGenerator(mockIProvider.Object,
                                                 mockProtoTypesExtractor.Object,
                                                 mockProtoTypeMetadataDiscoverer.Object,
-                                                mockCSharpToProtoTypesConverter.Object,
-                                                wellKnownTypes);
+                                                mockCSharpToProtoTypesConverter.Object);
             generationOptions = new ProtoGenerationOptions();
         }
 
@@ -56,7 +52,7 @@ namespace ProtoGenerationLib.Tests
                 nameof(ICSharpToProtoTypesConverter.Convert),
             };
 
-            wellKnownTypes.AddRange(new Type[] { typeof(float), typeof(double) });
+            //wellKnownTypes.AddRange(new Type[] { typeof(float), typeof(double) });
             IReadOnlyDictionary<Type, Type> originToNewTypeMapping = new Dictionary<Type, Type>
             {
                 [typeof(int)] = typeof(uint),
@@ -77,6 +73,9 @@ namespace ProtoGenerationLib.Tests
             var discovererResult = new Dictionary<Type, IProtoTypeMetadata>
             {
                 [typeof(uint)] = new ProtoTypeMetadata("a", "pac", "pac.a", "path"),
+                [typeof(double)] = new ProtoTypeMetadata("b", "pac", "pac.b", "path", shouldCreateProtoType: false),
+                [typeof(object)] = new ProtoTypeMetadata("c", "pac", "pac.c", "path"),
+                [typeof(string)] = new ProtoTypeMetadata("d", "pac", "pac.d", "path"),
             };
             IEnumerable<Type> discovererGivenTypes = null;
             IProtoGenerationOptions discovererGivenOptions = null;
@@ -93,9 +92,13 @@ namespace ProtoGenerationLib.Tests
             {
                 [typeof(uint)] = new ProtoTypeMetadata("a", "pac", "pac.a", "path"),
                 [typeof(int)] = new ProtoTypeMetadata("a", "pac", "pac.a", "path"),
+                [typeof(double)] = new ProtoTypeMetadata("b", "pac", "pac.b", "path", shouldCreateProtoType: false),
+                [typeof(object)] = new ProtoTypeMetadata("c", "pac", "pac.c", "path"),
+                [typeof(string)] = new ProtoTypeMetadata("d", "pac", "pac.d", "path"),
             };
 
-            var neededProtoTypesWithoutWellKnownTypes = new Type[] { typeof(object), typeof(string) };
+            // Remove the double since in its meta data this should not be created.
+            var typesThatNeedsToBeCreated = new Type[] { typeof(object), typeof(string) };
 
             var converterResult = new Dictionary<string, IProtoDefinition>
             {
@@ -126,7 +129,7 @@ namespace ProtoGenerationLib.Tests
             CollectionAssert.AreEqual(extractorResult, discovererGivenTypes.ToArray());
             Assert.AreSame(generationOptions, discovererGivenOptions);
 
-            CollectionAssert.AreEqual(neededProtoTypesWithoutWellKnownTypes, converterGivenTypes.ToArray());
+            CollectionAssert.AreEqual(typesThatNeedsToBeCreated, converterGivenTypes.ToArray());
             CollectionAssert.AreEquivalent(typesToMetadataAfterAddingOriginTypes, converterGivenMetadatas.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
             Assert.AreSame(generationOptions, extractorGivenOptions);
 
@@ -145,7 +148,6 @@ namespace ProtoGenerationLib.Tests
                 nameof(ICSharpToProtoTypesConverter.Convert),
             };
 
-            wellKnownTypes.AddRange(new Type[] { typeof(float), typeof(double) });
             IReadOnlyDictionary<Type, Type> originToNewTypeMapping = new Dictionary<Type, Type>
             {
                 [typeof(int)] = typeof(uint),
@@ -166,6 +168,9 @@ namespace ProtoGenerationLib.Tests
             var discovererResult = new Dictionary<Type, IProtoTypeMetadata>
             {
                 [typeof(uint)] = new ProtoTypeMetadata("a", "pac", "pac.a", "path"),
+                [typeof(double)] = new ProtoTypeMetadata("b", "pac", "pac.b", "path", shouldCreateProtoType: false),
+                [typeof(object)] = new ProtoTypeMetadata("c", "pac", "pac.c", "path"),
+                [typeof(string)] = new ProtoTypeMetadata("d", "pac", "pac.d", "path"),
             };
             IEnumerable<Type> discovererGivenTypes = null;
             IProtoGenerationOptions discovererGivenOptions = null;
@@ -182,9 +187,13 @@ namespace ProtoGenerationLib.Tests
             {
                 [typeof(uint)] = new ProtoTypeMetadata("a", "pac", "pac.a", "path"),
                 [typeof(int)] = new ProtoTypeMetadata("a", "pac", "pac.a", "path"),
+                [typeof(double)] = new ProtoTypeMetadata("b", "pac", "pac.b", "path", shouldCreateProtoType: false),
+                [typeof(object)] = new ProtoTypeMetadata("c", "pac", "pac.c", "path"),
+                [typeof(string)] = new ProtoTypeMetadata("d", "pac", "pac.d", "path"),
             };
 
-            var neededProtoTypesWithoutWellKnownTypes = new Type[] { typeof(object), typeof(string) };
+            // Remove the double since in its meta data this should not be created.
+            var typesThatNeedsToBeCreated = new Type[] { typeof(object), typeof(string) };
 
             var converterResult = new Dictionary<string, IProtoDefinition>
             {
@@ -215,7 +224,7 @@ namespace ProtoGenerationLib.Tests
             CollectionAssert.AreEqual(extractorResult, discovererGivenTypes.ToArray());
             Assert.AreSame(generationOptions, discovererGivenOptions);
 
-            CollectionAssert.AreEqual(neededProtoTypesWithoutWellKnownTypes, converterGivenTypes.ToArray());
+            CollectionAssert.AreEqual(typesThatNeedsToBeCreated, converterGivenTypes.ToArray());
             CollectionAssert.AreEquivalent(typesToMetadataAfterAddingOriginTypes, converterGivenMetadatas.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
             Assert.AreSame(generationOptions, extractorGivenOptions);
 
