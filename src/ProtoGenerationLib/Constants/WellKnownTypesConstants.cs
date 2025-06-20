@@ -25,10 +25,19 @@ namespace ProtoGenerationLib.Constants
         public static IReadOnlyDictionary<Type, IProtoTypeMetadata> PrimitiveTypesWrappers { get; }
 
         /// <summary>
+        /// A prefix that should be added to external protos file path in their proto metadata.
+        /// </summary>
+        /// <remarks>
+        /// External protos can be google well known types or any proto that is not primitive or
+        /// shouldn't be generated using this library like protos from another project.
+        /// </remarks>
+        public static string EXTERNAL_FILE_PATH_PREFIX = "~ExternalFilePathPrefix~";
+
+        /// <summary>
         /// Constant holding the directory in which
         /// all the google well known types exists.
         /// </summary>
-        public const string GOOGLE_PROTOBUF_DIR = "google/protobuf";
+        private const string GOOGLE_PROTOBUF_DIR = "google/protobuf";
 
         /// <summary>
         /// Constant holding the package in which
@@ -112,7 +121,7 @@ namespace ProtoGenerationLib.Constants
         /// <returns>The metadata of the well known type.</returns>
         private static IProtoTypeMetadata CreateProtobufWellKnownTypeMetadata(string typeName, string fileName)
         {
-            return new ProtoTypeMetadata(typeName, GOOGLE_PROTOBUF_PACKAGE, $"{GOOGLE_PROTOBUF_PACKAGE}.{typeName}", $"{GOOGLE_PROTOBUF_DIR}/{fileName}.{FILE_EXTENSION}");
+            return new ProtoTypeMetadata(typeName, GOOGLE_PROTOBUF_PACKAGE, $"{GOOGLE_PROTOBUF_PACKAGE}.{typeName}", $"{EXTERNAL_FILE_PATH_PREFIX}{GOOGLE_PROTOBUF_DIR}/{fileName}.{FILE_EXTENSION}");
         }
     }
 }

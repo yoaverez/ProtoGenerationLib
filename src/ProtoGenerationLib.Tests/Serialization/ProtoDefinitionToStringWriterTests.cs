@@ -271,14 +271,14 @@ enum DEnum {
         public void WriteToString_MultipleComponentsWithPathFromProtoRoot_StringIsCorrect()
         {
             // Arrange
-            protoDefinition.Imports.Add($"{WellKnownTypesConstants.GOOGLE_PROTOBUF_DIR}/file");
+            protoDefinition.Imports.Add($"{WellKnownTypesConstants.EXTERNAL_FILE_PATH_PREFIX}external/file/path");
             var pathFromProtoRoot = "path/from/proto_root";
             var expectedString =
 @"syntax = ""SyntaxDummy"";
 
 package a.b.c;
 
-import ""google/protobuf/file"";
+import ""external/file/path"";
 import ""path/from/proto_root/aImport"";
 import ""path/from/proto_root/import1"";
 

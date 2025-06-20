@@ -92,10 +92,11 @@ namespace ProtoGenerationLib.Serialization
             foreach (var import in imports)
             {
                 // Add the prefix to only generated types.
-                if (!import.StartsWith(WellKnownTypesConstants.GOOGLE_PROTOBUF_DIR))
+                if (!import.StartsWith(WellKnownTypesConstants.EXTERNAL_FILE_PATH_PREFIX))
                     prefixedImports.Add($"{protoPathPrefixAddition}{import}");
                 else
-                    prefixedImports.Add($"{import}");
+                    // Write the import as is without the external file path prefix.
+                    prefixedImports.Add($"{import.Substring(WellKnownTypesConstants.EXTERNAL_FILE_PATH_PREFIX.Length)}");
             }
 
             // We sort the imports in order to get the same result for the same imports
