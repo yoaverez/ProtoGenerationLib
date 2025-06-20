@@ -5,8 +5,7 @@ using ProtoGenerationLib.Strategies.Abstracts;
 namespace ProtoGenerationLib.Strategies.Internals.FileNamingStrategies
 {
     /// <summary>
-    /// A file naming strategy that
-    /// in which the file name will be the type name.
+    /// A file naming strategy in which the file name will be the type name.
     /// </summary>
     public class TypeNameAsFileNameStrategy : IFileNamingStrategy
     {
