@@ -13,7 +13,12 @@
         /// <summary>
         /// The package that the proto type is define within.
         /// </summary>
-        /// <remarks>The package components should be separated by '.'.</remarks>
+        /// <remarks>
+        /// <list type="number">
+        /// <item><b>The package components should be separated by '.'.</b></item>
+        /// <item><b>If this meta data is for primitive type, set this property to <see cref="string.Empty"/>.</b></item>
+        /// </list>
+        /// </remarks>
         string? Package { get; }
 
         /// <summary>
@@ -21,8 +26,18 @@
         /// in which this proto type is defined.
         /// </summary>
         /// <remarks>
-        /// <b>Note that the file path components should be separated by
+        /// <list type="number">
+        /// <item>
+        /// <b>The file path components should be separated by
         /// forward slash (/).</b>
+        /// </item>
+        /// <item>
+        /// <b>If you want to add an external proto add the
+        /// <see cref="Constants.WellKnownTypesConstants.EXTERNAL_FILE_PATH_PREFIX"/>
+        /// prefix to the file path.</b>
+        /// </item>
+        /// <item><b>If this meta data is for primitive type, set this property to <see cref="string.Empty"/>.</b></item>
+        /// </list>
         /// </remarks>
         string? FilePath { get; }
 
