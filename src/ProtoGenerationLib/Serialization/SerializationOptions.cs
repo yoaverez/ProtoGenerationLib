@@ -9,7 +9,7 @@
         /// An instance of the <see cref="SerializationOptions"/> containing the
         /// default values.
         /// </summary>
-        public static SerializationOptions Default;
+        public static SerializationOptions Default { get; set; }
 
         /// <inheritdoc/>
         public uint IndentSize { get; set; }

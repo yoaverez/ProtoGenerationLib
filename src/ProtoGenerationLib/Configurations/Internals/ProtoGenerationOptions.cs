@@ -12,7 +12,7 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// An instance of the <see cref="ProtoGenerationOptions"/> class
         /// that contains the default configurations.
         /// </summary>
-        public static ProtoGenerationOptions Default;
+        public static ProtoGenerationOptions Default { get; private set; }
 
         /// <inheritdoc cref="IProtoStylingConventionsStrategiesOptions"/>
         public ProtoStylingConventionsStrategiesOptions ProtoStylingConventionsStrategiesOptions { get; set; }

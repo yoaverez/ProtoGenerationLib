@@ -11,57 +11,57 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.External
         /// <summary>
         /// A lookup table for enum value numbering strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<EnumValueNumberingStrategyKind, string> EnumValueNumberingStrategiesLookup;
+        public static IReadOnlyDictionary<EnumValueNumberingStrategyKind, string> EnumValueNumberingStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for field numbering strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<FieldNumberingStrategyKind, string> FieldNumberingStrategiesLookup;
+        public static IReadOnlyDictionary<FieldNumberingStrategyKind, string> FieldNumberingStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for fields and properties extraction strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<FieldsAndPropertiesExtractionStrategyKind, string> FieldsAndPropertiesExtractionStrategiesLookup;
+        public static IReadOnlyDictionary<FieldsAndPropertiesExtractionStrategyKind, string> FieldsAndPropertiesExtractionStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for file path strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<FilePathStrategyKind, string> FilePathStrategiesLookup;
+        public static IReadOnlyDictionary<FilePathStrategyKind, string> FilePathStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for file path styling strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<FilePathStylingStrategyKind, string> FilePathStylingStrategiesLookup;
+        public static IReadOnlyDictionary<FilePathStylingStrategyKind, string> FilePathStylingStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for new type naming strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<NewTypeNamingStrategyKind, string> NewTypeNamingStrategiesLookup;
+        public static IReadOnlyDictionary<NewTypeNamingStrategyKind, string> NewTypeNamingStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for package naming strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<PackageNamingStrategyKind, string> PackageNamingStrategiesLookup;
+        public static IReadOnlyDictionary<PackageNamingStrategyKind, string> PackageNamingStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for parameter list naming strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<ParameterListNamingStrategyKind, string> ParameterListNamingStrategiesLookup;
+        public static IReadOnlyDictionary<ParameterListNamingStrategyKind, string> ParameterListNamingStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for proto styling strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<ProtoStylingStrategyKind, string> ProtoStylingStrategiesLookup;
+        public static IReadOnlyDictionary<ProtoStylingStrategyKind, string> ProtoStylingStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for package styling strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<PackageStylingStrategyKind, string> PackageStylingStrategiesLookup;
+        public static IReadOnlyDictionary<PackageStylingStrategyKind, string> PackageStylingStrategiesLookup { get; private set; }
 
         /// <summary>
         /// A lookup table for type naming strategies names.
         /// </summary>
-        public static readonly IReadOnlyDictionary<TypeNamingStrategyKind, string> TypeNamingStrategiesLookup;
+        public static IReadOnlyDictionary<TypeNamingStrategyKind, string> TypeNamingStrategiesLookup { get; private set; }
 
         /// <summary>
         /// Initialize the static members of the <see cref="StrategyNamesLookup"/> class.
