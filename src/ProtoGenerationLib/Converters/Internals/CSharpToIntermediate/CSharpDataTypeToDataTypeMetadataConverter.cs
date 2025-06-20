@@ -21,17 +21,17 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
         /// <summary>
         /// Converter from csharp enum type to intermediate enum metadata.
         /// </summary>
-        private ICSharpToIntermediateConverter<IEnumTypeMetadata> csharpEnumTypeToEnumMetaDataConverter;
+        private ICSharpToIntermediateConverter<IEnumTypeMetadata> csharpEnumTypeToEnumMetadataConverter;
 
         /// <summary>
         /// Create new instance of the <see cref="CSharpDataTypeToDataTypeMetadataConverter"/> class.
         /// </summary>
         /// <param name="componentsProvider"><inheritdoc cref="componentsProvider" path="/node()"/></param>
-        /// <param name="csharpEnumTypeToEnumMetaDataConverter"><inheritdoc cref="componentsProvider" path="/node()"/></param>
-        public CSharpDataTypeToDataTypeMetadataConverter(IProvider componentsProvider, ICSharpToIntermediateConverter<IEnumTypeMetadata>? csharpEnumTypeToEnumMetaDataConverter = null)
+        /// <param name="csharpEnumTypeToEnumMetadataConverter"><inheritdoc cref="componentsProvider" path="/node()"/></param>
+        public CSharpDataTypeToDataTypeMetadataConverter(IProvider componentsProvider, ICSharpToIntermediateConverter<IEnumTypeMetadata>? csharpEnumTypeToEnumMetadataConverter = null)
         {
             this.componentsProvider = componentsProvider;
-            this.csharpEnumTypeToEnumMetaDataConverter = csharpEnumTypeToEnumMetaDataConverter ?? new CSharpEnumTypeToEnumTypeMetadataConverter(componentsProvider);
+            this.csharpEnumTypeToEnumMetadataConverter = csharpEnumTypeToEnumMetadataConverter ?? new CSharpEnumTypeToEnumTypeMetadataConverter(componentsProvider);
         }
 
         /// <inheritdoc/>
@@ -59,7 +59,7 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
                 {
                     if (nestedType.IsEnum)
                     {
-                        metadata.NestedEnumTypes.Add(csharpEnumTypeToEnumMetaDataConverter.ConvertTypeToIntermediateRepresentation(nestedType, generationOptions));
+                        metadata.NestedEnumTypes.Add(csharpEnumTypeToEnumMetadataConverter.ConvertTypeToIntermediateRepresentation(nestedType, generationOptions));
                     }
                     else
                     {

@@ -17,7 +17,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
         /// <param name="declaringType">The type that has this field.</param>
         /// <param name="attributes">The attributes of the field.</param>
         /// <returns>A new instance of <see cref="FieldMetadata"/>.</returns>
-        public static FieldMetadata CreateFieldMetaData(Type type, string name, Type declaringType, IEnumerable<Attribute>? attributes = null)
+        public static FieldMetadata CreateFieldMetadata(Type type, string name, Type declaringType, IEnumerable<Attribute>? attributes = null)
         {
             attributes = attributes ?? new List<Attribute>();
             return new FieldMetadata(type, name, attributes, declaringType);

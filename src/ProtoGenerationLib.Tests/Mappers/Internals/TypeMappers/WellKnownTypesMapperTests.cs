@@ -52,17 +52,17 @@ namespace ProtoGenerationLib.Tests.Mappers.Internals.TypeMappers
 
         #endregion CanHandle Tests
 
-        #region MapTypeToProtoMetaData Tests
+        #region MapTypeToProtoMetadata Tests
 
         [ExpectedException(typeof(ArgumentException))]
         [TestMethod]
-        public void MapTypeToProtoMetaData_CanNotHandleType_ThrownArgumentException()
+        public void MapTypeToProtoMetadata_CanNotHandleType_ThrownArgumentException()
         {
             // Arrange
             var type = GetType();
 
             // Act
-            mapper.MapTypeToProtoMetaData(type);
+            mapper.MapTypeToProtoMetadata(type);
 
             // Assert
             // Noting to do.
@@ -72,18 +72,18 @@ namespace ProtoGenerationLib.Tests.Mappers.Internals.TypeMappers
         [DataRow(typeof(int))]
         [DataRow(typeof(object))]
         [TestMethod]
-        public void MapTypeToProtoMetaData_CanHandleType_ReturnSameMetadata(Type type)
+        public void MapTypeToProtoMetadata_CanHandleType_ReturnSameMetadata(Type type)
         {
             // Arrange
             var expectedMetadata = wellKnownTypesProtoMetadatas[type];
 
             // Act
-            var actualMetadata = mapper.MapTypeToProtoMetaData(type);
+            var actualMetadata = mapper.MapTypeToProtoMetadata(type);
 
             // Assert
             Assert.AreSame(expectedMetadata, actualMetadata);
         }
 
-        #endregion MapTypeToProtoMetaData Tests
+        #endregion MapTypeToProtoMetadata Tests
     }
 }

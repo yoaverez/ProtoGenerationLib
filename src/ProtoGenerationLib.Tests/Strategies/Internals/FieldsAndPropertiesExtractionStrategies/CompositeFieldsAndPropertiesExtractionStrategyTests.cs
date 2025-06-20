@@ -32,8 +32,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
             };
 
             mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.IsAny<Type>(), It.IsAny<IAnalysisOptions>()))
@@ -54,8 +54,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
             };
 
             // Mock the base type.
@@ -81,9 +81,9 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(TypeWithoutBaseType), "TypeWithoutBaseType", type),
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(TypeWithoutBaseType), "TypeWithoutBaseType", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
             };
 
             // Mock the base type.
@@ -108,23 +108,23 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var baseMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
             };
 
             var allMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
-                CreateFieldMetaData(typeof(int), "c", type),
-                CreateFieldMetaData(typeof(bool), "d", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
             };
 
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(TypeWithoutBaseType), nameof(TypeWithoutBaseType), type),
-                CreateFieldMetaData(typeof(int), "c", type),
-                CreateFieldMetaData(typeof(bool), "d", type),
+                CreateFieldMetadata(typeof(TypeWithoutBaseType), nameof(TypeWithoutBaseType), type),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
             };
 
             // Mock the base type.
@@ -149,23 +149,23 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var baseMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
             };
 
             var allMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
-                CreateFieldMetaData(typeof(int), "c", type),
-                CreateFieldMetaData(typeof(bool), "d", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
             };
 
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(TypeWithBaseType), nameof(TypeWithBaseType), type),
-                CreateFieldMetaData(typeof(int), "c", type),
-                CreateFieldMetaData(typeof(bool), "d", type),
+                CreateFieldMetadata(typeof(TypeWithBaseType), nameof(TypeWithBaseType), type),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
             };
 
             // Mock the base type.
@@ -190,20 +190,20 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var baseMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "d", type),
-                CreateFieldMetaData(typeof(bool), "e", type),
+                CreateFieldMetadata(typeof(int), "d", type),
+                CreateFieldMetadata(typeof(bool), "e", type),
             };
 
             var allMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "C", type),
-                CreateFieldMetaData(typeof(bool), "garbage", type),
+                CreateFieldMetadata(typeof(int), "C", type),
+                CreateFieldMetadata(typeof(bool), "garbage", type),
             };
 
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
             };
 
             // Mock the base type.

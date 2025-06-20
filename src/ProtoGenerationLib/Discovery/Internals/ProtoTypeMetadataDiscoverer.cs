@@ -376,7 +376,7 @@ namespace ProtoGenerationLib.Discovery.Internals
             {
                 if (mapper.CanHandle(type))
                 {
-                    protoTypeMetadata = mapper.MapTypeToProtoMetaData(type);
+                    protoTypeMetadata = mapper.MapTypeToProtoMetadata(type);
                     return true;
                 }
             }

@@ -43,6 +43,6 @@ namespace ProtoGenerationLib.Mappers.Abstracts
         /// </item>
         /// </list>
         /// </remarks>
-        IProtoTypeBaseMetadata MapTypeToProtoMetaData(Type type);
+        IProtoTypeBaseMetadata MapTypeToProtoMetadata(Type type);
     }
 }

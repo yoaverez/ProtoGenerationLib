@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
 {
-    /// <inheritdoc cref="IEnumMetaData"/>
+    /// <inheritdoc cref="IEnumTypeMetadata"/>
     public class EnumTypeMetadata : IEnumTypeMetadata
     {
         /// <inheritdoc/>

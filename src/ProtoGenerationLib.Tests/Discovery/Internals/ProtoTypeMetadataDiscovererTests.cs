@@ -527,7 +527,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
             if (protoTypeBaseMetadata is not null)
             {
-                mock.Setup(mapper => mapper.MapTypeToProtoMetaData(It.IsAny<Type>()))
+                mock.Setup(mapper => mapper.MapTypeToProtoMetadata(It.IsAny<Type>()))
                     .Returns(protoTypeBaseMetadata);
             }
 
@@ -542,7 +542,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
             if (protoTypeBaseMetadata is not null)
             {
-                mock.Setup(mapper => mapper.MapTypeToProtoMetaData(It.IsAny<Type>()))
+                mock.Setup(mapper => mapper.MapTypeToProtoMetadata(It.IsAny<Type>()))
                     .Returns(protoTypeBaseMetadata);
             }
 

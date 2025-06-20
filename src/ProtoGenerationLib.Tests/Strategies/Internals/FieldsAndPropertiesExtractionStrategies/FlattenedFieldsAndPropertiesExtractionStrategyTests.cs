@@ -45,8 +45,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(TypeContainsOnlyEmptyMembers.I1), nameof(TypeContainsOnlyEmptyMembers.I1Prop), type),
-                CreateFieldMetaData(typeof(TypeContainsOnlyEmptyMembers.C1), nameof(TypeContainsOnlyEmptyMembers.C1Prop), type),
+                CreateFieldMetadata(typeof(TypeContainsOnlyEmptyMembers.I1), nameof(TypeContainsOnlyEmptyMembers.I1Prop), type),
+                CreateFieldMetadata(typeof(TypeContainsOnlyEmptyMembers.C1), nameof(TypeContainsOnlyEmptyMembers.C1Prop), type),
             };
 
             // Act + Assert
@@ -61,9 +61,9 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "Prop1", type),
-                CreateFieldMetaData(typeof(Enum1), "Prop2", type),
-                CreateFieldMetaData(typeof(IEnumerable<string>), "Prop3", type),
+                CreateFieldMetadata(typeof(int), "Prop1", type),
+                CreateFieldMetadata(typeof(Enum1), "Prop2", type),
+                CreateFieldMetadata(typeof(IEnumerable<string>), "Prop3", type),
             };
 
             // Act + Assert
@@ -82,9 +82,9 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(bool), "A", type),
-                CreateFieldMetaData(typeof(string), "Str", type),
-                CreateFieldMetaData(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(bool), "A", type),
+                CreateFieldMetadata(typeof(string), "Str", type),
+                CreateFieldMetadata(typeof(string), "Name", type),
             };
 
             // Act + Assert
@@ -99,10 +99,10 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(true, false, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(bool), "A", type),
-                CreateFieldMetaData(typeof(string), "Str", type),
-                CreateFieldMetaData(typeof(string), "Name", type),
-                CreateFieldMetaData(typeof(int), "publicField", type),
+                CreateFieldMetadata(typeof(bool), "A", type),
+                CreateFieldMetadata(typeof(string), "Str", type),
+                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(int), "publicField", type),
             };
 
             // Act + Assert
@@ -117,10 +117,10 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, true, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(bool), "A", type),
-                CreateFieldMetaData(typeof(string), "Str", type),
-                CreateFieldMetaData(typeof(string), "Name", type),
-                CreateFieldMetaData(typeof(int), "PublicStaticProp", type),
+                CreateFieldMetadata(typeof(bool), "A", type),
+                CreateFieldMetadata(typeof(string), "Str", type),
+                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(int), "PublicStaticProp", type),
             };
 
             // Act + Assert
@@ -135,10 +135,10 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, true);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(bool), "A", type),
-                CreateFieldMetaData(typeof(string), "Str", type),
-                CreateFieldMetaData(typeof(string), "Name", type),
-                CreateFieldMetaData(typeof(int), "PrivateProp", type),
+                CreateFieldMetadata(typeof(bool), "A", type),
+                CreateFieldMetadata(typeof(string), "Str", type),
+                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(int), "PrivateProp", type),
             };
 
             // Act + Assert
@@ -153,11 +153,11 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(true, true, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(bool), "A", type),
-                CreateFieldMetaData(typeof(string), "Str", type),
-                CreateFieldMetaData(typeof(string), "Name", type),
-                CreateFieldMetaData(typeof(int), "publicField", type),
-                CreateFieldMetaData(typeof(int), "PublicStaticProp", type),
+                CreateFieldMetadata(typeof(bool), "A", type),
+                CreateFieldMetadata(typeof(string), "Str", type),
+                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(int), "publicField", type),
+                CreateFieldMetadata(typeof(int), "PublicStaticProp", type),
             };
 
             // Act + Assert
@@ -172,14 +172,14 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(true, false, true);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(bool), "A", type),
-                CreateFieldMetaData(typeof(string), "Str", type),
-                CreateFieldMetaData(typeof(string), "Name", type),
-                CreateFieldMetaData(typeof(int), "publicField", type),
-                CreateFieldMetaData(typeof(int), "PrivateProp", type),
-                CreateFieldMetaData(typeof(int), "privateField", type),
-                CreateFieldMetaData(typeof(int), "protectedField", type),
-                CreateFieldMetaData(typeof(int), "_publicStaticProp", type),
+                CreateFieldMetadata(typeof(bool), "A", type),
+                CreateFieldMetadata(typeof(string), "Str", type),
+                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(int), "publicField", type),
+                CreateFieldMetadata(typeof(int), "PrivateProp", type),
+                CreateFieldMetadata(typeof(int), "privateField", type),
+                CreateFieldMetadata(typeof(int), "protectedField", type),
+                CreateFieldMetadata(typeof(int), "_publicStaticProp", type),
             };
 
             // Act + Assert
@@ -194,12 +194,12 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, true, true);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(bool), "A", type),
-                CreateFieldMetaData(typeof(string), "Str", type),
-                CreateFieldMetaData(typeof(string), "Name", type),
-                CreateFieldMetaData(typeof(int), "PrivateProp", type),
-                CreateFieldMetaData(typeof(int), "PublicStaticProp", type),
-                CreateFieldMetaData(typeof(int), "PrivateStaticProp", type),
+                CreateFieldMetadata(typeof(bool), "A", type),
+                CreateFieldMetadata(typeof(string), "Str", type),
+                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(int), "PrivateProp", type),
+                CreateFieldMetadata(typeof(int), "PublicStaticProp", type),
+                CreateFieldMetadata(typeof(int), "PrivateStaticProp", type),
             };
 
             // Act + Assert
@@ -214,15 +214,15 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(true, true, true);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(bool), "A", type),
-                CreateFieldMetaData(typeof(string), "Str", type),
-                CreateFieldMetaData(typeof(string), "Name", type),
-                CreateFieldMetaData(typeof(int), "PrivateProp", type),
-                CreateFieldMetaData(typeof(int), "PublicStaticProp", type),
-                CreateFieldMetaData(typeof(int), "PrivateStaticProp", type),
-                CreateFieldMetaData(typeof(int), "publicField", type),
-                CreateFieldMetaData(typeof(int), "privateField", type),
-                CreateFieldMetaData(typeof(int), "protectedField", type),
+                CreateFieldMetadata(typeof(bool), "A", type),
+                CreateFieldMetadata(typeof(string), "Str", type),
+                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(int), "PrivateProp", type),
+                CreateFieldMetadata(typeof(int), "PublicStaticProp", type),
+                CreateFieldMetadata(typeof(int), "PrivateStaticProp", type),
+                CreateFieldMetadata(typeof(int), "publicField", type),
+                CreateFieldMetadata(typeof(int), "privateField", type),
+                CreateFieldMetadata(typeof(int), "protectedField", type),
             };
 
             // Act + Assert
@@ -241,8 +241,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
             };
 
             // Act + Assert
@@ -257,8 +257,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, true);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "a", type),
-                CreateFieldMetaData(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
             };
 
             // Act + Assert
@@ -277,7 +277,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(true, true, true);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(bool), "d", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
             };
 
             // Act + Assert
@@ -296,8 +296,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "Value", type),
-                CreateFieldMetaData(typeof(RecursiveType), "Next", type),
+                CreateFieldMetadata(typeof(int), "Value", type),
+                CreateFieldMetadata(typeof(RecursiveType), "Next", type),
             };
 
             // Act + Assert
@@ -316,11 +316,11 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(true, false, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(int), "Prop1", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
-                CreateFieldMetaData(typeof(int), "field1", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
-                CreateFieldMetaData(typeof(int), "field2", type),
-                CreateFieldMetaData(typeof(int), "Prop2", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
-                CreateFieldMetaData(typeof(int), "field3", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
+                CreateFieldMetadata(typeof(int), "Prop1", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
+                CreateFieldMetadata(typeof(int), "field1", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
+                CreateFieldMetadata(typeof(int), "field2", type),
+                CreateFieldMetadata(typeof(int), "Prop2", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
+                CreateFieldMetadata(typeof(int), "field3", type, new List<Attribute> { new OptionalDataMemberAttribute() }),
             };
 
             // Act + Assert
@@ -347,8 +347,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, false);
             var expectedMembers = new List<IFieldMetadata>
             {
-                CreateFieldMetaData(typeof(TypeContainsFieldThatContainsOtherFieldType.NestedClass1), "Prop1", type),
-                CreateFieldMetaData(typeof(TypeContainsFieldThatContainsOtherFieldType.NestedClass2), "Prop2", type),
+                CreateFieldMetadata(typeof(TypeContainsFieldThatContainsOtherFieldType.NestedClass1), "Prop1", type),
+                CreateFieldMetadata(typeof(TypeContainsFieldThatContainsOtherFieldType.NestedClass2), "Prop2", type),
             };
 
             // Act + Assert
