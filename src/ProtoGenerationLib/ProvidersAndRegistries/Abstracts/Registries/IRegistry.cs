@@ -26,13 +26,13 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
 
         #endregion Custom Converters Registry
 
-        #region Custom Type Name Mappers Registry
+        #region Custom Type Mappers Registry
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomTypeNameMappersRegistry.RegisterCustomTypeNameMapper(ITypeMapper)"/>
+        /// <inheritdoc cref="ICustomTypeMappersRegistry.RegisterCustomTypeMapper(ITypeMapper)"/>
         IRegistry RegisterCustomTypeNameMapper(ITypeMapper typeNameMapper);
 
-        #endregion Custom Type Name Mappers Registry
+        #endregion Custom Type Mappers Registry
 
         #region Proto Styling Conventions Strategies Registry
 

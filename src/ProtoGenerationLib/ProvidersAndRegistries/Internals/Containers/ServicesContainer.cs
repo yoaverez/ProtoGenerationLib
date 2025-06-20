@@ -19,8 +19,8 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         /// <inheritdoc cref="CustomConvertersContainer"/>
         private CustomConvertersContainer customConvertersContainer;
 
-        /// <inheritdoc cref="CustomTypeNameMappersContainer"/>
-        private CustomTypeNameMappersContainer customTypeNameMappersContainer;
+        /// <inheritdoc cref="CustomTypeMappersContainer"/>
+        private CustomTypeMappersContainer customTypeMappersContainer;
 
         /// <inheritdoc cref="ProtoStylingConventionsStrategiesContainer"/>
         private ProtoStylingConventionsStrategiesContainer protoStylingConventionsStrategiesContainer;
@@ -43,7 +43,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         public ServicesContainer()
         {
             customConvertersContainer = new CustomConvertersContainer();
-            customTypeNameMappersContainer = new CustomTypeNameMappersContainer();
+            customTypeMappersContainer = new CustomTypeMappersContainer();
             protoStylingConventionsStrategiesContainer = new ProtoStylingConventionsStrategiesContainer();
             protoNamingStrategiesContainer = new ProtoNamingStrategiesContainer();
             numberingStrategiesContainer = new NumberingStrategiesContainer();
@@ -81,15 +81,15 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
 
         #endregion ICustomConvertersProvider Implementation
 
-        #region ICustomTypeNameMappersProvider Implementation
+        #region ICustomTypeMappersProvider Implementation
 
         /// <inheritdoc/>
-        public IEnumerable<ITypeMapper> GetCustomTypeNameMappers()
+        public IEnumerable<ITypeMapper> GetCustomTypeMappers()
         {
-            return customTypeNameMappersContainer.GetCustomTypeNameMappers();
+            return customTypeMappersContainer.GetCustomTypeMappers();
         }
 
-        #endregion ICustomTypeNameMappersProvider Implementation
+        #endregion ICustomTypeMappersProvider Implementation
 
         #region IProtoStylingConventionsStrategiesProvider Implementation
 
@@ -206,16 +206,16 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
 
         #endregion ICustomConvertersRegistry Implementation
 
-        #region ICustomTypeNameMappersRegistry Implementation
+        #region ICustomTypeMappersRegistry Implementation
 
         /// <inheritdoc/>
         public IRegistry RegisterCustomTypeNameMapper(ITypeMapper typeNameMapper)
         {
-            customTypeNameMappersContainer.RegisterCustomTypeNameMapper(typeNameMapper);
+            customTypeMappersContainer.RegisterCustomTypeMapper(typeNameMapper);
             return this;
         }
 
-        #endregion ICustomTypeNameMappersRegistry Implementation
+        #endregion ICustomTypeMappersRegistry Implementation
 
         #region IProtoStylingConventionsStrategiesRegistry Implementation
 

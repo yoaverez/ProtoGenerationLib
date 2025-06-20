@@ -236,25 +236,25 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
 
         #endregion ICustomConvertersProvider Tests
 
-        #region ICustomTypeNameMappersProvider Tests
+        #region ICustomTypeMappersProvider Tests
 
-        #region GetCustomTypeNameMappers Tests
+        #region GetCustomTypeMappers Tests
 
         [TestMethod]
-        public void GetCustomTypeNameMappers_NoMappers_ReturnsEmptyEnumerable()
+        public void GetCustomTypeMappers_NoMappers_ReturnsEmptyEnumerable()
         {
             // Arrange
             var expectedMappers = new List<ITypeMapper>();
 
             // Act
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
 
             // Assert
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
         [TestMethod]
-        public void GetCustomTypeNameMappers_ThereAreMappers_ReturnsAllMappers()
+        public void GetCustomTypeMappers_ThereAreMappers_ReturnsAllMappers()
         {
             // Arrange
             var mapper1 = new Mock<ITypeMapper>();
@@ -269,14 +269,14 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
             container.RegisterCustomTypeNameMapper(mapper2.Object);
 
             // Act
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
 
             // Assert
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
         [TestMethod]
-        public void GetCustomTypeNameMappers_SameMapperMultipleTimes_ReturnsAllMappersIncludingDuplicates()
+        public void GetCustomTypeMappers_SameMapperMultipleTimes_ReturnsAllMappersIncludingDuplicates()
         {
             // Arrange
             var mapper1 = new Mock<ITypeMapper>();
@@ -292,15 +292,15 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
             container.RegisterCustomTypeNameMapper(mapper1.Object);
 
             // Act
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
 
             // Assert
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
-        #endregion GetCustomTypeNameMappers Tests
+        #endregion GetCustomTypeMappers Tests
 
-        #endregion ICustomTypeNameMappersProvider Tests
+        #endregion ICustomTypeMappersProvider Tests
 
         #region IProtoStylingConventionsStrategiesProvider Tests
 
@@ -1034,7 +1034,7 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
 
         #endregion ICustomConvertersRegistry Tests
 
-        #region ICustomTypeNameMappersRegistry Tests
+        #region ICustomTypeMappersRegistry Tests
 
         #region RegisterCustomTypeNameMapper Tests
 
@@ -1052,7 +1052,7 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
             var registry = container.RegisterCustomTypeNameMapper(mapper.Object);
 
             // Assert
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
@@ -1072,7 +1072,7 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
             var registry = container.RegisterCustomTypeNameMapper(mapper.Object);
 
             // Assert
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
             Assert.AreSame(container, registry);
         }
@@ -1094,14 +1094,14 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
             var registry = container.RegisterCustomTypeNameMapper(mapper2.Object);
 
             // Assert
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
             Assert.AreSame(container, registry);
         }
 
         #endregion RegisterCustomTypeNameMapper Tests
 
-        #endregion ICustomTypeNameMappersRegistry Tests
+        #endregion ICustomTypeMappersRegistry Tests
 
         #region IProtoStylingConventionsStrategiesRegistry Tests
 

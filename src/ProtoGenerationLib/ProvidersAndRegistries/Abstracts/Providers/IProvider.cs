@@ -4,7 +4,7 @@
     /// Provider that provide all the customizations.
     /// </summary>
     public interface IProvider : ICustomConvertersProvider,
-                                 ICustomTypeNameMappersProvider,
+                                 ICustomTypeMappersProvider,
                                  INumberingStrategiesProvider,
                                  IProtoNamingStrategiesProvider,
                                  IProtoStylingConventionsStrategiesProvider,

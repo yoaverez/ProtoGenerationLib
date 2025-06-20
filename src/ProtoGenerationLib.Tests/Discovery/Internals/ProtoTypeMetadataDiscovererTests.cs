@@ -68,7 +68,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
         {
             customMappers = new List<ITypeMapper>();
             mockIProvider = new Mock<IProvider>();
-            mockIProvider.Setup(provider => provider.GetCustomTypeNameMappers())
+            mockIProvider.Setup(provider => provider.GetCustomTypeMappers())
                          .Returns(customMappers);
 
             // SetUp strategies.

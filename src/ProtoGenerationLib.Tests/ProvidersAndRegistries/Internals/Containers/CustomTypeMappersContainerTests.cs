@@ -5,35 +5,35 @@ using ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers;
 namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
 {
     [TestClass]
-    public class CustomTypeNameMappersContainerTests
+    public class CustomTypeMappersContainerTests
     {
-        private CustomTypeNameMappersContainer container;
+        private CustomTypeMappersContainer container;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            container = new CustomTypeNameMappersContainer();
+            container = new CustomTypeMappersContainer();
         }
 
-        #region ICustomTypeNameMappersProvider Tests
+        #region ICustomTypeMappersProvider Tests
 
-        #region GetCustomTypeNameMappers Tests
+        #region GetCustomTypeMappers Tests
 
         [TestMethod]
-        public void GetCustomTypeNameMappers_NoMappers_ReturnsEmptyEnumerable()
+        public void GetCustomTypeMappers_NoMappers_ReturnsEmptyEnumerable()
         {
             // Arrange
             var expectedMappers = new List<ITypeMapper>();
 
             // Act
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
 
             // Assert
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
         [TestMethod]
-        public void GetCustomTypeNameMappers_ThereAreMappers_ReturnsAllMappers()
+        public void GetCustomTypeMappers_ThereAreMappers_ReturnsAllMappers()
         {
             // Arrange
             var mapper1 = new Mock<ITypeMapper>();
@@ -44,18 +44,18 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
                 mapper1.Object, mapper2.Object
             };
 
-            container.RegisterCustomTypeNameMapper(mapper1.Object);
-            container.RegisterCustomTypeNameMapper(mapper2.Object);
+            container.RegisterCustomTypeMapper(mapper1.Object);
+            container.RegisterCustomTypeMapper(mapper2.Object);
 
             // Act
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
 
             // Assert
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
         [TestMethod]
-        public void GetCustomTypeNameMappers_SameMapperMultipleTimes_ReturnsAllMappersIncludingDuplicates()
+        public void GetCustomTypeMappers_SameMapperMultipleTimes_ReturnsAllMappersIncludingDuplicates()
         {
             // Arrange
             var mapper1 = new Mock<ITypeMapper>();
@@ -66,22 +66,22 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
                 mapper1.Object, mapper2.Object, mapper1.Object
             };
 
-            container.RegisterCustomTypeNameMapper(mapper1.Object);
-            container.RegisterCustomTypeNameMapper(mapper2.Object);
-            container.RegisterCustomTypeNameMapper(mapper1.Object);
+            container.RegisterCustomTypeMapper(mapper1.Object);
+            container.RegisterCustomTypeMapper(mapper2.Object);
+            container.RegisterCustomTypeMapper(mapper1.Object);
 
             // Act
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
 
             // Assert
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
-        #endregion GetCustomTypeNameMappers Tests
+        #endregion GetCustomTypeMappers Tests
 
-        #endregion ICustomTypeNameMappersProvider Tests
+        #endregion ICustomTypeMappersProvider Tests
 
-        #region ICustomTypeNameMappersRegistry Tests
+        #region ICustomTypeMappersRegistry Tests
 
         #region RegisterCustomTypeNameMapper Tests
 
@@ -96,10 +96,10 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
             };
 
             // Act
-            container.RegisterCustomTypeNameMapper(mapper.Object);
+            container.RegisterCustomTypeMapper(mapper.Object);
 
             // Assert
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
@@ -113,13 +113,13 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
                 mapper.Object, mapper.Object,
             };
 
-            container.RegisterCustomTypeNameMapper(mapper.Object);
+            container.RegisterCustomTypeMapper(mapper.Object);
 
             // Act
-            container.RegisterCustomTypeNameMapper(mapper.Object);
+            container.RegisterCustomTypeMapper(mapper.Object);
 
             // Assert
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
@@ -134,18 +134,18 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
                 mapper1.Object, mapper2.Object,
             };
 
-            container.RegisterCustomTypeNameMapper(mapper1.Object);
+            container.RegisterCustomTypeMapper(mapper1.Object);
 
             // Act
-            container.RegisterCustomTypeNameMapper(mapper2.Object);
+            container.RegisterCustomTypeMapper(mapper2.Object);
 
             // Assert
-            var actualMappers = container.GetCustomTypeNameMappers().ToList();
+            var actualMappers = container.GetCustomTypeMappers().ToList();
             CollectionAssert.AreEqual(expectedMappers, actualMappers);
         }
 
         #endregion RegisterCustomTypeNameMapper Tests
 
-        #endregion ICustomTypeNameMappersRegistry Tests
+        #endregion ICustomTypeMappersRegistry Tests
     }
 }

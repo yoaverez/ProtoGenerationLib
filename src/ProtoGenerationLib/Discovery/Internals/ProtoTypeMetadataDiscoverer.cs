@@ -54,7 +54,7 @@ namespace ProtoGenerationLib.Discovery.Internals
         public Dictionary<Type, IProtoTypeMetadata> DiscoverProtosMetadata(IEnumerable<Type> types,
                                                                            IProtoGenerationOptions protoGeneratorConfiguration)
         {
-            var userDefinedTypeMappers = componentsProvider.GetCustomTypeNameMappers();
+            var userDefinedTypeMappers = componentsProvider.GetCustomTypeMappers();
 
             // Note that the default mappers comes before the user mappers
             // since the default mappers are meant for types like primitives

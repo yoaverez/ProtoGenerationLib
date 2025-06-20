@@ -6,12 +6,12 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers
     /// <summary>
     /// Provider for custom type mappers.
     /// </summary>
-    public interface ICustomTypeNameMappersProvider
+    public interface ICustomTypeMappersProvider
     {
         /// <summary>
-        /// Get all the custom type name mappers.
+        /// Get all the custom type mappers.
         /// </summary>
-        /// <returns>All the custom type name mappers.</returns>
-        IEnumerable<ITypeMapper> GetCustomTypeNameMappers();
+        /// <returns>All the custom type mappers.</returns>
+        IEnumerable<ITypeMapper> GetCustomTypeMappers();
     }
 }
