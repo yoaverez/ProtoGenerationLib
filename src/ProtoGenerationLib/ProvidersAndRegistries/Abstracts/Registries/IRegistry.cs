@@ -92,6 +92,10 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
         /// <inheritdoc cref="INewTypeNamingStrategiesRegistry.RegisterParameterListNamingStrategy(string, IParameterListNamingStrategy)"/>
         IRegistry RegisterParameterListNamingStrategy(string strategyName, IParameterListNamingStrategy strategy);
 
+        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
+        /// <inheritdoc cref="INewTypeNamingStrategiesRegistry.RegisterNewTypeNamingStrategy(string, INewTypeNamingStrategy)"/>
+        IRegistry RegisterNewTypeNamingStrategy(string strategyName, INewTypeNamingStrategy strategy);
+
         #endregion Parameters List Naming Strategies Registry
     }
 }
