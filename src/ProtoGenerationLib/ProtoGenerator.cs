@@ -1,19 +1,18 @@
-﻿using ProtoGenerationLib.Converters.Internals;
+﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Configurations.Internals;
+using ProtoGenerationLib.Converters.Abstracts;
+using ProtoGenerationLib.Converters.Internals;
+using ProtoGenerationLib.Discovery.Abstracts;
 using ProtoGenerationLib.Discovery.Internals;
+using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Extractors.Internals;
+using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries;
+using ProtoGenerationLib.ProvidersAndRegistries.Internals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.ProvidersAndRegistries.Internals;
-using ProtoGenerationLib.Configurations.Internals;
-using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Extractors.Abstracts;
-using ProtoGenerationLib.Converters.Abstracts;
-using ProtoGenerationLib.Constants;
-using ProtoGenerationLib.Discovery.Abstracts;
 
 namespace ProtoGenerationLib
 {
@@ -39,20 +38,20 @@ namespace ProtoGenerationLib
         /// <summary>
         /// Create new instance of the <see cref="ProtoGenerator"/> class.
         /// </summary>
-        /// <param name="componentsProvider">A provider of all the proto generator customizations.</param>
+        /// <param name="providerAndRegister">A provider and register of all the proto generator customizations.</param>
         /// <param name="protoTypesExtractor"><inheritdoc cref="protoTypesExtractor" path="/node()"/></param>
         /// <param name="protoTypeMetadataDiscoverer"><inheritdoc cref="protoTypeMetadataDiscoverer" path="/node()"/></param>
         /// <param name="csharpToProtoTypesConverter"><inheritdoc cref="csharpToProtoTypesConverter" path="/node()"/></param>
-        public ProtoGenerator(IProvider? componentsProvider = null,
+        public ProtoGenerator(IProviderAndRegister? providerAndRegister = null,
                               IProtoTypesExtractor? protoTypesExtractor = null,
                               IProtoTypeMetadataDiscoverer? protoTypeMetadataDiscoverer = null,
                               ICSharpToProtoTypesConverter? csharpToProtoTypesConverter = null)
         {
-            IProvider provider = componentsProvider ?? DefaultServicesContainer.Instance;
-            Registry = DefaultServicesContainer.Instance;
-            this.protoTypesExtractor = protoTypesExtractor ?? new ProtoTypesExtractor(provider);
-            this.protoTypeMetadataDiscoverer = protoTypeMetadataDiscoverer ?? new ProtoTypeMetadataDiscoverer(provider);
-            this.csharpToProtoTypesConverter = csharpToProtoTypesConverter ?? new CSharpToProtoConverter(provider);
+            providerAndRegister = providerAndRegister ?? DefaultServicesContainer.CreateDefaultServicesContainer();
+            Registry = providerAndRegister;
+            this.protoTypesExtractor = protoTypesExtractor ?? new ProtoTypesExtractor(providerAndRegister);
+            this.protoTypeMetadataDiscoverer = protoTypeMetadataDiscoverer ?? new ProtoTypeMetadataDiscoverer(providerAndRegister);
+            this.csharpToProtoTypesConverter = csharpToProtoTypesConverter ?? new CSharpToProtoConverter(providerAndRegister);
         }
 
         /// <summary>

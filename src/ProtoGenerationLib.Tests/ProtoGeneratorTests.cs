@@ -1,13 +1,12 @@
 ﻿using Moq;
-using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Configurations.Internals;
-using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Converters.Abstracts;
-using ProtoGenerationLib.Utilities.CollectionUtilities;
 using ProtoGenerationLib.Discovery.Abstracts;
+using ProtoGenerationLib.Extractors.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
+using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts;
 
 namespace ProtoGenerationLib.Tests
 {
@@ -31,9 +30,9 @@ namespace ProtoGenerationLib.Tests
             mockProtoTypeMetadataDiscoverer = new Mock<IProtoTypeMetadataDiscoverer>();
             mockCSharpToProtoTypesConverter = new Mock<ICSharpToProtoTypesConverter>();
 
-            var mockIProvider = new Mock<IProvider>();
+            var mockIProviderAndRegister = new Mock<IProviderAndRegister>();
 
-            protoGenerator = new ProtoGenerator(mockIProvider.Object,
+            protoGenerator = new ProtoGenerator(mockIProviderAndRegister.Object,
                                                 mockProtoTypesExtractor.Object,
                                                 mockProtoTypeMetadataDiscoverer.Object,
                                                 mockCSharpToProtoTypesConverter.Object);

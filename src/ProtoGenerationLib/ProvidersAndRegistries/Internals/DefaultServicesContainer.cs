@@ -41,7 +41,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals
         /// A new instance of <see cref="IProviderAndRegister"/>
         /// in which all the project defined strategies are registered.
         /// </returns>
-        private static IProviderAndRegister CreateDefaultServicesContainer()
+        public static IProviderAndRegister CreateDefaultServicesContainer()
         {
             var container = new ServicesContainer();
 
