@@ -12,5 +12,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.DummyTypes
         public double Method2(int a, bool b);
 
         public double Method3(int a);
+
+        public double Method4(int a);
     }
 }

@@ -15,7 +15,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
     [TestClass]
     public class ProtoTypeMetadataDiscovererTests
     {
-        private static ProtoGenerationOptions generationOptions;
+        private ProtoGenerationOptions generationOptions;
 
         private Mock<IProvider> mockIProvider;
 
@@ -37,8 +37,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
         private Mock<IFilePathStylingStrategy> mockFilePathStylingStrategy;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
+        [TestInitialize]
+        public void TestInitialize()
         {
             generationOptions = new ProtoGenerationOptions
             {
@@ -59,13 +59,10 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 AnalysisOptions = new AnalysisOptions
                 {
                     ProtoServiceAttribute = typeof(ProtoServiceAttribute),
+                    IsProtoServiceDelegate = (type) => false,
                 }
             };
-        }
 
-        [TestInitialize]
-        public void TestInitialize()
-        {
             customMappers = new List<ITypeMapper>();
             mockIProvider = new Mock<IProvider>();
             mockIProvider.Setup(provider => provider.GetCustomTypeMappers())
@@ -261,7 +258,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
         [DynamicData(nameof(GetAllMissingPropsOptions), DynamicDataSourceType.Method)]
         [TestMethod]
-        public void DiscoverProtosMetadata_TypeCanBeHandledByDefaultMapperOnlyAndCustomMapperDidNotFillAllProps_MissingPropsAreFilled(IProtoTypeBaseMetadata protoTypeBaseMetadata)
+        public void DiscoverProtosMetadata_TypeCanBeHandledByDefaultMapperOnlyAndDefaultMapperDidNotFillAllProps_MissingPropsAreFilled(IProtoTypeBaseMetadata protoTypeBaseMetadata)
         {
             // Arrange
             var type = typeof(int);
@@ -281,6 +278,127 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
             if (protoTypeBaseMetadata.FilePath is null)
                 correctBaseMetadata.FilePath = string.Join("-", filledFilePath.Split("/"));
+
+            var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, $"{correctBaseMetadata.Package}.{correctBaseMetadata.Name}");
+            var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>
+            {
+                [type] = correctMetadata
+            };
+
+            var defaultMapper = CreateAndSetUpITypeMapperMock(true, protoTypeBaseMetadata);
+
+            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { defaultMapper.Object });
+
+            // Act
+            var actualTypeToProtoMetadataMapping = discoverer.DiscoverProtosMetadata(types, generationOptions);
+
+            // Assert
+            CollectionAssert.AreEqual(expectedTypeToProtoMetadataMapping, actualTypeToProtoMetadataMapping.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+        }
+
+        [TestMethod]
+        public void DiscoverProtosMetadata_TypeIsServiceByAttributeAndCanBeHandledByDefaultMapperOnlyAndDefaultMapperDidNotFillName_MissingNameIsFilled()
+        {
+            // Arrange
+            var protoTypeBaseMetadata = new DummyIProtoTypeBaseMetadata()
+            {
+                Name = null,
+                FilePath = "a",
+                Package = "b",
+            };
+            var type = typeof(IContractType1);
+            var types = new List<Type> { type };
+
+            var filledTypeName = "type name";
+            var filledPackageName = new string[] { "package", "name" };
+            var filledFilePath = "file/path.proto";
+            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs), filePathComponents => string.Join("-", filePathComponents));
+
+            var correctBaseMetadata = new ProtoTypeBaseMetadata(protoTypeBaseMetadata);
+            if (protoTypeBaseMetadata.Name is null)
+                correctBaseMetadata.Name = filledTypeName.ToUpperInvariant();
+
+            var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, $"{correctBaseMetadata.Package}.{correctBaseMetadata.Name}");
+            var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>
+            {
+                [type] = correctMetadata
+            };
+
+            var defaultMapper = CreateAndSetUpITypeMapperMock(true, protoTypeBaseMetadata);
+
+            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { defaultMapper.Object });
+
+            // Act
+            var actualTypeToProtoMetadataMapping = discoverer.DiscoverProtosMetadata(types, generationOptions);
+
+            // Assert
+            CollectionAssert.AreEqual(expectedTypeToProtoMetadataMapping, actualTypeToProtoMetadataMapping.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+        }
+
+        [TestMethod]
+        public void DiscoverProtosMetadata_TypeIsServiceByAnotherAttributeAndCanBeHandledByDefaultMapperOnlyAndDefaultMapperDidNotFillName_MissingNameIsFilled()
+        {
+            // Arrange
+            var protoTypeBaseMetadata = new DummyIProtoTypeBaseMetadata()
+            {
+                Name = null,
+                FilePath = "a",
+                Package = "b",
+            };
+            var type = typeof(IContractType2);
+            var types = new List<Type> { type };
+
+            generationOptions.AnalysisOptions.ProtoServiceAttribute = typeof(ObsoleteAttribute);
+
+            var filledTypeName = "type name";
+            var filledPackageName = new string[] { "package", "name" };
+            var filledFilePath = "file/path.proto";
+            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs), filePathComponents => string.Join("-", filePathComponents));
+
+            var correctBaseMetadata = new ProtoTypeBaseMetadata(protoTypeBaseMetadata);
+            if (protoTypeBaseMetadata.Name is null)
+                correctBaseMetadata.Name = filledTypeName.ToUpperInvariant();
+
+            var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, $"{correctBaseMetadata.Package}.{correctBaseMetadata.Name}");
+            var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>
+            {
+                [type] = correctMetadata
+            };
+
+            var defaultMapper = CreateAndSetUpITypeMapperMock(true, protoTypeBaseMetadata);
+
+            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { defaultMapper.Object });
+
+            // Act
+            var actualTypeToProtoMetadataMapping = discoverer.DiscoverProtosMetadata(types, generationOptions);
+
+            // Assert
+            CollectionAssert.AreEqual(expectedTypeToProtoMetadataMapping, actualTypeToProtoMetadataMapping.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+        }
+
+        [TestMethod]
+        public void DiscoverProtosMetadata_TypeIsServiceByDelegateAndCanBeHandledByDefaultMapperOnlyAndDefaultMapperDidNotFillName_MissingNameIsFilled()
+        {
+            // Arrange
+            var protoTypeBaseMetadata = new DummyIProtoTypeBaseMetadata()
+            {
+                Name = null,
+                FilePath = "a",
+                Package = "b",
+            };
+            var type = typeof(IContractType2);
+            var types = new List<Type> { type };
+
+            generationOptions.AnalysisOptions.IsProtoServiceDelegate = (type) => type.Equals(typeof(IContractType2));
+
+            var filledTypeName = "type name";
+            var filledPackageName = new string[] { "package", "name" };
+            var filledFilePath = "file/path.proto";
+            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs), filePathComponents => string.Join("-", filePathComponents));
+
+            var correctBaseMetadata = new ProtoTypeBaseMetadata(protoTypeBaseMetadata);
+            if (protoTypeBaseMetadata.Name is null)
+                correctBaseMetadata.Name = filledTypeName.ToUpperInvariant();
 
             var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, $"{correctBaseMetadata.Package}.{correctBaseMetadata.Name}");
             var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>

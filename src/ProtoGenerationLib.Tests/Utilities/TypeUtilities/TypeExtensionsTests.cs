@@ -1,6 +1,5 @@
 ﻿using ProtoGenerationLib.Tests.Utilities.TypeUtilities.DummyTypes;
 using ProtoGenerationLib.Utilities.TypeUtilities;
-using ProtoGenerationLib.Attributes;
 
 namespace ProtoGenerationLib.Tests.Utilities.TypeUtilities
 {
@@ -143,66 +142,6 @@ namespace ProtoGenerationLib.Tests.Utilities.TypeUtilities
         }
 
         #endregion IsAttributeInherited Tests
-
-        #region ExtractMethods Tests
-
-        [ExpectedException(typeof(ArgumentException))]
-        [TestMethod]
-        public void ExtractMethods_AttributeTypeIsNotAnAttribute_ThrowsArgumentException()
-        {
-            // Arrange
-            var type = typeof(Service1);
-
-            // Act
-            var result = type.ExtractMethods(typeof(int));
-
-            // Assert
-            // Noting to do. The ExpectedException will do the assert.
-        }
-
-        [TestMethod]
-        public void ExtractMethods_TypeIsInterface_GetAllImplementedInterfacesMethods()
-        {
-            // Arrange
-            var type = typeof(IService4);
-            var expectedMethodsNames = new List<string>
-            {
-                nameof(IService4.IService1Method1),
-                nameof(IService4.IService2Method1),
-                nameof(IService4.IService3Method1),
-                nameof(IService4.IService4Method1),
-            };
-
-            // Act
-            var methods = type.ExtractMethods(typeof(ProtoRpcAttribute));
-            var actualMethodsNames = methods.Select(method => method.Name).ToList();
-
-            // Assert
-            CollectionAssert.AreEquivalent(expectedMethodsNames, actualMethodsNames);
-        }
-
-        [TestMethod]
-        public void ExtractMethods_TypeIsDataType_GetAllMethods()
-        {
-            // Arrange
-            var type = typeof(Service2);
-            var expectedMethodsNames = new List<string>
-            {
-                nameof(Service2.IService1Method1),
-                nameof(Service1.Foo),
-                nameof(AbstractService.Method1),
-                nameof(AbstractService.Method2),
-            };
-
-            // Act
-            var methods = type.ExtractMethods(typeof(ProtoRpcAttribute));
-            var actualMethodsNames = methods.Select(method => method.Name).ToList();
-
-            // Assert
-            CollectionAssert.AreEquivalent(expectedMethodsNames, actualMethodsNames);
-        }
-
-        #endregion ExtractMethods Tests
 
         #region IsSingleDimensionalArray Tests
 

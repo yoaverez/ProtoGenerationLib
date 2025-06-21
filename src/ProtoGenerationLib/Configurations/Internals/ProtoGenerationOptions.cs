@@ -2,6 +2,8 @@
 using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.ProvidersAndRegistries.External;
 using ProtoGenerationLib.ProvidersAndRegistries.External.StrategiesNamesEnums;
+using System;
+using System.Reflection;
 
 namespace ProtoGenerationLib.Configurations.Internals
 {
@@ -114,7 +116,9 @@ namespace ProtoGenerationLib.Configurations.Internals
                 dataTypeConstructorAttribute: typeof(ProtoMessageConstructorAttribute),
                 protoServiceAttribute: typeof(ProtoServiceAttribute),
                 protoRpcAttribute: typeof(ProtoRpcAttribute),
-                optionalFieldAttribute: typeof(OptionalDataMemberAttribute));
+                optionalFieldAttribute: typeof(OptionalDataMemberAttribute),
+                isProtoServiceDelegate: (type) => false,
+                tryGetRpcTypeDelegate: (Type serviceType, MethodInfo method, out ProtoRpcType rpcType) => { rpcType = ProtoRpcType.Unary; return false; });
 
             var newTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions(
                 StrategyNamesLookup.ParameterListNamingStrategiesLookup[ParameterListNamingStrategyKind.MethodNameAndParametersTypes],

@@ -1,6 +1,6 @@
 ﻿using ProtoGenerationLib.Attributes;
 
-namespace ProtoGenerationLib.Tests.Utilities.TypeUtilities.DummyTypes
+namespace ProtoGenerationLib.Tests.CommonUtilities.DummyTypes
 {
     internal class Service1 : AbstractService
     {

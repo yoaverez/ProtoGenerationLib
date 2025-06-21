@@ -16,7 +16,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
     {
         private static ContractTypesExtractor extractor;
 
-        private static IProtoGenerationOptions generationOptions;
+        private static ProtoGenerationOptions generationOptions;
 
         private static Mock<INewTypeNamingStrategiesProvider> mockINewTypeNamingStrategiesProvider;
 
@@ -43,13 +43,27 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
                                                 .Returns(mockStrategy.Object);
 
             extractor = new ContractTypesExtractor(mockINewTypeNamingStrategiesProvider.Object);
+
             generationOptions = new ProtoGenerationOptions
             {
                 NewTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions(),
                 AnalysisOptions = new AnalysisOptions
                 {
                     ProtoServiceAttribute = typeof(ProtoServiceAttribute),
+                    IsProtoServiceDelegate = (type) => type.Equals(typeof(DummyService2)),
                     ProtoRpcAttribute = typeof(ProtoRpcAttribute),
+                    TryGetRpcTypeDelegate = (Type declaringType, MethodInfo method, out ProtoRpcType rpcType) =>
+                    {
+                        rpcType = ProtoRpcType.ServerStreaming;
+
+                        if (declaringType.Equals(typeof(DummyService2)) && method.Name.Equals(nameof(DummyService2.Method2)))
+                        {
+                            rpcType = ProtoRpcType.ClientStreaming;
+                            return true;
+                        }
+
+                        return false;
+                    },
                 }
             };
         }
@@ -111,6 +125,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             return new List<object[]>
             {
                 new object[] { typeof(DummyService1), new List<Type> { newType, typeof(int), typeof(void), typeof(Type) } },
+                new object[] { typeof(DummyService2), new List<Type> { typeof(int), typeof(bool), typeof(string) } },
             };
         }
 

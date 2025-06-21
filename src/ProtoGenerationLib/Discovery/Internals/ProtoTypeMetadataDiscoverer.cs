@@ -1,16 +1,17 @@
-﻿using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
+﻿using ProtoGenerationLib.CommonUtilities;
+using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Discovery.Abstracts;
+using ProtoGenerationLib.Mappers.Abstracts;
+using ProtoGenerationLib.Mappers.Internals;
+using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
+using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerationLib.Strategies.Abstracts;
+using ProtoGenerationLib.Utilities.CollectionUtilities;
+using ProtoGenerationLib.Utilities.TypeUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Mappers.Internals;
-using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
-using ProtoGenerationLib.Strategies.Abstracts;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Utilities.TypeUtilities;
-using ProtoGenerationLib.Utilities.CollectionUtilities;
-using ProtoGenerationLib.Discovery.Abstracts;
-using ProtoGenerationLib.Mappers.Abstracts;
 
 namespace ProtoGenerationLib.Discovery.Internals
 {
@@ -247,13 +248,12 @@ namespace ProtoGenerationLib.Discovery.Internals
         /// <returns>The style proto type name of the given <paramref name="unstyledName"/>.</returns>
         private string StyleProtoName(Type type, string unstyledName, IProtoGenerationOptions generationOptions)
         {
-            var protoServiceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
             IProtoStylingStrategy stylingStrategy;
             if (type.IsEnum)
             {
                 stylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.EnumStylingStrategy);
             }
-            else if (type.IsDefined(protoServiceAttribute, protoServiceAttribute.IsAttributeInherited()))
+            else if (type.IsProtoService(generationOptions.AnalysisOptions))
             {
                 stylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.ServiceStylingStrategy);
             }

@@ -12,6 +12,7 @@ using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Utilities.TypeUtilities;
 using ProtoGenerationLib.Attributes;
+using ProtoGenerationLib.Tests.CommonUtilities.DummyTypes;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefinition
 {
@@ -30,10 +31,10 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
 
         private Dictionary<Type, IProtoTypeMetadata> primitiveTypesWrappers;
 
-        private static ProtoGenerationOptions generationOptions;
+        private ProtoGenerationOptions generationOptions;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
+        [TestInitialize]
+        public void TestInitialize()
         {
             generationOptions = new ProtoGenerationOptions
             {
@@ -49,13 +50,10 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
                 AnalysisOptions = new AnalysisOptions
                 {
                     ProtoRpcAttribute = typeof(ProtoRpcAttribute),
+                    TryGetRpcTypeDelegate = (Type declaringType, MethodInfo method, out ProtoRpcType rpcType) => { rpcType = ProtoRpcType.Unary; return false; },
                 }
             };
-        }
 
-        [TestInitialize]
-        public void TestInitialize()
-        {
             mockIPackageStylingStrategy = new Mock<IPackageStylingStrategy>();
             mockIPackageStylingStrategy.Setup(strategy => strategy.PackageComponentsSeparator)
                                        .Returns(".");
@@ -86,14 +84,32 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             // Arrange
             var contractType = typeof(IContractType2);
 
+            generationOptions.AnalysisOptions.TryGetRpcTypeDelegate = (Type declaringType, MethodInfo method, out ProtoRpcType rpcType) =>
+            {
+                rpcType = ProtoRpcType.ServerStreaming;
+
+                if (method.Name.Equals(nameof(IContractType2.Method4)))
+                {
+                    rpcType = ProtoRpcType.ClientStreaming;
+                    return true;
+                }
+
+                return false;
+            };
+
             var contractMetadata = new ContractTypeMetadata(contractType,
                                                             contractType.GetMethods()
+                                                                        .Where(m => !m.Name.Equals(nameof(IContractType2.Method5)))
                                                                         .Select(x => new MethodMetadata(x))
                                                                         .Cast<IMethodMetadata>()
                                                                         .ToList());
 
-            var newParameterListType = TypeCreator.CreateDataType(nameof(IContractType2.Method3),
+            var newParameterListType1 = TypeCreator.CreateDataType(nameof(IContractType2.Method3),
                                                                   new List<(Type, string)> { (typeof(int), "a"), (typeof(bool), "b") });
+
+            var newParameterListType2 = TypeCreator.CreateDataType(nameof(IContractType2.Method4),
+                                                                  new List<(Type, string)> { (typeof(int), "a"), (typeof(bool), "b") });
+
             var protoTypesMetadatas = new Dictionary<Type, IProtoTypeMetadata>
             {
                 [typeof(void)] = new ProtoTypeMetadata("void", "", "void", "path1"),
@@ -101,7 +117,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
                 [typeof(bool)] = new ProtoTypeMetadata("bool", "pac", "pac.bool", "path2"),
                 [typeof(double)] = new ProtoTypeMetadata("double", "pac", "pac.double", "path2"),
                 [typeof(IContractType2)] = new ProtoTypeMetadata("contract", "pac.pac2", "pac.pac2.contract", "path3"),
-                [newParameterListType] = new ProtoTypeMetadata(newParameterListType.Name, newParameterListType.Namespace, $"{newParameterListType.Namespace}.{newParameterListType.Name}", "path4"),
+                [newParameterListType1] = new ProtoTypeMetadata(newParameterListType1.Name, newParameterListType1.Namespace, $"{newParameterListType1.Namespace}.{newParameterListType1.Name}", "path4"),
+                [newParameterListType2] = new ProtoTypeMetadata(newParameterListType2.Name, newParameterListType2.Namespace, $"{newParameterListType2.Namespace}.{newParameterListType2.Name}", "path4"),
             };
 
             primitiveTypesWrappers.Add(typeof(int), new ProtoTypeMetadata("PrimitiveInt", "int.pac", "int.pac.PrimitiveInt", "protobuf.primitives"));
@@ -111,7 +128,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             {
                 new RpcDefinition(nameof(IContractType2.Method1).ToUpperInvariant(), "void", "void", ProtoRpcType.Unary),
                 new RpcDefinition(nameof(IContractType2.Method2).ToUpperInvariant(), "void", "int.pac.PrimitiveInt", ProtoRpcType.ClientStreaming),
-                new RpcDefinition(nameof(IContractType2.Method3).ToUpperInvariant(), "PrimitiveDouble", $"{newParameterListType.Namespace}.{newParameterListType.Name}", ProtoRpcType.BidirectionalStreaming),
+                new RpcDefinition(nameof(IContractType2.Method3).ToUpperInvariant(), "PrimitiveDouble", $"{newParameterListType1.Namespace}.{newParameterListType1.Name}", ProtoRpcType.BidirectionalStreaming),
+                new RpcDefinition(nameof(IContractType2.Method4).ToUpperInvariant(), "PrimitiveDouble", $"{newParameterListType2.Namespace}.{newParameterListType2.Name}", ProtoRpcType.ClientStreaming),
             };
             var imports = new HashSet<string>
             {

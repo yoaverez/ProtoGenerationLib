@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProtoGenerationLib.Attributes;
+using ProtoGenerationLib.Configurations.Delegates;
+using System;
 
 namespace ProtoGenerationLib.Configurations.Abstracts
 {
@@ -68,5 +70,25 @@ namespace ProtoGenerationLib.Configurations.Abstracts
         /// represents an optional proto field.
         /// </summary>
         Type OptionalFieldAttribute { get; }
+
+        /// <summary>
+        /// A delegate for checking if a type is a proto service.
+        /// </summary>
+        /// <remarks>
+        /// This delegate comes in addition to the <see cref="ProtoServiceAttribute"/>.
+        /// So in order for a type to be considered a proto service it can either have the
+        /// <see cref="ProtoServiceAttribute"/> or this delegate returns <see langword="true"/>.
+        /// </remarks>
+        IsProtoService IsProtoServiceDelegate { get; }
+
+        /// <summary>
+        /// A delegate for trying to get the <see cref="ProtoRpcType"/> from a service method.
+        /// </summary>
+        /// <remarks>
+        /// This delegate comes in addition to the <see cref="ProtoRpcAttribute"/>.
+        /// So in order for a method to be considered rpc it can either have the
+        /// <see cref="ProtoRpcAttribute"/> or this delegate returns <see langword="true"/>.
+        /// </remarks>
+        TryGetRpcType TryGetRpcTypeDelegate { get; }
     }
 }

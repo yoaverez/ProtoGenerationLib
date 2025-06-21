@@ -1,8 +1,8 @@
-﻿using ProtoGenerationLib.Configurations.Abstracts;
+﻿using ProtoGenerationLib.CommonUtilities;
+using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Utilities.TypeUtilities;
-using ProtoGenerationLib.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,8 +31,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
         /// <inheritdoc/>
         public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
         {
-            var protoServiceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
-            return type.IsDefined(protoServiceAttribute, protoServiceAttribute.IsAttributeInherited());
+            return type.IsProtoService(generationOptions.AnalysisOptions);
         }
 
         /// <inheritdoc/>
@@ -40,7 +39,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
         {
             var parameterListNamingStrategy = parameterListNamingStrategiesProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
             var types = new HashSet<Type>();
-            var methods = type.ExtractMethods(generationOptions.AnalysisOptions.ProtoRpcAttribute);
+            var methods = type.ExtractRpcMethods(generationOptions.AnalysisOptions);
 
             foreach (var method in methods)
             {

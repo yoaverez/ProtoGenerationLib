@@ -1,12 +1,12 @@
-﻿using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+﻿using ProtoGenerationLib.CommonUtilities;
+using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Converters.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using System;
 using System.Linq;
 using static ProtoGenerationLib.Converters.Internals.CSharpToIntermediate.CSharpToIntermediateUtils;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Utilities.TypeUtilities;
-using ProtoGenerationLib.Converters.Abstracts;
 
 namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
 {
@@ -32,9 +32,7 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
         /// <inheritdoc/>
         public IContractTypeMetadata ConvertTypeToIntermediateRepresentation(Type type, IProtoGenerationOptions generationOptions)
         {
-            var serviceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
-            var rpcAttribute = generationOptions.AnalysisOptions.ProtoRpcAttribute;
-            if (!type.IsDefined(serviceAttribute, serviceAttribute.IsAttributeInherited()))
+            if (!type.IsProtoService(generationOptions.AnalysisOptions))
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a contract type.", nameof(type));
 
             var customConverters = componentsProvider.GetContractTypeCustomConverters();
@@ -45,7 +43,7 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
                 var contractTypeMetadata = new ContractTypeMetadata();
                 contractTypeMetadata.Type = type;
 
-                var methods = type.ExtractMethods(rpcAttribute);
+                var methods = type.ExtractRpcMethods(generationOptions.AnalysisOptions);
                 contractTypeMetadata.Methods.AddRange(methods.Select(method => new MethodMetadata(method)));
                 contractMetadata = contractTypeMetadata;
             }

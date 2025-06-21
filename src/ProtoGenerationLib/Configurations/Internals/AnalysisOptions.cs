@@ -1,4 +1,5 @@
 ﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Configurations.Delegates;
 using System;
 
 namespace ProtoGenerationLib.Configurations.Internals
@@ -36,6 +37,12 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <inheritdoc/>
         public Type OptionalFieldAttribute { get; set; }
 
+        /// <inheritdoc/>
+        public IsProtoService IsProtoServiceDelegate { get; set; }
+
+        /// <inheritdoc/>
+        public TryGetRpcType TryGetRpcTypeDelegate { get; set; }
+
         /// <summary>
         /// Create new instance of the <see cref="AnalysisOptions"/> class.
         /// </summary>
@@ -57,6 +64,8 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <param name="protoServiceAttribute"><inheritdoc cref="ProtoServiceAttribute" path="/node()"/></param>
         /// <param name="protoRpcAttribute"><inheritdoc cref="ProtoRpcAttribute" path="/node()"/></param>
         /// <param name="optionalFieldAttribute"><inheritdoc cref="OptionalFieldAttribute" path="/node()"/></param>
+        /// <param name="isProtoServiceDelegate"><inheritdoc cref="IsProtoServiceDelegate" path="/node()"/></param>
+        /// <param name="tryGetRpcTypeDelegate"><inheritdoc cref="TryGetRpcTypeDelegate" path="/node()"/></param>
         public AnalysisOptions(bool includeFields,
                                bool includePrivates,
                                bool includeStatics,
@@ -66,7 +75,9 @@ namespace ProtoGenerationLib.Configurations.Internals
                                Type dataTypeConstructorAttribute,
                                Type protoServiceAttribute,
                                Type protoRpcAttribute,
-                               Type optionalFieldAttribute)
+                               Type optionalFieldAttribute,
+                               IsProtoService isProtoServiceDelegate,
+                               TryGetRpcType tryGetRpcTypeDelegate)
         {
             IncludeFields = includeFields;
             IncludePrivates = includePrivates;
@@ -78,6 +89,8 @@ namespace ProtoGenerationLib.Configurations.Internals
             ProtoServiceAttribute = protoServiceAttribute;
             ProtoRpcAttribute = protoRpcAttribute;
             OptionalFieldAttribute = optionalFieldAttribute;
+            IsProtoServiceDelegate = isProtoServiceDelegate;
+            TryGetRpcTypeDelegate = tryGetRpcTypeDelegate;
         }
     }
 }

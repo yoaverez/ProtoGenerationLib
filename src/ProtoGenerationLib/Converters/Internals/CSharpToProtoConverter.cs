@@ -1,14 +1,14 @@
-﻿using ProtoGenerationLib.Converters.Internals.CSharpToProtoDefinition;
-using System;
-using System.Collections.Generic;
+﻿using ProtoGenerationLib.CommonUtilities;
 using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Constants;
+using ProtoGenerationLib.Converters.Abstracts;
+using ProtoGenerationLib.Converters.Internals.CSharpToProtoDefinition;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
 using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Converters.Abstracts;
-using ProtoGenerationLib.Utilities.TypeUtilities;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
-using ProtoGenerationLib.Constants;
+using System;
+using System.Collections.Generic;
 
 namespace ProtoGenerationLib.Converters.Internals
 {
@@ -63,7 +63,6 @@ namespace ProtoGenerationLib.Converters.Internals
                                                              IProtoGenerationOptions generationOptions)
         {
             var fileToFileDefinition = new Dictionary<string, IProtoDefinition>();
-            var serviceAttribute = generationOptions.AnalysisOptions.ProtoServiceAttribute;
             foreach (var type in types.ToHashSet())
             {
                 // Can not and should not convert well known types.
@@ -84,7 +83,7 @@ namespace ProtoGenerationLib.Converters.Internals
                     fileDefinition.Enums.Add(enumDefinition);
                     protoObject = enumDefinition;
                 }
-                else if (type.IsDefined(serviceAttribute, serviceAttribute.IsAttributeInherited()))
+                else if (type.IsProtoService(generationOptions.AnalysisOptions))
                 {
                     var serviceDefinition = contractToServiceConverter.ConvertTypeToProtoDefinition(type, protoTypesMetadatas, generationOptions);
                     fileDefinition.Services.Add(serviceDefinition);

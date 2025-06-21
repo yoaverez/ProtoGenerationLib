@@ -23,7 +23,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals
 
         private ICSharpToProtoTypesConverter converter;
 
-        private IProtoGenerationOptions generationOptions;
+        private ProtoGenerationOptions generationOptions;
 
         private HashSet<Type> wellKnownTypes;
 
@@ -43,6 +43,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals
                 AnalysisOptions = new AnalysisOptions
                 {
                     ProtoServiceAttribute = typeof(ProtoServiceAttribute),
+                    IsProtoServiceDelegate = (type) => false,
                 },
                 ProtoFileSyntax = "",
             };
@@ -126,10 +127,52 @@ namespace ProtoGenerationLib.Tests.Converters.Internals
         }
 
         [TestMethod]
-        public void Convert_SingleTypeAndTypeIsContract_ReturnCorrectDefinitions()
+        public void Convert_SingleTypeAndTypeIsContractByAttribute_ReturnCorrectDefinitions()
         {
             // Arrange
             var testedTypes = new Type[] { typeof(IContractType1) };
+            protoTypesMetadatas.Add(testedTypes[0], new ProtoTypeMetadata("a", "pac", "pac.a", "path"));
+
+            var imports = new string[] { "import1", "import2" };
+            var expectedServiceDefinition = new ServiceDefinition("a", "pac", imports, Array.Empty<IRpcDefinition>());
+            var isContractConverterCalled = false;
+            mockContractToServiceConverter.Setup(mockConverter => mockConverter.ConvertTypeToProtoDefinition(It.IsAny<Type>(), It.IsAny<IReadOnlyDictionary<Type, IProtoTypeMetadata>>(), It.IsAny<IProtoGenerationOptions>()))
+                                          .Callback(() => isContractConverterCalled = true)
+                                          .Returns(expectedServiceDefinition);
+
+            var expectedProtoDefinitions = new Dictionary<string, IProtoDefinition>
+            {
+                ["path"] = new ProtoDefinition()
+                {
+                    Package = "pac",
+                    Services = new List<IServiceDefinition> { expectedServiceDefinition },
+                    Imports = new HashSet<string>(imports),
+                }
+            };
+
+            // Act
+            var actualProtoDefinitions = converter.Convert(testedTypes,
+                                                           protoTypesMetadatas,
+                                                           generationOptions);
+
+            // Assert
+            CollectionAssert.AreEquivalent(expectedProtoDefinitions, actualProtoDefinitions.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+            Assert.IsTrue(isContractConverterCalled);
+        }
+
+        [TestMethod]
+        public void Convert_SingleTypeAndTypeIsContractByDelegate_ReturnCorrectDefinitions()
+        {
+            // Arrange
+            var testedTypes = new Type[] { typeof(IContractType2) };
+
+            generationOptions.AnalysisOptions.IsProtoServiceDelegate = (type) =>
+            {
+                if (type.Equals(typeof(IContractType2)))
+                    return true;
+                return false;
+            };
+
             protoTypesMetadatas.Add(testedTypes[0], new ProtoTypeMetadata("a", "pac", "pac.a", "path"));
 
             var imports = new string[] { "import1", "import2" };
@@ -251,6 +294,13 @@ namespace ProtoGenerationLib.Tests.Converters.Internals
                 typeof(Enum1), typeof(Enum2),
                 typeof(IContractType1), typeof(IContractType2),
                 typeof(DataType1), typeof(DataType1.DataType2),
+            };
+
+            generationOptions.AnalysisOptions.IsProtoServiceDelegate = (type) =>
+            {
+                if (type.Equals(typeof(IContractType2)))
+                    return true;
+                return false;
             };
 
             // For the enums.

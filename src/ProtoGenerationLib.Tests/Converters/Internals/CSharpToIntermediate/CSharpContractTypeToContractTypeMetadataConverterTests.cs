@@ -8,34 +8,34 @@ using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Attributes;
+using System.Reflection;
+using ProtoGenerationLib.Tests.CommonUtilities.DummyTypes;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 {
     [TestClass]
     public class CSharpContractTypeToContractTypeMetadataConverterTests
     {
-        private static IProtoGenerationOptions generationOptions;
+        private ProtoGenerationOptions generationOptions;
 
         private CSharpContractTypeToContractTypeMetadataConverter converter;
 
         private List<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> customConverters;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
+        [TestInitialize]
+        public void TestInitialize()
         {
             generationOptions = new ProtoGenerationOptions
             {
                 AnalysisOptions = new AnalysisOptions
                 {
                     ProtoServiceAttribute = typeof(ProtoServiceAttribute),
+                    IsProtoServiceDelegate = (type) => false,
                     ProtoRpcAttribute = typeof(ProtoRpcAttribute),
+                    TryGetRpcTypeDelegate = (Type declaringType, MethodInfo method, out ProtoRpcType rpcType) => { rpcType = ProtoRpcType.Unary; return false; },
                 }
             };
-        }
 
-        [TestInitialize]
-        public void TestInitialize()
-        {
             customConverters = new List<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>>();
             var mockIProvider = new Mock<IProvider>();
             mockIProvider.Setup(provider => provider.GetContractTypeCustomConverters())
@@ -59,10 +59,24 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
         }
 
         [TestMethod]
-        public void ConvertTypeToIntermediateRepresentation_TypeIsContract_MetadataIsCorrect()
+        public void ConvertTypeToIntermediateRepresentation_TypeIsContractByAttribute_MetadataIsCorrect()
         {
             // Arrange
             var type = typeof(IContractType1);
+
+            generationOptions.AnalysisOptions.TryGetRpcTypeDelegate = (Type declaringType, MethodInfo method, out ProtoRpcType rpcType) =>
+            {
+                rpcType = ProtoRpcType.ServerStreaming;
+
+                if (method.Name.Equals(nameof(IContractType1.Method3)))
+                {
+                    rpcType = ProtoRpcType.BidirectionalStreaming;
+                    return true;
+                }
+
+                return false;
+            };
+
             var expectedMetadata = CreateContractTypeMetadata(type, new List<IMethodMetadata>
             {
                 CreateMethodMetadata(type.GetMethod(nameof(IContractType1.Method1)), typeof(void), new List<IMethodParameterMetadata>
@@ -71,6 +85,68 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                 }),
 
                 CreateMethodMetadata(type.GetMethod(nameof(IContractType1.Method2)), typeof(double), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                    CreateMethodParameterMetadata(typeof(bool), "b"),
+                }),
+
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType1.Method3)), typeof(double), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                }),
+            });
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_TypeIsContractByDelegate_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(IContractType2);
+
+            generationOptions.AnalysisOptions.IsProtoServiceDelegate = (type) =>
+            {
+                if (type.Equals(typeof(IContractType2)))
+                    return true;
+                return false;
+            };
+
+            generationOptions.AnalysisOptions.TryGetRpcTypeDelegate = (Type declaringType, MethodInfo method, out ProtoRpcType rpcType) =>
+            {
+                rpcType = ProtoRpcType.ServerStreaming;
+
+                if (method.Name.Equals(nameof(IContractType2.Method4)))
+                {
+                    rpcType = ProtoRpcType.BidirectionalStreaming;
+                    return true;
+                }
+
+                return false;
+            };
+
+            var expectedMetadata = CreateContractTypeMetadata(type, new List<IMethodMetadata>
+            {
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType2.Method1)), typeof(void), new List<IMethodParameterMetadata>
+                {
+                }),
+
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType2.Method2)), typeof(void), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                }),
+
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType2.Method3)), typeof(double), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                    CreateMethodParameterMetadata(typeof(bool), "b"),
+                }),
+
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType2.Method4)), typeof(double), new List<IMethodParameterMetadata>
                 {
                     CreateMethodParameterMetadata(typeof(int), "a"),
                     CreateMethodParameterMetadata(typeof(bool), "b"),

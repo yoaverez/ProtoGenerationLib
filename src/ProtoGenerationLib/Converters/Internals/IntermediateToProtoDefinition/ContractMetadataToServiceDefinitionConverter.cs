@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using static ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition.IntermediateToProtoDefinitionUtils;
+using ProtoGenerationLib.CommonUtilities;
 
 namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
 {
@@ -54,7 +55,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             var rpcMethods = new List<IRpcDefinition>();
             foreach (var methodMetadata in intermediateType.Methods)
             {
-                rpcMethods.Add(CreateRpcFromMethodMetadata(methodMetadata, typeProtoMetadata.FullName!, generationOptions, protoTypesMetadatas, out var rpcNeededImports));
+                rpcMethods.Add(CreateRpcFromMethodMetadata(methodMetadata, intermediateType.Type, typeProtoMetadata.FullName!, generationOptions, protoTypesMetadatas, out var rpcNeededImports));
                 imports.AddRange(rpcNeededImports);
             }
 
@@ -65,6 +66,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
         /// Convert the given <paramref name="methodMetadata"/> to a <see cref="IRpcDefinition"/>.
         /// </summary>
         /// <param name="methodMetadata">The method meta data to convert.</param>
+        /// <param name="declaringType">The type that declare the method.</param>
         /// <param name="serviceFullName">The full name of the service in which the rpc is defined.</param>
         /// <param name="generationOptions">The proto generation options.</param>
         /// <param name="protoTypesMetadatas">Mapping between type to its proto type metadata.</param>
@@ -75,6 +77,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
         /// new type that represents the method parameter.
         /// </exception>
         private IRpcDefinition CreateRpcFromMethodMetadata(IMethodMetadata methodMetadata,
+                                                           Type declaringType,
                                                            string serviceFullName,
                                                            IProtoGenerationOptions generationOptions,
                                                            IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
@@ -112,13 +115,12 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             neededImports.Add(returnTypeMetadata.FilePath!);
             var responseTypeName = GetTypeShortName(returnTypeMetadata.FullName, serviceFullName, packageComponentsSeparator);
 
-            var rpcAttributeType = generationOptions.AnalysisOptions.ProtoRpcAttribute;
-            var attribute = methodMetadata.MethodInfo.GetCustomAttribute<ProtoRpcAttribute>(rpcAttributeType.IsAttributeInherited());
-
             var rpcStylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.RpcStylingStrategy);
             var rpcName = rpcStylingStrategy.ToProtoStyle(methodMetadata.MethodInfo.Name);
 
-            return new RpcDefinition(rpcName, responseTypeName, requestTypeName, attribute.RpcType);
+            var rpcType = methodMetadata.MethodInfo.GetMethodRpcType(declaringType, generationOptions.AnalysisOptions);
+
+            return new RpcDefinition(rpcName, responseTypeName, requestTypeName, rpcType);
         }
 
         /// <summary>

@@ -1,7 +1,8 @@
 ﻿using ProtoGenerationLib.Attributes;
 
-namespace ProtoGenerationLib.Tests.Utilities.TypeUtilities.DummyTypes
+namespace ProtoGenerationLib.Tests.CommonUtilities.DummyTypes
 {
+    [ProtoService]
     internal abstract class AbstractService
     {
         [ProtoRpc(ProtoRpcType.Unary)]
