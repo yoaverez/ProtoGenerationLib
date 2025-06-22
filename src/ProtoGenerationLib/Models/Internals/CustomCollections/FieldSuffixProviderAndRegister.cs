@@ -20,6 +20,11 @@ namespace ProtoGenerationLib.Models.Internals.CustomCollections
         private Dictionary<Type, Dictionary<Type, string>> declaringTypeToFieldTypesSuffixes;
 
         /// <summary>
+        /// A mapping between field declaring type to a mapping between field name to its suffix.
+        /// </summary>
+        private Dictionary<Type, Dictionary<string, string>> declaringTypeToFieldNamesSuffixes;
+
+        /// <summary>
         /// A mapping between field declaring type to a mapping between field type to its
         /// excluded fields i.e. fields that should not have a suffix.
         /// </summary>
@@ -32,6 +37,7 @@ namespace ProtoGenerationLib.Models.Internals.CustomCollections
         {
             fieldTypesSuffixes = new Dictionary<Type, string>();
             declaringTypeToFieldTypesSuffixes = new Dictionary<Type, Dictionary<Type, string>>();
+            declaringTypeToFieldNamesSuffixes = new Dictionary<Type, Dictionary<string, string>>();
             declaringTypeToExcludedFieldTypes = new Dictionary<Type, Dictionary<Type, ISet<string>>>();
         }
 
@@ -45,6 +51,26 @@ namespace ProtoGenerationLib.Models.Internals.CustomCollections
                 throw new ArgumentException($"The given {nameof(TFieldType)}: {fieldType.Name} already has register suffix.", nameof(TFieldType));
 
             fieldTypesSuffixes.Add(fieldType, suffix);
+        }
+
+        /// <inheritdoc/>
+        public void RegisterFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix)
+        {
+            var fieldDeclaringType = typeof(TFieldDeclaringType);
+
+            if (declaringTypeToFieldNamesSuffixes.ContainsKey(fieldDeclaringType))
+            {
+                if (declaringTypeToFieldNamesSuffixes[fieldDeclaringType].ContainsKey(fieldName))
+                    throw new ArgumentException($"The given {nameof(fieldName)}: {fieldName} already has register suffix " +
+                        $"for the given {nameof(TFieldDeclaringType)}: {fieldDeclaringType.Name}.", nameof(fieldName));
+
+            }
+            else
+            {
+                declaringTypeToFieldNamesSuffixes.Add(fieldDeclaringType, new Dictionary<string, string>());
+            }
+
+            declaringTypeToFieldNamesSuffixes[fieldDeclaringType].Add(fieldName, suffix);
         }
 
         /// <inheritdoc/>
@@ -115,6 +141,17 @@ namespace ProtoGenerationLib.Models.Internals.CustomCollections
                     {
                         return false;
                     }
+                }
+            }
+
+            // Check if the field should have the suffix addition due to its declaring
+            // type and its name.
+            if (declaringTypeToFieldNamesSuffixes.ContainsKey(fieldDeclaringType))
+            {
+                if (declaringTypeToFieldNamesSuffixes[fieldDeclaringType].ContainsKey(fieldName))
+                {
+                    suffix = declaringTypeToFieldNamesSuffixes[fieldDeclaringType][fieldName];
+                    return true;
                 }
             }
 

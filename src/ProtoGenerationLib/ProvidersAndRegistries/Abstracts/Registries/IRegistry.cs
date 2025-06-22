@@ -41,6 +41,10 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
         IRegistry RegisterCustomFieldSuffix<TFieldType>(string suffix);
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
+        /// <inheritdoc cref="ICustomFieldSuffixesRegistry.RegisterFieldSuffix{TFieldDeclaringType}(string, string)"/>
+        IRegistry RegisterCustomFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix);
+
+        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
         /// <inheritdoc cref="ICustomFieldSuffixesRegistry.RegisterCustomFieldSuffix{TFieldDeclaringType, TFieldType}(string)"/>
         IRegistry RegisterCustomFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix);
 

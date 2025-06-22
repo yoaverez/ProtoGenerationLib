@@ -10,5 +10,8 @@
 
         public bool BoolProp1 { get; set; }
         public bool BoolProp2 { get; set; }
+
+        public char CharProp1 { get; set; }
+        public char CharProp2 { get; set; }
     }
 }

@@ -242,6 +242,13 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         }
 
         /// <inheritdoc/>
+        public IRegistry RegisterCustomFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix)
+        {
+            fieldSuffixProviderAndRegister.RegisterFieldSuffix<TFieldDeclaringType>(fieldName, suffix);
+            return this;
+        }
+
+        /// <inheritdoc/>
         public IRegistry RegisterCustomFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix)
         {
             fieldSuffixProviderAndRegister.RegisterFieldSuffix<TFieldDeclaringType, TFieldType>(suffix);
