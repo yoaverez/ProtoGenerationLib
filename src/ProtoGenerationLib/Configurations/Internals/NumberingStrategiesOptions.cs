@@ -1,4 +1,6 @@
 ﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.ProvidersAndRegistries.External.StrategiesNamesEnums;
+using ProtoGenerationLib.ProvidersAndRegistries.External;
 
 namespace ProtoGenerationLib.Configurations.Internals
 {
@@ -14,20 +16,15 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <summary>
         /// Create new instance of the <see cref="NumberingStrategiesOptions"/> class.
         /// </summary>
-        public NumberingStrategiesOptions()
+        /// <param name="fieldNumberingStrategy"><inheritdoc cref="FieldNumberingStrategy" path="/node()"/><br/> Default to null converted to "Sequential".</param>
+        /// <param name="enumValueNumberingStrategy"><inheritdoc cref="EnumValueNumberingStrategy" path="/node()"/><br/> Default to null converted to "Sequential".</param>
+        public NumberingStrategiesOptions(string? fieldNumberingStrategy = null,
+                                          string? enumValueNumberingStrategy = null)
         {
-            // Noting to do.
-        }
-
-        /// <summary>
-        /// Create new instance of the <see cref="NumberingStrategiesOptions"/> class.
-        /// </summary>
-        /// <param name="fieldNumberingStrategy"><inheritdoc cref="FieldNumberingStrategy" path="/node()"/></param>
-        /// <param name="enumValueNumberingStrategy"><inheritdoc cref="EnumValueNumberingStrategy" path="/node()"/></param>
-        public NumberingStrategiesOptions(string fieldNumberingStrategy, string enumValueNumberingStrategy)
-        {
-            FieldNumberingStrategy = fieldNumberingStrategy;
-            EnumValueNumberingStrategy = enumValueNumberingStrategy;
+            FieldNumberingStrategy = fieldNumberingStrategy ??
+                StrategyNamesLookup.FieldNumberingStrategiesLookup[FieldNumberingStrategyKind.Sequential];
+            EnumValueNumberingStrategy = enumValueNumberingStrategy ??
+                StrategyNamesLookup.EnumValueNumberingStrategiesLookup[EnumValueNumberingStrategyKind.Sequential];
         }
     }
 }

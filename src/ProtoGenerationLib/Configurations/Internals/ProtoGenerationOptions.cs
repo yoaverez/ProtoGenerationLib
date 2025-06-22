@@ -1,9 +1,4 @@
-﻿using ProtoGenerationLib.Attributes;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.ProvidersAndRegistries.External;
-using ProtoGenerationLib.ProvidersAndRegistries.External.StrategiesNamesEnums;
-using System;
-using System.Reflection;
+﻿using ProtoGenerationLib.Configurations.Abstracts;
 
 namespace ProtoGenerationLib.Configurations.Internals
 {
@@ -44,92 +39,31 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// </summary>
         static ProtoGenerationOptions()
         {
-            Default = CreateDefaultProtoGenerationOptions();
+            Default = new ProtoGenerationOptions();
         }
 
         /// <summary>
         /// Create new instance of the <see cref="ProtoGenerationOptions"/> class.
         /// </summary>
-        public ProtoGenerationOptions()
+        /// <param name="protoStylingConventionsStrategiesOptions"><inheritdoc cref="ProtoStylingConventionsStrategiesOptions" path="/node()"/><br/> Default to null converted to the default <see cref="Internals.ProtoStylingConventionsStrategiesOptions"/>.</param>
+        /// <param name="protoNamingStrategiesOptions"><inheritdoc cref="ProtoNamingStrategiesOptions" path="/node()"/><br/> Default to null converted to the default <see cref="Internals.ProtoNamingStrategiesOptions"/>.</param>
+        /// <param name="numberingStrategiesOptions"><inheritdoc cref="NumberingStrategiesOptions" path="/node()"/><br/> Default to null converted to the default <see cref="Internals.NumberingStrategiesOptions"/>.</param>
+        /// <param name="analysisOptions"><inheritdoc cref="AnalysisOptions" path="/node()"/><br/> Default to null converted to the default <see cref="Internals.AnalysisOptions"/>.</param>
+        /// <param name="newTypeNamingStrategiesOptions"><inheritdoc cref="NewTypeNamingStrategiesOptions" path="/node()"/><br/> Default to null converted to the default <see cref="Internals.NewTypeNamingStrategiesOptions"/>.</param>
+        /// <param name="protoFileSyntax"><inheritdoc cref="ProtoFileSyntax" path="/node()"/><br/> Default to "proto3".</param>
+        public ProtoGenerationOptions(ProtoStylingConventionsStrategiesOptions? protoStylingConventionsStrategiesOptions = null,
+                                      ProtoNamingStrategiesOptions? protoNamingStrategiesOptions = null,
+                                      NumberingStrategiesOptions? numberingStrategiesOptions = null,
+                                      AnalysisOptions? analysisOptions = null,
+                                      NewTypeNamingStrategiesOptions? newTypeNamingStrategiesOptions = null,
+                                      string protoFileSyntax = "proto3")
         {
-            // Noting to do.
-        }
-
-        /// <summary>
-        /// Create new instance of the <see cref="ProtoGenerationOptions"/> class.
-        /// </summary>
-        /// <param name="protoStylingConventionsStrategiesOptions"><inheritdoc cref="ProtoStylingConventionsStrategiesOptions" path="/node()"/></param>
-        /// <param name="protoNamingStrategiesOptions"><inheritdoc cref="ProtoNamingStrategiesOptions" path="/node()"/></param>
-        /// <param name="numberingStrategiesOptions"><inheritdoc cref="NumberingStrategiesOptions" path="/node()"/></param>
-        /// <param name="analysisOptions"><inheritdoc cref="AnalysisOptions" path="/node()"/></param>
-        /// <param name="newTypeNamingStrategiesOptions"><inheritdoc cref="NewTypeNamingStrategiesOptions" path="/node()"/></param>
-        /// <param name="protoFileSyntax"><inheritdoc cref="ProtoFileSyntax" path="/node()"/></param>
-        public ProtoGenerationOptions(ProtoStylingConventionsStrategiesOptions protoStylingConventionsStrategiesOptions,
-                                      ProtoNamingStrategiesOptions protoNamingStrategiesOptions,
-                                      NumberingStrategiesOptions numberingStrategiesOptions,
-                                      AnalysisOptions analysisOptions,
-                                      NewTypeNamingStrategiesOptions newTypeNamingStrategiesOptions,
-                                      string protoFileSyntax)
-        {
-            ProtoStylingConventionsStrategiesOptions = protoStylingConventionsStrategiesOptions;
-            ProtoNamingStrategiesOptions = protoNamingStrategiesOptions;
-            NumberingStrategiesOptions = numberingStrategiesOptions;
-            AnalysisOptions = analysisOptions;
-            NewTypeNamingStrategiesOptions = newTypeNamingStrategiesOptions;
+            ProtoStylingConventionsStrategiesOptions = protoStylingConventionsStrategiesOptions ?? new ProtoStylingConventionsStrategiesOptions();
+            ProtoNamingStrategiesOptions = protoNamingStrategiesOptions ?? new ProtoNamingStrategiesOptions();
+            NumberingStrategiesOptions = numberingStrategiesOptions ?? new NumberingStrategiesOptions();
+            AnalysisOptions = analysisOptions ?? new AnalysisOptions();
+            NewTypeNamingStrategiesOptions = newTypeNamingStrategiesOptions ?? new NewTypeNamingStrategiesOptions();
             ProtoFileSyntax = protoFileSyntax;
-        }
-
-        /// <summary>
-        /// Create the default <see cref="ProtoGenerationOptions"/> object.
-        /// </summary>
-        /// <returns>
-        /// A new <see cref="ProtoGenerationOptions"/> object that contains the default options.
-        /// </returns>
-        public static ProtoGenerationOptions CreateDefaultProtoGenerationOptions()
-        {
-            var stylingOptions = new ProtoStylingConventionsStrategiesOptions(
-                StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperCamelCase],
-                StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperCamelCase],
-                StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperSnakeCase],
-                StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperCamelCase],
-                StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.SnakeCase],
-                StrategyNamesLookup.PackageStylingStrategiesLookup[PackageStylingStrategyKind.DotDelimitedSnakeCase],
-                StrategyNamesLookup.ProtoStylingStrategiesLookup[ProtoStylingStrategyKind.UpperCamelCase],
-                StrategyNamesLookup.FilePathStylingStrategiesLookup[FilePathStylingStrategyKind.ForwardSlashDelimitedSnakeCase]);
-
-            var namingOptions = new ProtoNamingStrategiesOptions(
-                StrategyNamesLookup.TypeNamingStrategiesLookup[TypeNamingStrategyKind.TypeNameAsAlphaNumericTypeName],
-                StrategyNamesLookup.PackageNamingStrategiesLookup[PackageNamingStrategyKind.SinglePackageNamedProtos],
-                StrategyNamesLookup.FilePathStrategiesLookup[FilePathStrategyKind.SingleFileNamedProtos]);
-
-            var numberingStrategiesOptions = new NumberingStrategiesOptions(
-                StrategyNamesLookup.FieldNumberingStrategiesLookup[FieldNumberingStrategyKind.Sequential],
-                StrategyNamesLookup.EnumValueNumberingStrategiesLookup[EnumValueNumberingStrategyKind.Sequential]);
-
-            var analysisOptions = new AnalysisOptions(
-                includeFields: false,
-                includePrivates: false,
-                includeStatics: false,
-                removeEmptyMembers: true,
-                fieldsAndPropertiesExtractionStrategy: StrategyNamesLookup.FieldsAndPropertiesExtractionStrategiesLookup[FieldsAndPropertiesExtractionStrategyKind.Composite],
-                ignoreFieldOrPropertyAttribute: typeof(ProtoIgnoreAttribute),
-                dataTypeConstructorAttribute: typeof(ProtoMessageConstructorAttribute),
-                protoServiceAttribute: typeof(ProtoServiceAttribute),
-                protoRpcAttribute: typeof(ProtoRpcAttribute),
-                optionalFieldAttribute: typeof(OptionalDataMemberAttribute),
-                isProtoServiceDelegate: (type) => false,
-                tryGetRpcTypeDelegate: (Type serviceType, MethodInfo method, out ProtoRpcType rpcType) => { rpcType = ProtoRpcType.Unary; return false; });
-
-            var newTypeNamingStrategiesOptions = new NewTypeNamingStrategiesOptions(
-                StrategyNamesLookup.ParameterListNamingStrategiesLookup[ParameterListNamingStrategyKind.MethodNameAndParametersTypes],
-                StrategyNamesLookup.NewTypeNamingStrategiesLookup[NewTypeNamingStrategyKind.NameAsAlphaNumericTypeName]);
-
-            return new ProtoGenerationOptions(stylingOptions,
-                                              namingOptions,
-                                              numberingStrategiesOptions,
-                                              analysisOptions,
-                                              newTypeNamingStrategiesOptions,
-                                              "proto3");
         }
     }
 }
