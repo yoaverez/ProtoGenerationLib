@@ -4,14 +4,14 @@ using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition;
+using ProtoGenerationLib.Models.Abstracts.CustomCollections;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
+using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Utilities.TypeUtilities;
-using ProtoGenerationLib.Configurations.Internals;
-using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
-using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefinition
 {
@@ -25,6 +25,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
         private Mock<IProtoStylingStrategy> mockIProtoStylingStrategy;
 
         private Mock<IFieldNumberingStrategy> mockIFieldNumberingStrategy;
+
+        private Mock<IFieldSuffixProvider> mockIFieldSuffixProvider;
 
         private DataTypeMetadataToMessageDefinitionConverter converter;
 
@@ -63,8 +65,12 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             mockIProtoStylingStrategy = new Mock<IProtoStylingStrategy>();
             mockIProtoStylingStrategy.Setup(strategy => strategy.ToProtoStyle(It.IsAny<string>()))
                                      .Returns<string>((name) => name.ToUpperInvariant());
+            mockIProtoStylingStrategy.Setup(strategy => strategy.ToProtoStyle(It.IsAny<string[]>()))
+                                     .Returns<string[]>((names) => string.Join("_", names).ToUpperInvariant());
 
             mockIFieldNumberingStrategy = new Mock<IFieldNumberingStrategy>();
+
+            mockIFieldSuffixProvider = new Mock<IFieldSuffixProvider>();
 
             mockIProvider = new Mock<IProvider>();
             mockIProvider.Setup(provider => provider.GetFieldNumberingStrategy("1"))
@@ -73,6 +79,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
                          .Returns(mockIPackageStylingStrategy.Object);
             mockIProvider.Setup(provider => provider.GetProtoStylingStrategy("3"))
                          .Returns(mockIProtoStylingStrategy.Object);
+            mockIProvider.Setup(provider => provider.GetFieldSuffixProvider())
+                         .Returns(mockIFieldSuffixProvider.Object);
 
             mockEnumConverter = new Mock<IIntermediateToProtoDefinitionConverter<IEnumTypeMetadata, IEnumDefinition>>();
             mockEnumConverter.Setup(converter => converter.ConvertIntermediateRepresentationToProtoDefinition(It.IsAny<IEnumTypeMetadata>(), It.IsAny<IReadOnlyDictionary<Type, IProtoTypeMetadata>>(), generationOptions))
@@ -351,6 +359,57 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
                                                            Array.Empty<IFieldDefinition>(),
                                                            new IMessageDefinition[] { expectedNestedMessage1, expectedNestedMessage3 },
                                                            new IEnumDefinition[] { expectedNestedEnum1, expectedNestedEnum3 });
+
+            // Act
+            var actualDefinition = converter.ConvertIntermediateRepresentationToProtoDefinition(dataTypeMetadata, protoTypesMetadatas, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedDefinition, actualDefinition);
+        }
+
+        [TestMethod]
+        public void ConvertIntermediateRepresentationToProtoDefinition_TypeContainsFieldsThatShouldHaveSuffixes_MessageDefinitionFieldNamesAreCorrect()
+        {
+            // Arrange
+            mockIFieldNumberingStrategy.Setup(strategy => strategy.GetFieldNumber(It.IsAny<IFieldMetadata>(), It.IsAny<int>(), It.IsAny<int>()))
+                                       .Returns<IFieldMetadata, int, int>((a, idx, b) => Convert.ToUInt32(idx + 1));
+
+            var type = typeof(object);
+
+            // Those are used for the imports.
+            var fieldMetadata1 = new FieldMetadata(typeof(byte), "a1", Array.Empty<Attribute>(), type);
+            var fieldMetadata2 = new FieldMetadata(typeof(char), "a2", Array.Empty<Attribute>(), type);
+
+            var field1Suffix = "Field1Suffix";
+            mockIFieldSuffixProvider.Setup(provider => provider.TryGetFieldSuffix(type, typeof(byte), "a1", out field1Suffix))
+                                    .Returns(true);
+
+            var fieldDefinition1 = new FieldDefinition($"a1_{field1Suffix}".ToUpperInvariant(), "byte", 1, FieldRule.None);
+            var fieldDefinition2 = new FieldDefinition("a2".ToUpperInvariant(), "char", 2, FieldRule.None);
+
+            var dataTypeMetadata = new DataTypeMetadata(type,
+                                                        new IFieldMetadata[] { fieldMetadata1, fieldMetadata2 },
+                                                        Array.Empty<IDataTypeMetadata>(),
+                                                        Array.Empty<IEnumTypeMetadata>());
+
+            var protoTypesMetadatas = new Dictionary<Type, IProtoTypeMetadata>
+            {
+                [type] = new ProtoTypeMetadata(type.Name,
+                                               "pac",
+                                               $"pac.{type.Name}",
+                                               "path"),
+
+                // For the imports.
+                [typeof(byte)] = new ProtoTypeMetadata("byte", "pac", "pac.byte", "import1"),
+                [typeof(char)] = new ProtoTypeMetadata("char", "pac", "pac.char", "import2"),
+            };
+
+            var expectedDefinition = new MessageDefinition(type.Name,
+                                                           "pac",
+                                                           new string[] { "import1", "import2" },
+                                                           new IFieldDefinition[] { fieldDefinition1, fieldDefinition2 },
+                                                           Array.Empty<IMessageDefinition>(),
+                                                           Array.Empty<IEnumDefinition>());
 
             // Act
             var actualDefinition = converter.ConvertIntermediateRepresentationToProtoDefinition(dataTypeMetadata, protoTypesMetadatas, generationOptions);

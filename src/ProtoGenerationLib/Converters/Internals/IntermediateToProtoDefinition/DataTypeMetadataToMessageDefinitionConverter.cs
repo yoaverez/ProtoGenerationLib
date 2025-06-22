@@ -1,15 +1,15 @@
-﻿using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
+﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Converters.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
+using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerationLib.Utilities.CollectionUtilities;
+using ProtoGenerationLib.Utilities.TypeUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using static ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition.IntermediateToProtoDefinitionUtils;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Utilities.TypeUtilities;
-using ProtoGenerationLib.Converters.Abstracts;
-using ProtoGenerationLib.Utilities.CollectionUtilities;
 
 namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
 {
@@ -113,7 +113,15 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             var numberingStrategy = componentsProvider.GetFieldNumberingStrategy(generationOptions.NumberingStrategiesOptions.FieldNumberingStrategy);
             var fieldNumber = numberingStrategy.GetFieldNumber(fieldMetadata, fieldIndex, numOfFields);
 
-            var fieldName = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.FieldStylingStrategy).ToProtoStyle(fieldMetadata.Name);
+            var fieldSuffixProvider = componentsProvider.GetFieldSuffixProvider();
+            var fieldStylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.FieldStylingStrategy);
+            string fieldName;
+
+            if (fieldSuffixProvider.TryGetFieldSuffix(fieldMetadata.DeclaringType, fieldMetadata.Type, fieldMetadata.Name, out var fieldSuffix))
+                fieldName = fieldStylingStrategy.ToProtoStyle(new string[] { fieldMetadata.Name, fieldSuffix });
+
+            else
+                fieldName = fieldStylingStrategy.ToProtoStyle(fieldMetadata.Name);
 
             var packageComponentsSeparator = componentsProvider.GetPackageStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy).PackageComponentsSeparator;
             string typeName;
