@@ -12,7 +12,7 @@ namespace ProtoGenerationLib.Serialization
     /// <summary>
     /// String writer for <see cref="IProtoDefinition"/>s.
     /// </summary>
-    public static class ProtoDefinitionToStringWriter
+    internal static class ProtoDefinitionToStringWriter
     {
         /// <summary>
         /// A constant representing the name of protobuf stream.

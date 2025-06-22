@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.Replacers.Abstracts
     /// <summary>
     /// A contract for type replacers.
     /// </summary>
-    public interface ITypeReplacer
+    internal interface ITypeReplacer
     {
         /// <summary>
         /// Checks whether or not the given <paramref name="type"/> can be replaced

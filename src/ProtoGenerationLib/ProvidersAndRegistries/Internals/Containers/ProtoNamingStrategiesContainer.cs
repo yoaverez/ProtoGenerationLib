@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// <summary>
     /// Container for proto naming strategies.
     /// </summary>
-    public class ProtoNamingStrategiesContainer : IProtoNamingStrategiesRegistry, IProtoNamingStrategiesProvider
+    internal class ProtoNamingStrategiesContainer : IProtoNamingStrategiesRegistry, IProtoNamingStrategiesProvider
     {
         /// <summary>
         /// A mapping between strategy name to its type naming strategy.

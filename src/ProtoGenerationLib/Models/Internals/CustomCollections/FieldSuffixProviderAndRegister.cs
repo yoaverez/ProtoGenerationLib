@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Models.Internals.CustomCollections
     /// <summary>
     /// Provider and register for field name suffixes.
     /// </summary>
-    public class FieldSuffixProviderAndRegister : IFieldSuffixRegister, IFieldSuffixProvider
+    internal class FieldSuffixProviderAndRegister : IFieldSuffixRegister, IFieldSuffixProvider
     {
         /// <summary>
         /// A mapping between field type to its suffix.

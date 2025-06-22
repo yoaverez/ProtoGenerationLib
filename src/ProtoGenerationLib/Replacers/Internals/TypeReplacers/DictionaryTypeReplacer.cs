@@ -10,7 +10,7 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
     /// <summary>
     /// Replacer for dictionary types.
     /// </summary>
-    public class DictionaryTypeReplacer : ITypeReplacer
+    internal class DictionaryTypeReplacer : ITypeReplacer
     {
         /// <summary>
         /// A provider for new type naming strategies.

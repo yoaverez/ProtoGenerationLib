@@ -8,7 +8,7 @@ namespace ProtoGenerationLib.Converters.Abstracts
     /// <summary>
     /// Converter between csharp types to proto types.
     /// </summary>
-    public interface ICSharpToProtoTypesConverter
+    internal interface ICSharpToProtoTypesConverter
     {
         /// <summary>
         /// Convert the given csharp <paramref name="types"/> to proto files definitions.

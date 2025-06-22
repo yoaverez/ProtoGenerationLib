@@ -10,7 +10,7 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
     /// <summary>
     /// Replacer for array types.
     /// </summary>
-    public class ArrayTypeReplacer : ITypeReplacer
+    internal class ArrayTypeReplacer : ITypeReplacer
     {
         /// <summary>
         /// A provider for new type naming strategies.

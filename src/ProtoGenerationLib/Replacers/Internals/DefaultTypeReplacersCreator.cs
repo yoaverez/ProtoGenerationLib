@@ -8,7 +8,7 @@ namespace ProtoGenerationLib.Replacers.Internals
     /// <summary>
     /// Creator for the default type replacers in the proto generation process.
     /// </summary>
-    public static class DefaultTypeReplacersCreator
+    internal static class DefaultTypeReplacersCreator
     {
         /// <summary>
         /// Create the default type replacers for the replacement of

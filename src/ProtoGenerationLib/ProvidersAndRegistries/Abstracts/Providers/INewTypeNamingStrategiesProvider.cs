@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers
     /// <summary>
     /// Provider for new type naming strategies.
     /// </summary>
-    public interface INewTypeNamingStrategiesProvider
+    internal interface INewTypeNamingStrategiesProvider
     {
         /// <summary>
         /// Get the parameter list naming strategy with the given <paramref name="strategyName"/>.

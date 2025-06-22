@@ -16,7 +16,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
     /// <summary>
     /// A converter between data type intermediate representation to its proto message representation.
     /// </summary>
-    public class DataTypeMetadataToMessageDefinitionConverter : IIntermediateToProtoDefinitionConverter<IDataTypeMetadata, IMessageDefinition>
+    internal class DataTypeMetadataToMessageDefinitionConverter : IIntermediateToProtoDefinitionConverter<IDataTypeMetadata, IMessageDefinition>
     {
         /// <summary>
         /// A provider of all the proto generator customizations.

@@ -5,7 +5,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
     /// <summary>
     /// A registry for custom field suffixes.
     /// </summary>
-    public interface ICustomFieldSuffixesRegistry
+    internal interface ICustomFieldSuffixesRegistry
     {
         /// <inheritdoc cref="IFieldSuffixRegister.RegisterFieldSuffix{TFieldType}(string)"/>
         void RegisterCustomFieldSuffix<TFieldType>(string suffix);

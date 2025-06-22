@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers
     /// <summary>
     /// Provider of extraction strategies.
     /// </summary>
-    public interface IExtractionStrategiesProvider
+    internal interface IExtractionStrategiesProvider
     {
         /// <summary>
         /// Get the requested fields and properties extraction strategy.

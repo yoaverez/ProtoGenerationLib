@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Mappers.Internals
     /// <summary>
     /// Creator of the proto generation default type mappers.
     /// </summary>
-    public static class DefaultTypeMappersCreator
+    internal static class DefaultTypeMappersCreator
     {
         /// <summary>
         /// Create the proto generation default type mappers.

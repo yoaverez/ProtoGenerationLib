@@ -16,7 +16,7 @@ using System.Linq;
 namespace ProtoGenerationLib.Discovery.Internals
 {
     /// <inheritdoc cref="IProtoTypeMetadataDiscoverer"/>
-    public class ProtoTypeMetadataDiscoverer : IProtoTypeMetadataDiscoverer
+    internal class ProtoTypeMetadataDiscoverer : IProtoTypeMetadataDiscoverer
     {
         /// <summary>
         /// Provider for all the proto generation customizations.

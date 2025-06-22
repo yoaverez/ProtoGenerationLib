@@ -1,14 +1,13 @@
-﻿using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using System.Collections.Generic;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Strategies.Abstracts;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries;
+﻿using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Extractors.Abstracts;
-using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Mappers.Abstracts;
-using ProtoGenerationLib.Models.Internals.CustomCollections;
 using ProtoGenerationLib.Models.Abstracts.CustomCollections;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Models.Internals.CustomCollections;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries;
+using ProtoGenerationLib.Strategies.Abstracts;
+using System.Collections.Generic;
 
 namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
 {
@@ -16,7 +15,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// Container for all the services. i.e. container that contains all
     /// the customizations.
     /// </summary>
-    public class ServicesContainer : IProviderAndRegister
+    internal class ServicesContainer : IProviderAndRegister
     {
         /// <inheritdoc cref="CustomConvertersContainer"/>
         private CustomConvertersContainer customConvertersContainer;

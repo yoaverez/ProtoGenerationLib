@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.Tests.Replacers.Internals.TypeReplacers
     /// <summary>
     /// Common test methods for type replacers.
     /// </summary>
-    public class TypeReplacersCommonTests
+    internal class TypeReplacersCommonTests
     {
         #region CanReplaceType Tests
 

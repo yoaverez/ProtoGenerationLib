@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers
     /// <summary>
     /// Provider for numbering strategies.
     /// </summary>
-    public interface INumberingStrategiesProvider
+    internal interface INumberingStrategiesProvider
     {
         /// <summary>
         /// Get the requested field numbering strategy.

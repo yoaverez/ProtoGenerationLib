@@ -11,7 +11,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
     /// <summary>
     /// A general extractor that can extract used types for all the possible data types.
     /// </summary>
-    public class DefaultDataTypesExtractor : BaseTypesExtractor
+    internal class DefaultDataTypesExtractor : BaseTypesExtractor
     {
         /// <summary>
         /// Provider of extraction strategies.

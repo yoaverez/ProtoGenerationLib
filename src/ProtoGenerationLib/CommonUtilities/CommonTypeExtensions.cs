@@ -17,7 +17,7 @@ namespace ProtoGenerationLib.CommonUtilities
     /// This is separated from the utilities since these methods used the project types
     /// and therefor are decoupled to this project while the utilities are standalones.
     /// </remarks>
-    public static class CommonTypeExtensions
+    internal static class CommonTypeExtensions
     {
         /// <summary>
         /// Checks whether or not the given <paramref name="type"/> is

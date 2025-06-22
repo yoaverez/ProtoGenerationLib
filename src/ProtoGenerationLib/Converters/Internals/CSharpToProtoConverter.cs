@@ -15,7 +15,7 @@ namespace ProtoGenerationLib.Converters.Internals
     /// <summary>
     /// Converter from csharp types to proto types representations.
     /// </summary>
-    public class CSharpToProtoConverter : ICSharpToProtoTypesConverter
+    internal class CSharpToProtoConverter : ICSharpToProtoTypesConverter
     {
         /// <summary>
         /// Converter from csharp contract type to proto service definition.

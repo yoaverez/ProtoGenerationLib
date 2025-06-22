@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers
     /// <summary>
     /// Provider of proto naming strategies.
     /// </summary>
-    public interface IProtoNamingStrategiesProvider
+    internal interface IProtoNamingStrategiesProvider
     {
         /// <summary>
         /// Get the requested type naming strategy.

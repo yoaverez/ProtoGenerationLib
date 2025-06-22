@@ -5,7 +5,7 @@ namespace ProtoGenerationLib.Models.Abstracts.CustomCollections
     /// <summary>
     /// Register field suffixes.
     /// </summary>
-    public interface IFieldSuffixRegister
+    internal interface IFieldSuffixRegister
     {
         /// <summary>
         /// Register the given <paramref name="suffix"/> to the

@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElement
     /// <summary>
     /// Extractor for extracting the element type from enumerable types.
     /// </summary>
-    public class EnumerableElementTypeExtractor : BaseTypesExtractor
+    internal class EnumerableElementTypeExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
         public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)

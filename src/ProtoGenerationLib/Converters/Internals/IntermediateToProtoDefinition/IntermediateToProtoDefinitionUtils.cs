@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
     /// Common utility functions for the converting intermediate proto representation
     /// to proto definition.
     /// </summary>
-    public static class IntermediateToProtoDefinitionUtils
+    internal static class IntermediateToProtoDefinitionUtils
     {
         /// <summary>
         /// Retrieves the short name of the given <paramref name="innerTypeFullName"/>

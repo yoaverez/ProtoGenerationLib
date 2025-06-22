@@ -8,7 +8,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// <summary>
     /// Container for custom type mappers.
     /// </summary>
-    public class CustomTypeMappersContainer : ICustomTypeMappersRegistry, ICustomTypeMappersProvider
+    internal class CustomTypeMappersContainer : ICustomTypeMappersRegistry, ICustomTypeMappersProvider
     {
         /// <summary>
         /// The collection of all the registered custom type mappers.

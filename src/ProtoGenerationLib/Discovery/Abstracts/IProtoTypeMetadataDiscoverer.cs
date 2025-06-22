@@ -8,7 +8,7 @@ namespace ProtoGenerationLib.Discovery.Abstracts
     /// <summary>
     /// A discoverer of proto type metadata.
     /// </summary>
-    public interface IProtoTypeMetadataDiscoverer
+    internal interface IProtoTypeMetadataDiscoverer
     {
         /// <summary>
         /// Discover the given <paramref name="types"/> matching proto type metadata.

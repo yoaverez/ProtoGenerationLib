@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// <summary>
     /// A container for extraction strategies.
     /// </summary>
-    public class ExtractionStrategiesContainer : IExtractionStrategiesRegistry, IExtractionStrategiesProvider
+    internal class ExtractionStrategiesContainer : IExtractionStrategiesRegistry, IExtractionStrategiesProvider
     {
         /// <summary>
         /// A mapping between strategy name to its fields and properties extraction strategy.

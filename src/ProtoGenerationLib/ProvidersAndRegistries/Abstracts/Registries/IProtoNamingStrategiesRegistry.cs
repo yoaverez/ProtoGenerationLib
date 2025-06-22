@@ -5,7 +5,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
     /// <summary>
     /// Registry for naming strategies.
     /// </summary>
-    public interface IProtoNamingStrategiesRegistry
+    internal interface IProtoNamingStrategiesRegistry
     {
         /// <summary>
         /// Register the given <paramref name="strategy"/> with it's

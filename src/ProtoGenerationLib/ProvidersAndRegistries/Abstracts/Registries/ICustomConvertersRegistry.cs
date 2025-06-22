@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
     /// <summary>
     /// Registry for custom converters.
     /// </summary>
-    public interface ICustomConvertersRegistry
+    internal interface ICustomConvertersRegistry
     {
         /// <summary>
         /// Register the given <paramref name="customConverter"/> to the

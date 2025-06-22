@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// <summary>
     /// A container for proto styling conventions strategies.
     /// </summary>
-    public class ProtoStylingConventionsStrategiesContainer : IProtoStylingConventionsStrategiesRegistry, IProtoStylingConventionsStrategiesProvider
+    internal class ProtoStylingConventionsStrategiesContainer : IProtoStylingConventionsStrategiesRegistry, IProtoStylingConventionsStrategiesProvider
     {
         /// <summary>
         /// A mapping between strategy name to its styling strategy.

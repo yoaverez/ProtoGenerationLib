@@ -18,7 +18,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals
     /// Holder of the default services container
     /// for the proto generation project.
     /// </summary>
-    public static class DefaultServicesContainer
+    internal static class DefaultServicesContainer
     {
         /// <summary>
         /// The default services container.

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Xml.Linq;
 
 namespace ProtoGenerationLib.Utilities.TypeUtilities
 {
     /// <summary>
     /// Class for creating types.
     /// </summary>
-    public class TypeCreator
+    internal class TypeCreator
     {
         /// <summary>
         /// The default namespace name of the newly created types.

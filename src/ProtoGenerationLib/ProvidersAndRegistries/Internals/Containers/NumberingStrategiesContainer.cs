@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// <summary>
     /// Container for numbering strategies.
     /// </summary>
-    public class NumberingStrategiesContainer : INumberingStrategiesRegistry, INumberingStrategiesProvider
+    internal class NumberingStrategiesContainer : INumberingStrategiesRegistry, INumberingStrategiesProvider
     {
         /// <summary>
         /// A mapping between strategy name to its field numbering strategy.

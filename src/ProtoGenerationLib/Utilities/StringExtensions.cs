@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Utilities
     /// <summary>
     /// Utility extension methods for strings.
     /// </summary>
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         /// <summary>
         /// Converts a string to camelCase.

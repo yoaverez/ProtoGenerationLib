@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElement
     /// <summary>
     /// Extractor for extracting the element type from a <see cref="Nullable{T}"/> type.
     /// </summary>
-    public class NullableElementTypeExtractor : BaseTypesExtractor
+    internal class NullableElementTypeExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
         public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)

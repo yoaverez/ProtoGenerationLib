@@ -11,7 +11,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElement
     /// like <see cref="Dictionary{TKey, TValue}"/>s
     /// and <see cref="IEnumerable{T}"/> of <see cref="KeyValuePair{TKey, TValue}"/>.
     /// </summary>
-    public class DictionaryElementTypesExtractor : BaseTypesExtractor
+    internal class DictionaryElementTypesExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
         public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)

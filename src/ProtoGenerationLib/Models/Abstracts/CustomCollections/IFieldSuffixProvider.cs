@@ -5,7 +5,7 @@ namespace ProtoGenerationLib.Models.Abstracts.CustomCollections
     /// <summary>
     /// Provider for field names suffixes.
     /// </summary>
-    public interface IFieldSuffixProvider
+    internal interface IFieldSuffixProvider
     {
         /// <summary>
         /// Try getting the suffix of the field with the given <paramref name="fieldName"/>

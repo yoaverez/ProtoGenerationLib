@@ -15,7 +15,7 @@ namespace ProtoGenerationLib.Extractors.Internals
     /// <summary>
     /// Extract the types needed for the completeness of the proto types generation.
     /// </summary>
-    public class ProtoTypesExtractor : IProtoTypesExtractor
+    internal class ProtoTypesExtractor : IProtoTypesExtractor
     {
         /// <summary>
         /// A provider of custom converters.

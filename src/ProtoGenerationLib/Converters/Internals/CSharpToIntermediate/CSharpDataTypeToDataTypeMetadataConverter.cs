@@ -11,7 +11,7 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
     /// <summary>
     /// A converter for converting csharp data types to <see cref="IDataTypeMetadata"/>.
     /// </summary>
-    public class CSharpDataTypeToDataTypeMetadataConverter : ICSharpToIntermediateConverter<IDataTypeMetadata>
+    internal class CSharpDataTypeToDataTypeMetadataConverter : ICSharpToIntermediateConverter<IDataTypeMetadata>
     {
         /// <summary>
         /// A provider of all the proto generator customizations.

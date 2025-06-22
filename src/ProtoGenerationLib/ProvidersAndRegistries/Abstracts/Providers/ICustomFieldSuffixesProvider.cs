@@ -5,7 +5,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers
     /// <summary>
     /// Provider for custom fields suffixes.
     /// </summary>
-    public interface ICustomFieldSuffixesProvider
+    internal interface ICustomFieldSuffixesProvider
     {
         /// <summary>
         /// Get an object that can provide suffixes to field names.

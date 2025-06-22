@@ -12,7 +12,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
     /// <summary>
     /// Types extractor for contract types.
     /// </summary>
-    public class ContractTypesExtractor : BaseTypesExtractor
+    internal class ContractTypesExtractor : BaseTypesExtractor
     {
         /// <summary>
         /// A provider of parameter list naming strategies.

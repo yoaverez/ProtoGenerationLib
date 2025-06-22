@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// <summary>
     /// Container for parameter list naming strategies.
     /// </summary>
-    public class NewTypeNamingStrategiesContainer : INewTypeNamingStrategiesRegistry, INewTypeNamingStrategiesProvider
+    internal class NewTypeNamingStrategiesContainer : INewTypeNamingStrategiesRegistry, INewTypeNamingStrategiesProvider
     {
         /// <summary>
         /// A mapping between strategy name to its parameter list naming strategy.

@@ -8,7 +8,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers
     /// <summary>
     /// Provider for custom converters.
     /// </summary>
-    public interface ICustomConvertersProvider
+    internal interface ICustomConvertersProvider
     {
         /// <summary>
         /// Get all the data types custom converters.

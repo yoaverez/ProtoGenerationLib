@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace ProtoGenerationLib.Utilities.CollectionUtilities
@@ -7,7 +6,7 @@ namespace ProtoGenerationLib.Utilities.CollectionUtilities
     /// <summary>
     /// Extension methods for collection types.
     /// </summary>
-    public static class CollectionExtensions
+    internal static class CollectionExtensions
     {
         /// <summary>
         /// Calculate the hash code of the collection by combining its

@@ -8,7 +8,7 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
     /// <summary>
     /// Common utility method for the CSharpToIntermediate converters.
     /// </summary>
-    public static class CSharpToIntermediateUtils
+    internal static class CSharpToIntermediateUtils
     {
         /// <summary>
         /// Try converting the given type to its intermediate representation

@@ -8,7 +8,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
     /// <summary>
     /// Types extractor for enum types.
     /// </summary>
-    public class EnumTypesExtractor : BaseTypesExtractor
+    internal class EnumTypesExtractor : BaseTypesExtractor
     {
         /// <inheritdoc/>
         public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)

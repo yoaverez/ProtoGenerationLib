@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Extractors.Abstracts
     /// <summary>
     /// A contract for the extraction of needed proto types from fields.
     /// </summary>
-    public interface IFieldsTypesExtractor
+    internal interface IFieldsTypesExtractor
     {
         /// <summary>
         /// Extract the needed types for the proto generation

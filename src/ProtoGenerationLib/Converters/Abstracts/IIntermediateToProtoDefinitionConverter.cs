@@ -10,7 +10,7 @@ namespace ProtoGenerationLib.Converters.Abstracts
     /// </summary>
     /// <typeparam name="TIntermediate">The type of the intermediate representation object.</typeparam>
     /// <typeparam name="TProtoDefinition">The type of the proto representation object.</typeparam>
-    public interface IIntermediateToProtoDefinitionConverter<TIntermediate, TProtoDefinition>
+    internal interface IIntermediateToProtoDefinitionConverter<TIntermediate, TProtoDefinition>
     {
         /// <summary>
         /// Convert the given <paramref name="intermediateType"/> to it's proto definition.

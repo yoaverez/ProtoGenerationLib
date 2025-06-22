@@ -11,7 +11,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// <summary>
     /// Container for custom converters.
     /// </summary>
-    public class CustomConvertersContainer : ICustomConvertersRegistry, ICustomConvertersProvider
+    internal class CustomConvertersContainer : ICustomConvertersRegistry, ICustomConvertersProvider
     {
         /// <summary>
         /// The collection of all the registered data type converters.

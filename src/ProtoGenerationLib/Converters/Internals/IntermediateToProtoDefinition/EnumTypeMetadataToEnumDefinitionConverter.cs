@@ -7,7 +7,6 @@ using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +15,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
     /// <summary>
     /// A converter between enum intermediate representation to its proto representation.
     /// </summary>
-    public class EnumTypeMetadataToEnumDefinitionConverter : IIntermediateToProtoDefinitionConverter<IEnumTypeMetadata, IEnumDefinition>
+    internal class EnumTypeMetadataToEnumDefinitionConverter : IIntermediateToProtoDefinitionConverter<IEnumTypeMetadata, IEnumDefinition>
     {
         /// <summary>
         /// A provider of all the proto generator customizations.

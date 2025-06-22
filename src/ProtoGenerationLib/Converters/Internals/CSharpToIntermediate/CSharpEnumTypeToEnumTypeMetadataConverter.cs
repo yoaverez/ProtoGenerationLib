@@ -12,7 +12,7 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
     /// <summary>
     /// A converter for converting csharp enum types to <see cref="IEnumTypeMetadata"/>.
     /// </summary>
-    public class CSharpEnumTypeToEnumTypeMetadataConverter : ICSharpToIntermediateConverter<IEnumTypeMetadata>
+    internal class CSharpEnumTypeToEnumTypeMetadataConverter : ICSharpToIntermediateConverter<IEnumTypeMetadata>
     {
         /// <summary>
         /// A provider of all the proto generator customizations.

@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
     /// <summary>
     /// Creator of default types extractors.
     /// </summary>
-    public static class DefaultTypesExtractorsCreator
+    internal static class DefaultTypesExtractorsCreator
     {
         /// <summary>
         /// Create the default types extractors to for the extraction of

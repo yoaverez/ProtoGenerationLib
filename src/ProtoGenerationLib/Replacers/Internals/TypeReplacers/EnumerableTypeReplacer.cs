@@ -10,7 +10,7 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
     /// <summary>
     /// Replacer for enumerable types.
     /// </summary>
-    public class EnumerableTypeReplacer : ITypeReplacer
+    internal class EnumerableTypeReplacer : ITypeReplacer
     {
         /// <summary>
         /// A provider for new type naming strategies.

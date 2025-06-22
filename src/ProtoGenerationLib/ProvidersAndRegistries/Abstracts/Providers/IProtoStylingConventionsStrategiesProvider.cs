@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers
     /// <summary>
     /// Provider of styling conventions strategies.
     /// </summary>
-    public interface IProtoStylingConventionsStrategiesProvider
+    internal interface IProtoStylingConventionsStrategiesProvider
     {
         /// <summary>
         /// Get the requested styling strategy.

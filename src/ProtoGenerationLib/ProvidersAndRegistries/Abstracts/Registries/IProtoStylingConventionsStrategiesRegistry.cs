@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
     /// <summary>
     /// Registry for proto styling conventions strategies.
     /// </summary>
-    public interface IProtoStylingConventionsStrategiesRegistry
+    internal interface IProtoStylingConventionsStrategiesRegistry
     {
         /// <summary>
         /// Register the given <paramref name="strategy"/> with it's

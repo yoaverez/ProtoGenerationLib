@@ -5,7 +5,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
     /// <summary>
     /// Registry for numbering strategies.
     /// </summary>
-    public interface INumberingStrategiesRegistry
+    internal interface INumberingStrategiesRegistry
     {
         /// <summary>
         /// Register the given <paramref name="strategy"/> with it's

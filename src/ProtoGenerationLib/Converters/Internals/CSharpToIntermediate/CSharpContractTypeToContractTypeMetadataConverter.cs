@@ -13,7 +13,7 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
     /// <summary>
     /// A converter for converting csharp contract types to <see cref="IContractTypeMetadata"/>.
     /// </summary>
-    public class CSharpContractTypeToContractTypeMetadataConverter : ICSharpToIntermediateConverter<IContractTypeMetadata>
+    internal class CSharpContractTypeToContractTypeMetadataConverter : ICSharpToIntermediateConverter<IContractTypeMetadata>
     {
         /// <summary>
         /// A provider of all the proto generator customizations.

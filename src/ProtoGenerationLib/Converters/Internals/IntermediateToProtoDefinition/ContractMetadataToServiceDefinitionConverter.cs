@@ -1,26 +1,24 @@
-﻿using ProtoGenerationLib.Attributes;
+﻿using ProtoGenerationLib.CommonUtilities;
 using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Constants;
 using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
+using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using ProtoGenerationLib.Utilities.TypeUtilities;
-using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using static ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition.IntermediateToProtoDefinitionUtils;
-using ProtoGenerationLib.CommonUtilities;
 
 namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
 {
     /// <summary>
     /// A converter between contract intermediate representation to its proto representation.
     /// </summary>
-    public class ContractMetadataToServiceDefinitionConverter : IIntermediateToProtoDefinitionConverter<IContractTypeMetadata, IServiceDefinition>
+    internal class ContractMetadataToServiceDefinitionConverter : IIntermediateToProtoDefinitionConverter<IContractTypeMetadata, IServiceDefinition>
     {
         /// <summary>
         /// A provider of all the proto generator customizations.

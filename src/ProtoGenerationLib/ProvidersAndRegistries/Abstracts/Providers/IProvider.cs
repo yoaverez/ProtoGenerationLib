@@ -3,14 +3,14 @@
     /// <summary>
     /// Provider that provide all the customizations.
     /// </summary>
-    public interface IProvider : ICustomConvertersProvider,
-                                 ICustomTypeMappersProvider,
-                                 ICustomFieldSuffixesProvider,
-                                 INumberingStrategiesProvider,
-                                 IProtoNamingStrategiesProvider,
-                                 IProtoStylingConventionsStrategiesProvider,
-                                 IExtractionStrategiesProvider,
-                                 INewTypeNamingStrategiesProvider
+    internal interface IProvider : ICustomConvertersProvider,
+                                   ICustomTypeMappersProvider,
+                                   ICustomFieldSuffixesProvider,
+                                   INumberingStrategiesProvider,
+                                   IProtoNamingStrategiesProvider,
+                                   IProtoStylingConventionsStrategiesProvider,
+                                   IExtractionStrategiesProvider,
+                                   INewTypeNamingStrategiesProvider
 
     {
         // Noting to do.

@@ -10,7 +10,7 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
     /// <summary>
     /// Replacer for nullable types.
     /// </summary>
-    public class NullableTypeReplacer : ITypeReplacer
+    internal class NullableTypeReplacer : ITypeReplacer
     {
         /// <summary>
         /// A provider for new type naming strategies.

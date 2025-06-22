@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
     /// <summary>
     /// Extension methods for <see cref="Type"/>s.
     /// </summary>
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
         /// <summary>
         /// Try getting the base type of the given <paramref name="type"/>.

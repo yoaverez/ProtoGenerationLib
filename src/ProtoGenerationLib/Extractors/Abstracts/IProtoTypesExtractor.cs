@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Extractors.Abstracts
     /// <summary>
     /// Extractor for extracting all the needed types for the proto generation.
     /// </summary>
-    public interface IProtoTypesExtractor
+    internal interface IProtoTypesExtractor
     {
         /// <summary>
         /// Extract all the types that are needed for the proto generation of the given <paramref name="types"/>.

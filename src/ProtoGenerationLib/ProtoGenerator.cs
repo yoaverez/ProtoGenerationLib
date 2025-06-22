@@ -38,14 +38,22 @@ namespace ProtoGenerationLib
         /// <summary>
         /// Create new instance of the <see cref="ProtoGenerator"/> class.
         /// </summary>
+        public ProtoGenerator() : this(null)
+        {
+            // Noting to do.
+        }
+
+        /// <summary>
+        /// Create new instance of the <see cref="ProtoGenerator"/> class.
+        /// </summary>
         /// <param name="providerAndRegister">A provider and register of all the proto generator customizations.</param>
         /// <param name="protoTypesExtractor"><inheritdoc cref="protoTypesExtractor" path="/node()"/></param>
         /// <param name="protoTypeMetadataDiscoverer"><inheritdoc cref="protoTypeMetadataDiscoverer" path="/node()"/></param>
         /// <param name="csharpToProtoTypesConverter"><inheritdoc cref="csharpToProtoTypesConverter" path="/node()"/></param>
-        public ProtoGenerator(IProviderAndRegister? providerAndRegister = null,
-                              IProtoTypesExtractor? protoTypesExtractor = null,
-                              IProtoTypeMetadataDiscoverer? protoTypeMetadataDiscoverer = null,
-                              ICSharpToProtoTypesConverter? csharpToProtoTypesConverter = null)
+        internal ProtoGenerator(IProviderAndRegister? providerAndRegister = null,
+                                IProtoTypesExtractor? protoTypesExtractor = null,
+                                IProtoTypeMetadataDiscoverer? protoTypeMetadataDiscoverer = null,
+                                ICSharpToProtoTypesConverter? csharpToProtoTypesConverter = null)
         {
             providerAndRegister = providerAndRegister ?? DefaultServicesContainer.CreateDefaultServicesContainer();
             Registry = providerAndRegister;

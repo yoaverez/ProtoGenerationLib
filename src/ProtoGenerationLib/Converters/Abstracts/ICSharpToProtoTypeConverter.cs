@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.Converters.Abstracts
     /// Converter between csharp type to the type's proto representation.
     /// </summary>
     /// <typeparam name="TProtoDefinition">The type of the proto representation object.</typeparam>
-    public interface ICSharpToProtoTypeConverter<TProtoDefinition>
+    internal interface ICSharpToProtoTypeConverter<TProtoDefinition>
     {
         /// <summary>
         /// Convert the given <paramref name="type"/> to it's proto definition.

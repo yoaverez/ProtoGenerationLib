@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers
     /// <summary>
     /// Provider for custom type mappers.
     /// </summary>
-    public interface ICustomTypeMappersProvider
+    internal interface ICustomTypeMappersProvider
     {
         /// <summary>
         /// Get all the custom type mappers.

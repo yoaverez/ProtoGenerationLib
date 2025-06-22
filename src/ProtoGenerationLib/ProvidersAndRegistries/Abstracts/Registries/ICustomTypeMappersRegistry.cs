@@ -5,7 +5,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
     /// <summary>
     /// Registry for custom type mappers.
     /// </summary>
-    public interface ICustomTypeMappersRegistry
+    internal interface ICustomTypeMappersRegistry
     {
         /// <summary>
         /// Register the given <paramref name="typeMapper"/> to the

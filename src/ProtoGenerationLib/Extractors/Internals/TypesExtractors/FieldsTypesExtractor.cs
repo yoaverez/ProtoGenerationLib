@@ -3,15 +3,13 @@ using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
 {
     /// <summary>
     /// Extractor for needed proto types from fields.
     /// </summary>
-    public class FieldsTypesExtractor : IFieldsTypesExtractor
+    internal class FieldsTypesExtractor : IFieldsTypesExtractor
     {
         /// <summary>
         /// Types extractors for wrapper types.

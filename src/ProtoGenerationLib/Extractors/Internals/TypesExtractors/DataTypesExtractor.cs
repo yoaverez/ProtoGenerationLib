@@ -9,7 +9,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
     /// <summary>
     /// Types extractor for data types.
     /// </summary>
-    public class DataTypesExtractor : BaseTypesExtractor
+    internal class DataTypesExtractor : BaseTypesExtractor
     {
         /// <summary>
         /// Extractors that are specialized for specific data types.

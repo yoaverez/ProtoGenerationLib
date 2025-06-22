@@ -10,7 +10,7 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
     /// <summary>
     /// Replacer for tuple types.
     /// </summary>
-    public class TupleTypeReplacer : ITypeReplacer
+    internal class TupleTypeReplacer : ITypeReplacer
     {
         /// <summary>
         /// A provider for new type naming strategies.

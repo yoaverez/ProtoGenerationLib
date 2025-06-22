@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
     /// <summary>
     /// Registry for extraction strategies.
     /// </summary>
-    public interface IExtractionStrategiesRegistry
+    internal interface IExtractionStrategiesRegistry
     {
         /// <summary>
         /// Register the given <paramref name="strategy"/> with it's
