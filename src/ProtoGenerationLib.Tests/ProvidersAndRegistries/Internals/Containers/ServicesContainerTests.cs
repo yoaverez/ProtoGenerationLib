@@ -6,6 +6,7 @@ using ProtoGenerationLib.Mappers.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers;
 using ProtoGenerationLib.Strategies.Abstracts;
+using ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers.DummyTypes;
 
 namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
 {
@@ -301,6 +302,63 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
         #endregion GetCustomTypeMappers Tests
 
         #endregion ICustomTypeMappersProvider Tests
+
+        #region ICustomFieldSuffixesProvider Tests
+
+        #region GetFieldSuffixProvider Tests
+
+        [TestMethod]
+        public void GetFieldSuffixProviderAndAllTheRegisterMethods_ProvideSuffixesCorrecly()
+        {
+            // Arrange
+            container.RegisterCustomFieldSuffix<int>("AllIntSuffix");
+            container.RegisterCustomFieldSuffix<DummyType1, int>("SpecificTypeIntSuffix");
+            container.RegisterCustomFieldThatShouldNotHaveSuffix<DummyType1, int>(nameof(DummyType1.IntProp2));
+
+            container.RegisterCustomFieldSuffix<DummyType1, string>("SpecificTypeStringSuffix");
+
+            container.RegisterCustomFieldSuffix<bool>("AllBoolSuffix");
+
+            // Act
+            var provider = container.GetFieldSuffixProvider();
+
+            // Assert
+            var doesIntProp1hasIntSuffix = provider.TryGetFieldSuffix(typeof(DummyType1), typeof(int), nameof(DummyType1.IntProp1), out var intProp1Suffix);
+            Assert.IsTrue(doesIntProp1hasIntSuffix);
+            Assert.AreEqual("SpecificTypeIntSuffix", intProp1Suffix);
+
+            var doesIntProp2hasIntSuffix = provider.TryGetFieldSuffix(typeof(DummyType1), typeof(int), nameof(DummyType1.IntProp2), out _);
+            Assert.IsFalse(doesIntProp2hasIntSuffix);
+
+            var doesStringProp1hasIntSuffix = provider.TryGetFieldSuffix(typeof(DummyType1), typeof(string), nameof(DummyType1.StringProp1), out var stringProp1Suffix);
+            Assert.IsTrue(doesStringProp1hasIntSuffix);
+            Assert.AreEqual("SpecificTypeStringSuffix", stringProp1Suffix);
+
+            var doesStringProp2hasIntSuffix = provider.TryGetFieldSuffix(typeof(DummyType1), typeof(string), nameof(DummyType1.StringProp2), out var stringProp2Suffix);
+            Assert.IsTrue(doesStringProp2hasIntSuffix);
+            Assert.AreEqual("SpecificTypeStringSuffix", stringProp2Suffix);
+
+            var doesBoolProp1hasIntSuffix = provider.TryGetFieldSuffix(typeof(DummyType1), typeof(bool), nameof(DummyType1.BoolProp1), out var boolProp1Suffix);
+            Assert.IsTrue(doesBoolProp1hasIntSuffix);
+            Assert.AreEqual("AllBoolSuffix", boolProp1Suffix);
+
+            var doesBoolProp2hasIntSuffix = provider.TryGetFieldSuffix(typeof(DummyType1), typeof(bool), nameof(DummyType1.BoolProp2), out var boolProp2Suffix);
+            Assert.IsTrue(doesBoolProp2hasIntSuffix);
+            Assert.AreEqual("AllBoolSuffix", boolProp2Suffix);
+
+            // Check Dummy2
+            var doesDummy2IntProp1hasIntSuffix = provider.TryGetFieldSuffix(typeof(DummyType2), typeof(int), nameof(DummyType2.IntProp1), out var dummy2IntProp1Suffix);
+            Assert.IsTrue(doesDummy2IntProp1hasIntSuffix);
+            Assert.AreEqual("AllIntSuffix", dummy2IntProp1Suffix);
+
+            var doesDummy2IntProp2hasIntSuffix = provider.TryGetFieldSuffix(typeof(DummyType2), typeof(int), nameof(DummyType2.IntProp2), out var dummy2IntProp2Suffix);
+            Assert.IsTrue(doesDummy2IntProp2hasIntSuffix);
+            Assert.AreEqual("AllIntSuffix", dummy2IntProp2Suffix);
+        }
+
+        #endregion GetFieldSuffixProvider Tests
+
+        #endregion ICustomFieldSuffixesProvider Tests
 
         #region IProtoStylingConventionsStrategiesProvider Tests
 

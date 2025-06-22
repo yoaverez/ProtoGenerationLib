@@ -1,0 +1,19 @@
+﻿using ProtoGenerationLib.Models.Abstracts.CustomCollections;
+
+namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
+{
+    /// <summary>
+    /// A registry for custom field suffixes.
+    /// </summary>
+    public interface ICustomFieldSuffixesRegistry
+    {
+        /// <inheritdoc cref="IFieldSuffixRegister.RegisterFieldSuffix{TFieldType}(string)"/>
+        void RegisterCustomFieldSuffix<TFieldType>(string suffix);
+
+        /// <inheritdoc cref="IFieldSuffixRegister.RegisterFieldSuffix{TFieldDeclaringType, TFieldType}(string)"/>
+        void RegisterCustomFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix);
+
+        /// <inheritdoc cref="IFieldSuffixRegister.RegisterFieldSuffix{TFieldDeclaringType, TFieldType}(string)"/>
+        void RegisterCustomFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName);
+    }
+}

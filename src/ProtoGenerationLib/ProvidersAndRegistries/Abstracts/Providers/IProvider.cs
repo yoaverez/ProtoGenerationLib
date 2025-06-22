@@ -5,6 +5,7 @@
     /// </summary>
     public interface IProvider : ICustomConvertersProvider,
                                  ICustomTypeMappersProvider,
+                                 ICustomFieldSuffixesProvider,
                                  INumberingStrategiesProvider,
                                  IProtoNamingStrategiesProvider,
                                  IProtoStylingConventionsStrategiesProvider,

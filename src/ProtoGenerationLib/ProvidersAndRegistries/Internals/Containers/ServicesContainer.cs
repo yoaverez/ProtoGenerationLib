@@ -7,6 +7,8 @@ using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries;
 using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Mappers.Abstracts;
+using ProtoGenerationLib.Models.Internals.CustomCollections;
+using ProtoGenerationLib.Models.Abstracts.CustomCollections;
 
 namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
 {
@@ -21,6 +23,9 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
 
         /// <inheritdoc cref="CustomTypeMappersContainer"/>
         private CustomTypeMappersContainer customTypeMappersContainer;
+
+        /// <inheritdoc cref="FieldSuffixProviderAndRegister"/>
+        private FieldSuffixProviderAndRegister fieldSuffixProviderAndRegister;
 
         /// <inheritdoc cref="ProtoStylingConventionsStrategiesContainer"/>
         private ProtoStylingConventionsStrategiesContainer protoStylingConventionsStrategiesContainer;
@@ -44,6 +49,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         {
             customConvertersContainer = new CustomConvertersContainer();
             customTypeMappersContainer = new CustomTypeMappersContainer();
+            fieldSuffixProviderAndRegister = new FieldSuffixProviderAndRegister();
             protoStylingConventionsStrategiesContainer = new ProtoStylingConventionsStrategiesContainer();
             protoNamingStrategiesContainer = new ProtoNamingStrategiesContainer();
             numberingStrategiesContainer = new NumberingStrategiesContainer();
@@ -80,6 +86,16 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         }
 
         #endregion ICustomConvertersProvider Implementation
+
+        #region ICustomFieldSuffixesProvider
+
+        /// <inheritdoc/>
+        public IFieldSuffixProvider GetFieldSuffixProvider()
+        {
+            return fieldSuffixProviderAndRegister;
+        }
+
+        #endregion ICustomFieldSuffixesProvider
 
         #region ICustomTypeMappersProvider Implementation
 
@@ -216,6 +232,31 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         }
 
         #endregion ICustomTypeMappersRegistry Implementation
+
+        #region ICustomFieldSuffixesRegistry
+
+        /// <inheritdoc/>
+        public IRegistry RegisterCustomFieldSuffix<TFieldType>(string suffix)
+        {
+            fieldSuffixProviderAndRegister.RegisterFieldSuffix<TFieldType>(suffix);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterCustomFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix)
+        {
+            fieldSuffixProviderAndRegister.RegisterFieldSuffix<TFieldDeclaringType, TFieldType>(suffix);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterCustomFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName)
+        {
+            fieldSuffixProviderAndRegister.RegisterFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(fieldName);
+            return this;
+        }
+
+        #endregion ICustomFieldSuffixesRegistry
 
         #region IProtoStylingConventionsStrategiesRegistry Implementation
 
