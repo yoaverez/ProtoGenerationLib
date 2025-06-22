@@ -32,7 +32,7 @@ namespace ProtoGenerationLib.Configurations.Internals
         public Type ProtoServiceAttribute { get; set; }
 
         /// <inheritdoc/>
-        public Type ProtoRpcAttribute { get; set; }
+        public Type ProtoRpcAttribute { get; internal set; }
 
         /// <inheritdoc/>
         public Type OptionalFieldAttribute { get; set; }
