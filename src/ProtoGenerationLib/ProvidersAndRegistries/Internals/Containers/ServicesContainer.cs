@@ -224,7 +224,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         #region ICustomTypeMappersRegistry Implementation
 
         /// <inheritdoc/>
-        public IRegistry RegisterCustomTypeNameMapper(ITypeMapper typeNameMapper)
+        public IRegistry RegisterCustomTypeMapper(ITypeMapper typeNameMapper)
         {
             customTypeMappersContainer.RegisterCustomTypeMapper(typeNameMapper);
             return this;

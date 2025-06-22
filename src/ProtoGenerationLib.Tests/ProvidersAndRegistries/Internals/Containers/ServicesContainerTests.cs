@@ -266,8 +266,8 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
                 mapper1.Object, mapper2.Object
             };
 
-            container.RegisterCustomTypeNameMapper(mapper1.Object);
-            container.RegisterCustomTypeNameMapper(mapper2.Object);
+            container.RegisterCustomTypeMapper(mapper1.Object);
+            container.RegisterCustomTypeMapper(mapper2.Object);
 
             // Act
             var actualMappers = container.GetCustomTypeMappers().ToList();
@@ -288,9 +288,9 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
                 mapper1.Object, mapper2.Object, mapper1.Object
             };
 
-            container.RegisterCustomTypeNameMapper(mapper1.Object);
-            container.RegisterCustomTypeNameMapper(mapper2.Object);
-            container.RegisterCustomTypeNameMapper(mapper1.Object);
+            container.RegisterCustomTypeMapper(mapper1.Object);
+            container.RegisterCustomTypeMapper(mapper2.Object);
+            container.RegisterCustomTypeMapper(mapper1.Object);
 
             // Act
             var actualMappers = container.GetCustomTypeMappers().ToList();
@@ -1107,7 +1107,7 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
             };
 
             // Act
-            var registry = container.RegisterCustomTypeNameMapper(mapper.Object);
+            var registry = container.RegisterCustomTypeMapper(mapper.Object);
 
             // Assert
             var actualMappers = container.GetCustomTypeMappers().ToList();
@@ -1124,10 +1124,10 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
                 mapper.Object, mapper.Object,
             };
 
-            container.RegisterCustomTypeNameMapper(mapper.Object);
+            container.RegisterCustomTypeMapper(mapper.Object);
 
             // Act
-            var registry = container.RegisterCustomTypeNameMapper(mapper.Object);
+            var registry = container.RegisterCustomTypeMapper(mapper.Object);
 
             // Assert
             var actualMappers = container.GetCustomTypeMappers().ToList();
@@ -1146,10 +1146,10 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
                 mapper1.Object, mapper2.Object,
             };
 
-            container.RegisterCustomTypeNameMapper(mapper1.Object);
+            container.RegisterCustomTypeMapper(mapper1.Object);
 
             // Act
-            var registry = container.RegisterCustomTypeNameMapper(mapper2.Object);
+            var registry = container.RegisterCustomTypeMapper(mapper2.Object);
 
             // Assert
             var actualMappers = container.GetCustomTypeMappers().ToList();
