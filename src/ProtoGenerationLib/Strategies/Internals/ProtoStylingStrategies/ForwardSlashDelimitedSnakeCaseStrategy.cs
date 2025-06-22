@@ -1,5 +1,6 @@
 ﻿using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Utilities;
+using System;
 using System.Linq;
 
 namespace ProtoGenerationLib.Strategies.Internals.ProtoStylingStrategies
@@ -21,6 +22,10 @@ namespace ProtoGenerationLib.Strategies.Internals.ProtoStylingStrategies
         {
             // Remove the extension of the proto file.
             var fileNameAndExtension = words[words.Length - 1];
+
+            if (!fileNameAndExtension.Contains(PROTO_FILE_NAME_EXTENSION))
+                throw new ArgumentException($"Given {nameof(words)} are not a proto file path. The last word does not end with \"{PROTO_FILE_NAME_EXTENSION}\"");
+
             var fileName = fileNameAndExtension.Substring(0, fileNameAndExtension.LastIndexOf(PROTO_FILE_NAME_EXTENSION));
             words[words.Length - 1] = fileName;
 

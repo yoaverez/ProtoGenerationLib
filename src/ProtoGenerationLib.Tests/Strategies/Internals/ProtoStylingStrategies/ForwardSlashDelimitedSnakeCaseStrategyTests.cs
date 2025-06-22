@@ -37,7 +37,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.ProtoStylingStrategies
             // Noting to do the expected exception will do the assert.
         }
 
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentException))]
         [TestMethod]
         public void ToProtoStyle_GivenEmptyArray_ThrowsArgumentOutOfRangeException()
         {
