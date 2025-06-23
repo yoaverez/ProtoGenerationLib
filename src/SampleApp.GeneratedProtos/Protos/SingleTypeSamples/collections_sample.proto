@@ -2,14 +2,40 @@ syntax = "proto3";
 
 package collections_sample_pack;
 
-message MultiDimensionalArrayOfInt32 {
-  repeated int32 elements = 1;
+message ArrayOfArrayOfArrayOfString {
+  repeated ArrayOfArrayOfString arrays = 1;
+}
+
+message ArrayOfArrayOfString {
+  repeated ArrayOfString arrays = 1;
+}
+
+message ArrayOfByte {
+  repeated uint32 elements = 1;
+}
+
+message ArrayOfMultiDimensionalArrayOfByte {
+  repeated MultiDimensionalArrayOfByte arrays = 1;
+}
+
+message ArrayOfString {
+  repeated string elements = 1;
+}
+
+message MultiDimensionalArrayOfArrayOfByte {
+  repeated ArrayOfByte elements = 1;
 
   repeated int32 dimensions = 2;
 }
 
-message MultiDimensionalArrayOfString {
-  repeated string elements = 1;
+message MultiDimensionalArrayOfByte {
+  repeated uint32 elements = 1;
+
+  repeated int32 dimensions = 2;
+}
+
+message MultiDimensionalArrayOfInt32 {
+  repeated int32 elements = 1;
 
   repeated int32 dimensions = 2;
 }
@@ -19,7 +45,11 @@ message Order {
 
   map<string, int32> item_quantities = 2;
 
-  MultiDimensionalArrayOfString string_jagged_array = 3;
+  ArrayOfArrayOfArrayOfString string_jagged_array = 3;
 
   MultiDimensionalArrayOfInt32 int_multidimensional_array = 4;
+
+  MultiDimensionalArrayOfArrayOfByte byte_multidimensional_array_of_arrays = 5;
+
+  ArrayOfMultiDimensionalArrayOfByte byte_array_of_multidimensional_arrays = 6;
 }

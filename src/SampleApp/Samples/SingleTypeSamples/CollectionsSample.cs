@@ -12,6 +12,8 @@ namespace SampleApp.Samples.SingleTypeSamples
             public Dictionary<string, int> ItemQuantities { get; set; }
             public string[][][] StringJaggedArray {get; set;}
             public int[,,,,] IntMultidimensionalArray {get; set;}
+            public byte[,][] ByteMultidimensionalArrayOfArrays {get; set;}
+            public byte[][,] ByteArrayOfMultidimensionalArrays { get; set;}
         }
 
         public void RunSample()
