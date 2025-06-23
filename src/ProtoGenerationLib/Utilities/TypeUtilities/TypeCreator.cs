@@ -85,40 +85,42 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
         }
 
         /// <summary>
-        /// Create a multi dimensional array type.
+        /// Create a new array type that can be converted to proto from the given <paramref name="arrayType"/>.
         /// </summary>
-        /// <param name="elementType">The element type of the array.</param>
-        /// <param name="newTypeName">The name of the resulted type.</param>
+        /// <param name="arrayType">The csharp array to convert to a new type that can be converted to proto.</param>
+        /// <param name="newTypeNamingFunction">A function for choosing names to all the needed newly created types.</param>
         /// <param name="nameSpace">
         /// The name space of the new type. It is recommended to give the name space
         /// of the type that caused this creation to prevent recursive references.
         /// </param>
-        /// <returns>
-        /// A new type representing a multi dimensions array of the given
-        /// <paramref name="elementType"/> in a one dimensional manner.
-        /// </returns>
-        /// <exception cref="ArgumentException">Thrown when the given <paramref name="elementType"/> is an array.</exception>
-        public static Type CreateArrayType(Type elementType, string newTypeName, string nameSpace = DEFAULT_NAMESPACE_NAME)
+        /// <returns>A new array type that can be converted to proto from the given <paramref name="arrayType"/>.</returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the given <paramref name="arrayType"/> is not an array.
+        /// </exception>
+        public static Type CreateProtoArrayType(Type arrayType, Func<Type, string> newTypeNamingFunction, string nameSpace = DEFAULT_NAMESPACE_NAME)
         {
-            if (elementType.IsArray)
-                throw new ArgumentException($"The given {nameof(elementType)} is an array", nameof(elementType));
+            if (!arrayType.IsArray)
+                throw new ArgumentException($"The given {nameof(arrayType)} is not an array", nameof(arrayType));
 
+            var newTypeName = newTypeNamingFunction(arrayType);
             if (CreatedTypes.TryGetValue(newTypeName, out Type value))
             {
                 return value;
             }
 
-            // Create a type builder.
-            var typeBuilder = moduleBuilder.DefineType($"{nameSpace}.{newTypeName}", TypeAttributes.Public | TypeAttributes.Class);
+            if (arrayType.IsMultiDimensionalArray())
+                return CreateMultiDimensionalArrayType(arrayType, newTypeNamingFunction, nameSpace);
 
-            var arrayOfElementsType = elementType.MakeArrayType();
+            else if (arrayType.IsJaggedArray())
+                return CreateJaggedArrayType(arrayType, newTypeNamingFunction, nameSpace);
 
-            DefinePublicProperty(typeBuilder, arrayOfElementsType, "Elements");
-            DefinePublicProperty(typeBuilder, typeof(int[]), "Dimensions");
-
-            var newType = typeBuilder.CreateTypeInfo();
-            CreatedTypes[newTypeName] = newType;
-            return newType;
+            else
+            {
+                // The array is a single dimensional array.
+                // So just wrap the array.
+                var props = new List<(Type, string)> { (arrayType, "Elements") };
+                return CreateDataType(newTypeName, props, nameSpace);
+            }
         }
 
         /// <summary>
@@ -183,6 +185,88 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
             // Associate the property with getter and setter methods.
             propertyBuilder.SetGetMethod(getMethodBuilder);
             propertyBuilder.SetSetMethod(setMethodBuilder);
+        }
+
+        /// <summary>
+        /// Create a new multi dimensional array type.
+        /// </summary>
+        /// <param name="multiDimensionalArrayType">The type of the multidimensional array.</param>
+        /// <param name="newTypeNamingFunction">A function for choosing names to all the needed newly created types.</param>
+        /// <param name="nameSpace">
+        /// The name space of the new type. It is recommended to give the name space
+        /// of the type that caused this creation to prevent recursive references.
+        /// </param>
+        /// <returns>
+        /// A new type representing a multi dimensions array suitable for proto of the given
+        /// <paramref name="multiDimensionalArrayType"/> in a one dimensional manner.
+        /// </returns>
+        /// <exception cref="ArgumentException">Thrown when the given <paramref name="multiDimensionalArrayType"/> is not a multidimensional array.</exception>
+        private static Type CreateMultiDimensionalArrayType(Type multiDimensionalArrayType, Func<Type, string> newTypeNamingFunction, string nameSpace = DEFAULT_NAMESPACE_NAME)
+        {
+            if (!multiDimensionalArrayType.IsMultiDimensionalArray())
+                throw new ArgumentException($"The given {nameof(multiDimensionalArrayType)} is not a multidimensional array", nameof(multiDimensionalArrayType));
+
+            var newTypeName = newTypeNamingFunction(multiDimensionalArrayType);
+            if (CreatedTypes.TryGetValue(newTypeName, out Type value))
+            {
+                return value;
+            }
+
+            // Create a type builder.
+            var typeBuilder = moduleBuilder.DefineType($"{nameSpace}.{newTypeName}", TypeAttributes.Public | TypeAttributes.Class);
+
+            var elementType = multiDimensionalArrayType.GetElementType();
+            if (elementType.IsArray)
+                elementType = CreateProtoArrayType(elementType, newTypeNamingFunction, nameSpace);
+
+            var arrayOfElementsType = elementType.MakeArrayType();
+            DefinePublicProperty(typeBuilder, arrayOfElementsType, "Elements");
+            DefinePublicProperty(typeBuilder, typeof(int[]), "Dimensions");
+
+            var newType = typeBuilder.CreateTypeInfo();
+            CreatedTypes[newTypeName] = newType;
+            return newType;
+        }
+
+        /// <summary>
+        /// Create a multi dimensional array type.
+        /// </summary>
+        /// <param name="jaggedArrayType">The type of the jagged array.</param>
+        /// <param name="newTypeNamingFunction">A function for choosing names to all the needed newly created types.</param>
+        /// <param name="nameSpace">
+        /// The name space of the new type. It is recommended to give the name space
+        /// of the type that caused this creation to prevent recursive references.
+        /// </param>
+        /// <returns>
+        /// A new type representing a jagged array that is suitable for protos of the given
+        /// <paramref name="jaggedArrayType"/>.
+        /// </returns>
+        /// <exception cref="ArgumentException">Thrown when the given <paramref name="jaggedArrayType"/> is not a jagged array.</exception>
+        private static Type CreateJaggedArrayType(Type jaggedArrayType, Func<Type, string> newTypeNamingFunction, string nameSpace = DEFAULT_NAMESPACE_NAME)
+        {
+            if (!jaggedArrayType.IsJaggedArray())
+                throw new ArgumentException($"The given {nameof(jaggedArrayType)} is not a jagged array", nameof(jaggedArrayType));
+
+            var newTypeName = newTypeNamingFunction(jaggedArrayType);
+            if (CreatedTypes.TryGetValue(newTypeName, out Type value))
+            {
+                return value;
+            }
+
+            var arrayElementType = jaggedArrayType.GetElementType();
+
+            arrayElementType = CreateProtoArrayType(arrayElementType, newTypeNamingFunction, nameSpace);
+
+            var arrayOfArrayElementType = arrayElementType.MakeArrayType();
+
+            // Create a type builder.
+            var typeBuilder = moduleBuilder.DefineType($"{nameSpace}.{newTypeName}", TypeAttributes.Public | TypeAttributes.Class);
+
+            DefinePublicProperty(typeBuilder, arrayOfArrayElementType, "arrays");
+
+            var newType = typeBuilder.CreateTypeInfo();
+            CreatedTypes[newTypeName] = newType;
+            return newType;
         }
     }
 }

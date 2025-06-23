@@ -15,13 +15,15 @@ namespace ProtoGenerationLib.Strategies.Internals.TypeNamingStrategies
         {
             if (type.IsArray)
             {
-                var elementType = type.GetArrayElementType();
-                if (type.IsSingleDimensionalArray())
+                var elementType = type.GetElementType();
+                if (type.IsMultiDimensionalArray())
+                {
+                    return $"MultiDimensionalArrayOf{GetTypeName(elementType)}";
+                }
+                else
                 {
                     return $"ArrayOf{GetTypeName(elementType)}";
                 }
-
-                return $"MultiDimensionalArrayOf{GetTypeName(elementType)}";
             }
 
             if (!type.IsGenericType)

@@ -91,18 +91,35 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
         /// </returns>
         public static bool IsSingleDimensionalArray(this Type type)
         {
-            // Type is not an array or it is multi dimensional array.
-            if (!type.IsArray || type.GetArrayRank() > 1)
-            {
-                return false;
-            }
-            // Type is a single dimensional array of a jagged array.
-            else
-            {
-                // If the element type is not an array than it
-                // is a single dimensional array and not a jagged array.
-                return !type.GetElementType()!.IsArray;
-            }
+            return type.IsArray && !type.IsMultiDimensionalOrJaggedArray();
+        }
+
+        /// <summary>
+        /// Checks whether or not the given <paramref name="type"/> is
+        /// multi dimensional array.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        /// <see langword="true"/> if the given <paramref name="type"/>
+        /// is multi dimensional array. otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool IsMultiDimensionalArray(this Type type)
+        {
+            return type.IsArray && type.GetArrayRank() > 1;
+        }
+
+        /// <summary>
+        /// Checks whether or not the given <paramref name="type"/> is
+        /// jagged array.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        /// <see langword="true"/> if the given <paramref name="type"/>
+        /// is jagged array. otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool IsJaggedArray(this Type type)
+        {
+            return type.IsArray && type.GetElementType().IsArray;
         }
 
         /// <summary>
@@ -116,7 +133,7 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
         /// </returns>
         public static bool IsMultiDimensionalOrJaggedArray(this Type type)
         {
-            return type.IsArray && !type.IsSingleDimensionalArray();
+            return type.IsMultiDimensionalArray() || type.IsJaggedArray();
         }
 
         /// <summary>

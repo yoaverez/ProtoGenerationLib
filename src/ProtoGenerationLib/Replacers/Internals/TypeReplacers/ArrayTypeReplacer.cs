@@ -39,21 +39,9 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not an array and can not be replaced by the {nameof(ArrayTypeReplacer)}.");
 
             var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
-            var newTypeName = newTypeNamingStrategy.GetNewTypeName(type);
 
-            Type newType;
-            if (type.IsSingleDimensionalArray())
-            {
-                var props = new List<(Type, string)> { (type, "items") };
-                newType = TypeCreator.CreateDataType(newTypeName, props, nameSpace: type.GetArrayElementType().Namespace);
-            }
-
-            // Multi dimensional array or a jagged array.
-            else
-            {
-                var elementType = type.GetArrayElementType();
-                newType = TypeCreator.CreateArrayType(elementType, newTypeName, nameSpace: elementType.Namespace);
-            }
+            var arrayElementType = type.GetArrayElementType();
+            var newType = TypeCreator.CreateProtoArrayType(type, newTypeNamingStrategy.GetNewTypeName, arrayElementType.Namespace);
 
             return newType;
         }

@@ -140,7 +140,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
                                        .Returns<IFieldMetadata, int, int>((a, idx, b) => Convert.ToUInt32(idx + 1));
 
             var type = typeof(object);
-            var arrayType1 = typeof(string[][][]);
+            var arrayType1 = typeof(string[][]);
             var arrayType2 = typeof(bool[,,,]);
 
             var fields = new List<IFieldMetadata>
@@ -151,8 +151,15 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             };
             var dataTypeMetadata = new DataTypeMetadata(type, fields, Array.Empty<IDataTypeMetadata>(), Array.Empty<IEnumTypeMetadata>());
 
-            var newArrayType1 = TypeCreator.CreateArrayType(typeof(string), "newStringArray");
-            var newArrayType2 = TypeCreator.CreateArrayType(typeof(bool), "newBoolArray");
+            var newArrayType1 = TypeCreator.CreateProtoArrayType(arrayType1, t =>
+            {
+                if (t.Equals(typeof(string[][])))
+                    return "newStringArray";
+                if (t.Equals(typeof(string[])))
+                    return "StringArray";
+                return string.Empty;
+            });
+            var newArrayType2 = TypeCreator.CreateProtoArrayType(arrayType2, t => "newBoolArray");
             var protoTypesMetadatas = new Dictionary<Type, IProtoTypeMetadata>
             {
                 [type] = new ProtoTypeMetadata(type.Name, "pac", $"pac.{type.Name}", "path1"),

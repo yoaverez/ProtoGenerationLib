@@ -177,6 +177,71 @@ namespace ProtoGenerationLib.Tests.Utilities.TypeUtilities
 
         #endregion IsSingleDimensionalArray Tests
 
+        #region IsMultiDimensionalArray Tests
+
+        [DataRow(typeof(int[]))]
+        [DataRow(typeof(bool[]))]
+        [DataRow(typeof(object[][][]))]
+        [DataRow(typeof(object[][,][]))]
+        [DataRow(typeof(IEnumerable<Type>[]))]
+        [TestMethod]
+        public void IsMultiDimensionalArray_TypeIsNotAMultiDimensionalArrayNorJaggedArray_ReturnFalse(Type type)
+        {
+            // Act
+            var returnValue = type.IsMultiDimensionalArray();
+
+            // Assert
+            Assert.IsFalse(returnValue);
+        }
+
+        [DataRow(typeof(int[,,][]))]
+        [DataRow(typeof(bool[,]))]
+        [DataRow(typeof(string[,,,,,,,,,]))]
+        [TestMethod]
+        public void IsMultiDimensionalArray_TypeIsAMultiDimensionalArrayOrJaggedArray_ReturnTrue(Type type)
+        {
+            // Act
+            var returnValue = type.IsMultiDimensionalArray();
+
+            // Assert
+            Assert.IsTrue(returnValue);
+        }
+
+        #endregion IsMultiDimensionalArray Tests
+
+        #region IsJaggedArray Tests
+
+        [DataRow(typeof(int[,]))]
+        [DataRow(typeof(bool[]))]
+        [DataRow(typeof(object[,,]))]
+        [DataRow(typeof(IEnumerable<Type>[]))]
+        [TestMethod]
+        public void IsJaggedArray_TypeIsNotAMultiDimensionalArrayNorJaggedArray_ReturnFalse(Type type)
+        {
+            // Act
+            var returnValue = type.IsJaggedArray();
+
+            // Assert
+            Assert.IsFalse(returnValue);
+        }
+
+        [DataRow(typeof(int[][]))]
+        [DataRow(typeof(char[][][][][]))]
+        [DataRow(typeof(bool[][,]))]
+        [DataRow(typeof(byte[][,,,][]))]
+        [DataRow(typeof(object[,,][]))]
+        [TestMethod]
+        public void IsJaggedArray_TypeIsAMultiDimensionalArrayOrJaggedArray_ReturnTrue(Type type)
+        {
+            // Act
+            var returnValue = type.IsJaggedArray();
+
+            // Assert
+            Assert.IsTrue(returnValue);
+        }
+
+        #endregion IsJaggedArray Tests
+
         #region IsMultiDimensionalOrJaggedArray Tests
 
         [DataRow(typeof(int[]))]

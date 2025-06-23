@@ -12,7 +12,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.PatameterListNamingStrat
             // Arrange
             var strategy = new ParameterListNamingStrategy();
             var method = GetType().GetMethod(nameof(Method1), BindingFlags.NonPublic | BindingFlags.Static);
-            var expectedName = "Method1ArrayOfInt32MultiDimensionalArrayOfBooleanMultiDimensionalArrayOfString" +
+            var expectedName = "Method1ArrayOfInt32ArrayOfArrayOfArrayOfBooleanMultiDimensionalArrayOfString" +
                                "NullableOfInt32IEnumerableOfArrayOfObjectDictionaryOfObjectString" +
                                "TupleOfObjectStringIEnumerableOfInt32ParameterListNamingStrategyTests";
 

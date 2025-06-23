@@ -6,8 +6,10 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.TypeNamingStrategies
     public class TypeNameAsTypeNameStrategyTests
     {
         [DataRow(typeof(int[]), "ArrayOfInt32")]
-        [DataRow(typeof(bool[][][]), "MultiDimensionalArrayOfBoolean")]
+        [DataRow(typeof(bool[][][]), "ArrayOfArrayOfArrayOfBoolean")]
         [DataRow(typeof(string[,,]), "MultiDimensionalArrayOfString")]
+        [DataRow(typeof(object[,,][]), "MultiDimensionalArrayOfArrayOfObject")]
+        [DataRow(typeof(object[][,,]), "ArrayOfMultiDimensionalArrayOfObject")]
         [DataRow(typeof(int?), "NullableOfInt32")]
         [DataRow(typeof(IEnumerable<object>), "IEnumerableOfObject")]
         [DataRow(typeof(IEnumerable<object[]>), "IEnumerableOfArrayOfObject")]

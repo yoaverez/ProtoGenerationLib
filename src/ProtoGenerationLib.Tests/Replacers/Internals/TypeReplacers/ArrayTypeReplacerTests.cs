@@ -73,6 +73,19 @@ namespace ProtoGenerationLib.Tests.Replacers.Internals.TypeReplacers
             mockINewTypeNamingStrategy.Setup(x => x.GetNewTypeName(It.Is<Type>(t => t.Equals(type))))
                                       .Returns(expectedNewType);
 
+            if(type.IsArray)
+            {
+                var i = 1;
+                var elementType = type.GetElementType()!;
+                while (elementType.IsArray)
+                {
+                    mockINewTypeNamingStrategy.Setup(x => x.GetNewTypeName(elementType))
+                                              .Returns($"{expectedNewType}_{i}");
+                    i++;
+                    elementType = elementType.GetElementType()!;
+                }
+            }
+
             // Act + Assert
             TypeReplacersCommonTests.ReplaceType_TypeCanBeReplaced_ReturnNewType(replacer, type, generationOptions, expectedNewType);
         }
@@ -97,8 +110,9 @@ namespace ProtoGenerationLib.Tests.Replacers.Internals.TypeReplacers
             return new List<object[]>
             {
                 new object[] { typeof(int[]), $"{testClassName}1" },
-                new object[] { typeof(string[][][]), $"{testClassName}2" },
+                new object[] { typeof(string[][]), $"{testClassName}2" },
                 new object[] { typeof(bool[,,,,]), $"{testClassName}3" },
+                new object[] { typeof(char[,,][][,]), $"{testClassName}" },
             };
         }
 

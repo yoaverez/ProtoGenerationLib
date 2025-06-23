@@ -39,13 +39,15 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not an enumerable and can not be replaced by the {nameof(EnumerableTypeReplacer)}.");
 
             type.TryGetElementOfEnumerableType(out var elementType);
-            Type arrayType;
 
+            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
+
+            Type arrayType;
             if (elementType.IsArray)
             {
-                // Make a multi dimensional array
-                // since the type is IEnumerable<ArrayType>.
-                arrayType = elementType.GetArrayElementType().MakeArrayType(2);
+                // Create new type for the array type.
+                var newArrayType = TypeCreator.CreateProtoArrayType(elementType, newTypeNamingStrategy.GetNewTypeName, elementType.GetArrayElementType().Namespace);
+                arrayType = newArrayType.MakeArrayType();
             }
             else
             {
@@ -54,11 +56,7 @@ namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
                 arrayType = elementType.MakeArrayType();
             }
 
-            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
-            var newTypeName = newTypeNamingStrategy.GetNewTypeName(arrayType);
-
-            var props = new List<(Type, string)> { (arrayType, "items") };
-            var newType = TypeCreator.CreateDataType(newTypeName, props, nameSpace: arrayType.Namespace);
+            var newType = TypeCreator.CreateProtoArrayType(arrayType, newTypeNamingStrategy.GetNewTypeName, arrayType.GetArrayElementType().Namespace);
             return newType;
         }
     }
