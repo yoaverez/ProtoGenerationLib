@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package contract_type_sample_pack;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+service IContractType {
+  rpc Method1(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+  rpc Method2(google.protobuf.BoolValue) returns (stream google.protobuf.StringValue);
+
+  rpc Method3(stream Method3Int32ObjectGuid) returns (google.protobuf.Duration);
+
+  rpc Method4(stream google.protobuf.Duration) returns (stream google.protobuf.Duration);
+}
+
+message Method3Int32ObjectGuid {
+  int32 a = 1;
+
+  google.protobuf.Any b = 2;
+
+  string c = 3;
+}

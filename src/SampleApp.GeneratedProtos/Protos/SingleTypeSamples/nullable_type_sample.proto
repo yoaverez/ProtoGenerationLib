@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package nullable_type_sample_pack;
+
+message ObjectWithNullables {
+  optional int32 optional_int = 1;
+
+  optional bool is_enabled = 2;
+}

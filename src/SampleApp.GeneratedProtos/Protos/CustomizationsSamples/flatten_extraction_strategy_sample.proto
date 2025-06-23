@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package flatten_extraction_strategy_sample_pack;
+
+message Dog {
+  string breed = 1;
+
+  string name = 2;
+}

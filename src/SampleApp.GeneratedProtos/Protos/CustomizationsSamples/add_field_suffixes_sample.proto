@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package add_field_suffixes_sample_pack;
+
+import "google/protobuf/duration.proto";
+
+message MovingEntity {
+  message Location {
+    double x_in_meters = 1;
+
+    double y_in_meters = 2;
+  }
+
+  message Velocity {
+    double value_in_meters_per_seconds = 1;
+
+    double direction_in_degrees = 2;
+  }
+
+  Location current_location = 1;
+
+  Velocity current_velocity = 2;
+
+  google.protobuf.Duration last_update_time_in_utc = 3;
+}

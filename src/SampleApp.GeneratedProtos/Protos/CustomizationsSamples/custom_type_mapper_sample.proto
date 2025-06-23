@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package custom_type_mapper_sample_pack;
+
+import "Protos/CustomizationsSamples/ChangeFilePath.proto";
+
+message DataType {
+  string name = 1;
+
+  ChangePackage.ChangeName nested_type = 2;
+}

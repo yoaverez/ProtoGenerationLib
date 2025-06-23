@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package recursive_structure_sample_pack;
+
+message TreeNode {
+  int32 value = 1;
+
+  repeated TreeNode children = 2;
+}

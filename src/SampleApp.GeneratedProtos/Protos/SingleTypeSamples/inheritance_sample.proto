@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package inheritance_sample_pack;
+
+message Animal {
+  string name = 1;
+}
+
+message Dog {
+  Animal animal = 1;
+
+  string breed = 2;
+}

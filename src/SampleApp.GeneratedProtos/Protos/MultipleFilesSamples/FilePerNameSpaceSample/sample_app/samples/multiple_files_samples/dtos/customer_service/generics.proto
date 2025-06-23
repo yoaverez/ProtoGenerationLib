@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package file_per_name_space_sample_pack;
+
+import "Protos/MultipleFilesSamples/FilePerNameSpaceSample/sample_app/samples/multiple_files_samples/dtos/customer_service/orders_dtos.proto";
+
+message NodeOfOrder {
+  Order value = 1;
+
+  NodeOfOrder next = 2;
+}

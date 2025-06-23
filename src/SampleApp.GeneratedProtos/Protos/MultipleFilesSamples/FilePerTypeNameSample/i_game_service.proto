@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package file_per_type_name_sample_pack;
+
+import "google/protobuf/empty.proto";
+import "Protos/MultipleFilesSamples/FilePerTypeNameSample/game_update.proto";
+import "Protos/MultipleFilesSamples/FilePerTypeNameSample/get_game_board_int32_string.proto";
+import "Protos/MultipleFilesSamples/FilePerTypeNameSample/multi_dimensional_array_of_tile.proto";
+import "Protos/MultipleFilesSamples/FilePerTypeNameSample/tile.proto";
+import "Protos/MultipleFilesSamples/FilePerTypeNameSample/value_tuple_of_int32_int32_int32.proto";
+
+service IGameService {
+  rpc GetGameBoard(GetGameBoardInt32String) returns (MultiDimensionalArrayOfTile);
+
+  rpc GetGameLiveUpdates(google.protobuf.Empty) returns (stream GameUpdate);
+
+  rpc GetTile(ValueTupleOfInt32Int32Int32) returns (Tile);
+
+  rpc UpdateGameLive(stream GameUpdate) returns (google.protobuf.Empty);
+}

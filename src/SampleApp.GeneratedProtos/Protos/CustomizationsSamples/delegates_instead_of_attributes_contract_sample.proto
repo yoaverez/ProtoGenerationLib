@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package delegates_instead_of_attributes_contract_sample_pack;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/empty.proto";
+
+service IContractTypeWithoutAttributes {
+  rpc Method1(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+  rpc Method3(stream Method3Int32ObjectGuid) returns (google.protobuf.Duration);
+}
+
+message Method3Int32ObjectGuid {
+  int32 a = 1;
+
+  google.protobuf.Any b = 2;
+
+  string c = 3;
+}

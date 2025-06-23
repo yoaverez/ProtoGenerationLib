@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package include_fields_and_privates_sample_pack;
+
+message ProductDto {
+  string name = 1;
+
+  string price = 2;
+
+  bool is_expensive = 3;
+
+  string internal_id = 4;
+}

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package file_per_type_name_sample_pack;
+
+import "Protos/MultipleFilesSamples/FilePerTypeNameSample/tile.proto";
+
+message MultiDimensionalArrayOfTile {
+  repeated Tile elements = 1;
+
+  repeated int32 dimensions = 2;
+}

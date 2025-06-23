@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package file_per_name_space_and_type_sample_pack;
+
+message Item {
+  int32 id = 1;
+
+  int32 price = 2;
+}

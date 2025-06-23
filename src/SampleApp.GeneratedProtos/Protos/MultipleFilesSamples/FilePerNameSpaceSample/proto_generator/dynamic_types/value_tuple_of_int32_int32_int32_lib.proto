@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package file_per_name_space_sample_pack;
+
+message ValueTupleOfInt32Int32Int32 {
+  int32 item1 = 1;
+
+  int32 item2 = 2;
+
+  int32 item3 = 3;
+}

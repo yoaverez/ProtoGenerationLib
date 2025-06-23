@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package plain_data_type_sample_pack;
+
+message Person {
+  string name = 1;
+
+  int32 age = 2;
+}
