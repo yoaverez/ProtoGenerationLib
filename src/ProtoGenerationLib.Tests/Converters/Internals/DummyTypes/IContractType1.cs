@@ -6,13 +6,13 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.DummyTypes
     internal interface IContractType1
     {
         [ProtoRpc(ProtoRpcType.Unary)]
-        public void Method1(int a);
+        void Method1(int a);
 
         [ProtoRpc(ProtoRpcType.BidirectionalStreaming)]
-        public double Method2(int a, bool b);
+        double Method2(int a, bool b);
 
-        public double Method3(int a);
+        double Method3(int a);
 
-        public double Method4(int a);
+        double Method4(int a);
     }
 }

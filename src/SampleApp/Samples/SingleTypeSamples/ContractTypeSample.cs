@@ -14,13 +14,19 @@ namespace SampleApp.Samples.SingleTypeSamples
             public void Method1();
 
             [ProtoRpc(ProtoRpcType.ServerStreaming)]
-            public string Method2(bool b);
+            public EnumType Method2(EnumType enumType);
 
             [ProtoRpc(ProtoRpcType.ClientStreaming)]
             public TimeSpan Method3(int a, object b, Guid c);
 
             [ProtoRpc(ProtoRpcType.BidirectionalStreaming)]
             public TimeSpan Method4(TimeSpan timeSpan);
+        }
+
+        public enum EnumType
+        {
+            Value1 = 1,
+            Value2 = 2,
         }
 
         public void RunSample()

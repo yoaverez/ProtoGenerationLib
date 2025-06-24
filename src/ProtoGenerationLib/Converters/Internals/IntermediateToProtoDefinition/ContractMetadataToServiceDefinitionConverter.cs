@@ -4,6 +4,7 @@ using ProtoGenerationLib.Constants;
 using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
+using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
@@ -43,7 +44,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
         }
 
         /// <inheritdoc/>
-        /// <inheritdoc cref="CreateRpcFromMethodMetadata(IMethodMetadata, string, IProtoGenerationOptions, IReadOnlyDictionary{Type, IProtoTypeMetadata}, out ISet{string})" path="/exception"/>
+        /// <inheritdoc cref="CreateRpcFromMethodMetadata(IMethodMetadata, Type, string, IProtoGenerationOptions, IReadOnlyDictionary{Type, IProtoTypeMetadata}, out ISet{string})" path="/exception"/>
         public IServiceDefinition ConvertIntermediateRepresentationToProtoDefinition(IContractTypeMetadata intermediateType,
                                                                                      IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas,
                                                                                      IProtoGenerationOptions generationOptions)
@@ -98,18 +99,18 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
                 var parameterListNamingStrategy = componentsProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
                 var typeName = parameterListNamingStrategy.GetNewParametersListTypeName(methodMetadata.MethodInfo);
                 if (!TypeCreator.TryGetCreatedType(typeName, out requestType))
-                    throw new Exception($"The service method: {methodMetadata.MethodInfo} " +
+                    throw new Exception($"The service method: {methodMetadata.MethodInfo.Name} " +
                         $"contains more than one parameter and yet no new type was created " +
                         $"for the parameter list.");
             }
 
             var packageComponentsSeparator = componentsProvider.GetPackageStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.PackageStylingStrategy).PackageComponentsSeparator;
 
-            var requestTypeMetadata = GetTypeMetadata(requestType, protoTypesMetadatas);
+            var requestTypeMetadata = GetTypeMetadata(requestType, protoTypesMetadatas, methodMetadata.MethodInfo.Name, generationOptions);
             neededImports.Add(requestTypeMetadata.FilePath!);
             var requestTypeName = GetTypeShortName(requestTypeMetadata.FullName, serviceFullName, packageComponentsSeparator);
 
-            var returnTypeMetadata = GetTypeMetadata(methodMetadata.ReturnType, protoTypesMetadatas);
+            var returnTypeMetadata = GetTypeMetadata(methodMetadata.ReturnType, protoTypesMetadatas, methodMetadata.MethodInfo.Name, generationOptions);
             neededImports.Add(returnTypeMetadata.FilePath!);
             var responseTypeName = GetTypeShortName(returnTypeMetadata.FullName, serviceFullName, packageComponentsSeparator);
 
@@ -126,15 +127,51 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
         /// </summary>
         /// <param name="type">The type that is used as the rpc return or request type.</param>
         /// <param name="protoTypesMetadatas">The mapping between types to their metadatas.</param>
+        /// <param name="methodName">The name of the method that contains the given <paramref name="type"/>.</param>
+        /// <param name="generationOptions">The generation options.</param>
         /// <returns>The proto type metadata of rpc return or request type.</returns>
-        private IProtoTypeMetadata GetTypeMetadata(Type type, IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas)
+        private IProtoTypeMetadata GetTypeMetadata(Type type, IReadOnlyDictionary<Type, IProtoTypeMetadata> protoTypesMetadatas, string methodName, IProtoGenerationOptions generationOptions)
         {
-            if (type.DoesTypeHaveProtobufWrapperType())
+            if (primitiveTypesWrappers.ContainsKey(type))
             {
                 return primitiveTypesWrappers[type];
             }
 
+            type = GetTypeWrapperIfNonePrimitiveMessageType(type, methodName, generationOptions);
+
             return protoTypesMetadatas[type];
+        }
+
+        /// <summary>
+        /// Get the type wrapper of the given <paramref name="type"/> if the given
+        /// type is not a message type and not a primitive type.
+        /// </summary>
+        /// <param name="type">The </param>
+        /// <param name="methodName"></param>
+        /// <param name="generationOptions"></param>
+        /// <returns>
+        /// The type wrapper of the given <paramref name="type"/> if the given
+        /// type is not a message type and not a primitive type
+        /// otherwise, returns the given <paramref name="type"/>.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// Thrown when the given type is not a message type and not a primitive type
+        /// but there were no wrapper type that was created for it.
+        /// </exception>
+        private Type GetTypeWrapperIfNonePrimitiveMessageType(Type type, string methodName, IProtoGenerationOptions generationOptions)
+        {
+            var resultMessageType = type;
+            if (type.IsEnum)
+            {
+                var NewTypeNamingStrategy = componentsProvider.GetNewTypeNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.NewTypeNamingStrategy);
+                var typeName = NewTypeNamingStrategy.GetNewTypeName(type);
+                if (!TypeCreator.TryGetCreatedType(typeName, out resultMessageType))
+                    throw new Exception($"The service method: {methodName} " +
+                        $"contains a parameter or return type that is not a message type nor primitive type and yet no new wrapper type was created " +
+                        $"for the {nameof(type)}: {type.Name}.");
+            }
+
+            return resultMessageType;
         }
     }
 }

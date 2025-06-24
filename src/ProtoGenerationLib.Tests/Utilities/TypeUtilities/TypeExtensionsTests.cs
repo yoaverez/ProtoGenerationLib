@@ -582,48 +582,5 @@ namespace ProtoGenerationLib.Tests.Utilities.TypeUtilities
         }
 
         #endregion GetTypeNameWithoutGenerics Tests
-
-        #region DoesTypeHaveProtobufWrapperType Tests
-
-        [DataRow(typeof(bool))]
-        [DataRow(typeof(byte))]
-        [DataRow(typeof(sbyte))]
-        [DataRow(typeof(short))]
-        [DataRow(typeof(ushort))]
-        [DataRow(typeof(int))]
-        [DataRow(typeof(uint))]
-        [DataRow(typeof(long))]
-        [DataRow(typeof(ulong))]
-        [DataRow(typeof(float))]
-        [DataRow(typeof(double))]
-        [DataRow(typeof(decimal))]
-        [DataRow(typeof(byte[]))]
-        [DataRow(typeof(char))]
-        [DataRow(typeof(string))]
-        [TestMethod]
-        public void DoesTypeHaveProtobufWrapperType_TypeHaveWrapperType_ReturnTrue(Type type)
-        {
-            // Act
-            var actualResult = type.DoesTypeHaveProtobufWrapperType();
-
-            // Assert
-            Assert.IsTrue(actualResult);
-        }
-
-        [DataRow(typeof(object))]
-        [DataRow(typeof(nint))]
-        [DataRow(typeof(TypeExtensionsTests))]
-        [DataRow(typeof(TimeSpan))]
-        [TestMethod]
-        public void DoesTypeHaveProtobufWrapperType_TypeDoesNotHaveWrapperType_ReturnFalse(Type type)
-        {
-            // Act
-            var actualResult = type.DoesTypeHaveProtobufWrapperType();
-
-            // Assert
-            Assert.IsFalse(actualResult);
-        }
-
-        #endregion DoesTypeHaveProtobufWrapperType Tests
     }
 }

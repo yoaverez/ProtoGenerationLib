@@ -6,6 +6,7 @@ using ProtoGenerationLib.Utilities.TypeUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
 {
@@ -15,17 +16,17 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
     internal class ContractTypesExtractor : BaseTypesExtractor
     {
         /// <summary>
-        /// A provider of parameter list naming strategies.
+        /// A provider of new type naming strategies.
         /// </summary>
-        private INewTypeNamingStrategiesProvider parameterListNamingStrategiesProvider;
+        private INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider;
 
         /// <summary>
         /// Create new instance of the <see cref="ContractTypesExtractor"/> class.
         /// </summary>
-        /// <param name="parameterListNamingStrategiesProvider"><inheritdoc cref="parameterListNamingStrategiesProvider" path="/node()"/></param>
-        public ContractTypesExtractor(INewTypeNamingStrategiesProvider parameterListNamingStrategiesProvider)
+        /// <param name="newTypeNamingStrategiesProvider"><inheritdoc cref="newTypeNamingStrategiesProvider" path="/node()"/></param>
+        public ContractTypesExtractor(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
         {
-            this.parameterListNamingStrategiesProvider = parameterListNamingStrategiesProvider;
+            this.newTypeNamingStrategiesProvider = newTypeNamingStrategiesProvider;
         }
 
         /// <inheritdoc/>
@@ -37,13 +38,15 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
         /// <inheritdoc/>
         protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
         {
-            var parameterListNamingStrategy = parameterListNamingStrategiesProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
+            var parameterListNamingStrategy = newTypeNamingStrategiesProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
             var types = new HashSet<Type>();
             var methods = type.ExtractRpcMethods(generationOptions.AnalysisOptions);
 
             foreach (var method in methods)
             {
-                types.Add(method.ReturnType);
+                var returnType = WrapIfNonePrimitiveMessageType(method.ReturnType, generationOptions.NewTypeNamingStrategiesOptions);
+
+                types.Add(returnType);
                 var methodParameters = method.GetParameters();
 
                 // Need to create a special type for the parameters list.
@@ -56,7 +59,9 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
                 }
                 else if (methodParameters.Length == 1)
                 {
-                    types.Add(methodParameters[0].ParameterType);
+                    var parameterType = WrapIfNonePrimitiveMessageType(methodParameters[0].ParameterType, generationOptions.NewTypeNamingStrategiesOptions);
+
+                    types.Add(parameterType);
                 }
                 // Method has no parameters.
                 else
@@ -66,6 +71,28 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
             }
 
             return types;
+        }
+
+        /// <summary>
+        /// Wrap a type that is not a message type nor primitive type
+        /// and can not be a part of rpc declaration.
+        /// </summary>
+        /// <param name="type">The type that is a part of rpc declaration.</param>
+        /// <param name="newTypeNamingStrategiesOptions">The new type naming strategies options.</param>
+        /// <returns>
+        /// The given <paramref name="type"/> if that type can be a part of rpc declaration
+        /// otherwise a new data type that wraps the given <paramref name="type"/>.
+        /// </returns>
+        private Type WrapIfNonePrimitiveMessageType(Type type, INewTypeNamingStrategiesOptions newTypeNamingStrategiesOptions)
+        {
+            if (!type.IsEnum)
+                return type;
+
+            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(newTypeNamingStrategiesOptions.NewTypeNamingStrategy);
+            var enumWrapperName = newTypeNamingStrategy.GetNewTypeName(type);
+            var props = new List<(Type, string)> { (type, "Value") };
+            var enumWrapper = TypeCreator.CreateDataType(enumWrapperName, props, type.Namespace);
+            return enumWrapper;
         }
     }
 }

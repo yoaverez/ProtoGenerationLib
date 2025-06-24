@@ -27,7 +27,14 @@ namespace ProtoGenerationLib.Strategies.Internals.NewTypeNamingStrategy
         /// <inheritdoc/>
         public string GetNewTypeName(Type type)
         {
-            return typeNamingStrategy.GetTypeName(type);
+            var newTypeName = typeNamingStrategy.GetTypeName(type);
+
+            // The only reason to create new enum type is
+            // to wrap it in a message.
+            if (type.IsEnum)
+                newTypeName = $"{newTypeName}Wrapper";
+
+            return newTypeName;
         }
     }
 }
