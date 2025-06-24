@@ -11,16 +11,16 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElement
     /// e.g. given the type that represent int[,] the extractor will return the type
     /// of int and the type of int[,].
     /// </summary>
-    internal class ArrayElementTypeExtractor : BaseTypesExtractor
+    internal class ArrayElementTypeExtractor : BaseWrapperElementTypeExtractor
     {
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
+        public override bool CanHandle(Type type)
         {
             return type.IsArray;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type)
         {
             var elementType = type.GetArrayElementType();
             var types = new HashSet<Type> { elementType };

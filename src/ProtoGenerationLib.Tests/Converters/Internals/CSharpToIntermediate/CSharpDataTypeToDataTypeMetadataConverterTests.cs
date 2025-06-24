@@ -8,33 +8,26 @@ using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
 using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Converters.Abstracts;
+using ProtoGenerationLib.Customizations;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 {
     [TestClass]
     public class CSharpDataTypeToDataTypeMetadataConverterTests
     {
-        private static IProtoGenerationOptions generationOptions;
-
         private static IEnumTypeMetadata enumTypeMetadata;
+
+        private ProtoGenerationOptions generationOptions;
 
         private CSharpDataTypeToDataTypeMetadataConverter converter;
 
         private Mock<IFieldsAndPropertiesExtractionStrategy> mockStrategy;
 
-        private List<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> customConverters;
+        private IList<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> customConverters;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            generationOptions = new ProtoGenerationOptions
-            {
-                AnalysisOptions = new AnalysisOptions
-                {
-                    FieldsAndPropertiesExtractionStrategy = "a"
-                }
-            };
-
             enumTypeMetadata = CreateEnumTypeMetadata(typeof(Enum1), new List<IEnumValueMetadata>
             {
                 CreateEnumValueMetadata("Value1", 5),
@@ -46,15 +39,21 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
         [TestInitialize]
         public void TestInitialize()
         {
-            customConverters = new List<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>>();
+            generationOptions = new ProtoGenerationOptions
+            {
+                AnalysisOptions = new AnalysisOptions
+                {
+                    FieldsAndPropertiesExtractionStrategy = "a"
+                }
+            };
+
+            customConverters = generationOptions.DataTypeCustomConverters;
 
             mockStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>();
 
             var mockProvider = new Mock<IProvider>();
             mockProvider.Setup(provider => provider.GetFieldsAndPropertiesExtractionStrategy(It.IsAny<string>()))
                         .Returns(mockStrategy.Object);
-            mockProvider.Setup(provider => provider.GetDataTypeCustomConverters())
-                        .Returns(customConverters);
 
             var mockEnumConverter = new Mock<ICSharpToIntermediateConverter<IEnumTypeMetadata>>();
             mockEnumConverter.Setup(enumConverter => enumConverter.ConvertTypeToIntermediateRepresentation(It.IsAny<Type>(), It.IsAny<IProtoGenerationOptions>()))
@@ -139,14 +138,14 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                 var mockConverter = new Mock<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>>();
                 if (i != suitableCustomConverterIndex)
                 {
-                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type))))
                                  .Returns(false);
                 }
                 else
                 {
-                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type))))
                                  .Returns(true);
-                    mockConverter.Setup(customConverter => customConverter.ConvertTypeToIntermediateRepresentation(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(customConverter => customConverter.ConvertTypeToIntermediateRepresentation(It.Is<Type>((t) => t.Equals(type))))
                                  .Returns(expectedMetadata);
                 }
                 customConverters.Add(mockConverter.Object);

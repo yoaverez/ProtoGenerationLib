@@ -1,4 +1,4 @@
-﻿using ProtoGenerationLib.Converters.Abstracts;
+﻿using ProtoGenerationLib.Customizations;
 using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Mappers.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.CustomCollections;
@@ -17,12 +17,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// </summary>
     internal class ServicesContainer : IProviderAndRegister
     {
-        /// <inheritdoc cref="CustomConvertersContainer"/>
-        private CustomConvertersContainer customConvertersContainer;
-
-        /// <inheritdoc cref="CustomTypeMappersContainer"/>
-        private CustomTypeMappersContainer customTypeMappersContainer;
-
         /// <inheritdoc cref="FieldSuffixProviderAndRegister"/>
         private FieldSuffixProviderAndRegister fieldSuffixProviderAndRegister;
 
@@ -46,8 +40,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         /// </summary>
         public ServicesContainer()
         {
-            customConvertersContainer = new CustomConvertersContainer();
-            customTypeMappersContainer = new CustomTypeMappersContainer();
             fieldSuffixProviderAndRegister = new FieldSuffixProviderAndRegister();
             protoStylingConventionsStrategiesContainer = new ProtoStylingConventionsStrategiesContainer();
             protoNamingStrategiesContainer = new ProtoNamingStrategiesContainer();
@@ -58,34 +50,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
 
         #region IProvider Implementation
 
-        #region ICustomConvertersProvider Implementation
-
-        /// <inheritdoc/>
-        public IEnumerable<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> GetContractTypeCustomConverters()
-        {
-            return customConvertersContainer.GetContractTypeCustomConverters();
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> GetDataTypeCustomConverters()
-        {
-            return customConvertersContainer.GetDataTypeCustomConverters();
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>> GetEnumTypeCustomConverters()
-        {
-            return customConvertersContainer.GetEnumTypeCustomConverters();
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<ITypesExtractor> GetCustomTypesExtractors()
-        {
-            return customConvertersContainer.GetCustomTypesExtractors();
-        }
-
-        #endregion ICustomConvertersProvider Implementation
-
         #region ICustomFieldSuffixesProvider
 
         /// <inheritdoc/>
@@ -95,16 +59,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         }
 
         #endregion ICustomFieldSuffixesProvider
-
-        #region ICustomTypeMappersProvider Implementation
-
-        /// <inheritdoc/>
-        public IEnumerable<ITypeMapper> GetCustomTypeMappers()
-        {
-            return customTypeMappersContainer.GetCustomTypeMappers();
-        }
-
-        #endregion ICustomTypeMappersProvider Implementation
 
         #region IProtoStylingConventionsStrategiesProvider Implementation
 
@@ -195,42 +149,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         #endregion IProvider Implementation
 
         #region IRegistry Implementation
-
-        #region ICustomConvertersRegistry Implementation
-
-        /// <inheritdoc/>
-        public IRegistry RegisterContractTypeCustomConverter(ICSharpToIntermediateCustomConverter<IContractTypeMetadata> customConverter)
-        {
-            customConvertersContainer.RegisterContractTypeCustomConverter(customConverter);
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IRegistry RegisterDataTypeCustomConverter(ICSharpToIntermediateCustomConverter<IDataTypeMetadata> customConverter)
-        {
-            customConvertersContainer.RegisterDataTypeCustomConverter(customConverter);
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IRegistry RegisterEnumTypeCustomConverter(ICSharpToIntermediateCustomConverter<IEnumTypeMetadata> customConverter)
-        {
-            customConvertersContainer.RegisterEnumTypeCustomConverter(customConverter);
-            return this;
-        }
-
-        #endregion ICustomConvertersRegistry Implementation
-
-        #region ICustomTypeMappersRegistry Implementation
-
-        /// <inheritdoc/>
-        public IRegistry RegisterCustomTypeMapper(ITypeMapper typeNameMapper)
-        {
-            customTypeMappersContainer.RegisterCustomTypeMapper(typeNameMapper);
-            return this;
-        }
-
-        #endregion ICustomTypeMappersRegistry Implementation
 
         #region ICustomFieldSuffixesRegistry
 

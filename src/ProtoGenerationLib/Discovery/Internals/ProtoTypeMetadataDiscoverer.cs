@@ -1,5 +1,6 @@
 ﻿using ProtoGenerationLib.CommonUtilities;
 using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Customizations;
 using ProtoGenerationLib.Discovery.Abstracts;
 using ProtoGenerationLib.Mappers.Abstracts;
 using ProtoGenerationLib.Mappers.Internals;
@@ -53,15 +54,9 @@ namespace ProtoGenerationLib.Discovery.Internals
 
         /// <inheritdoc/>
         public Dictionary<Type, IProtoTypeMetadata> DiscoverProtosMetadata(IEnumerable<Type> types,
-                                                                           IProtoGenerationOptions protoGeneratorConfiguration)
+                                                                           IProtoGenerationOptions generationOptions)
         {
-            var userDefinedTypeMappers = componentsProvider.GetCustomTypeMappers();
-
-            // Note that the default mappers comes before the user mappers
-            // since the default mappers are meant for types like primitives
-            // and well known types whose name, package and file path are set and
-            // can not be changed.
-            var typeMappers = defaultTypeMappers.Concat(userDefinedTypeMappers).ToArray();
+            var userDefinedTypeMappers = generationOptions.GetCustomTypeMappers();
 
             var typesSet = types.ToHashSet();
             var metadatas = new Dictionary<Type, IProtoTypeMetadata>();
@@ -69,18 +64,24 @@ namespace ProtoGenerationLib.Discovery.Internals
             var typeToDescendants = new Dictionary<Type, ISet<Type>>();
             foreach (var type in typesSet)
             {
-                IProtoTypeBaseMetadata styledBaseMetadata;
-                if (TryGetProtoTypeMetadataFromMappers(type, typeMappers, out var mapperBaseMetadata))
+                if(TryGetProtoTypeMetadataFromMappers(type, defaultTypeMappers, out var fullMetadata))
                 {
-                    styledBaseMetadata = FillMapperBaseMetadata(mapperBaseMetadata, type, protoGeneratorConfiguration);
+                    metadatas.Add(type, fullMetadata);
+                    continue;
+                }
+
+                IProtoTypeBaseMetadata styledBaseMetadata;
+                if (TryGetProtoTypeMetadataFromMappers(type, userDefinedTypeMappers, out var mapperBaseMetadata))
+                {
+                    styledBaseMetadata = FillMapperBaseMetadata(mapperBaseMetadata, type, generationOptions);
                 }
                 else
                 {
-                    var name = GetProtoTypeName(type, protoGeneratorConfiguration);
-                    var package = GetPackageName(type, protoGeneratorConfiguration);
-                    var filePath = GetFilePath(type, protoGeneratorConfiguration);
+                    var name = GetProtoTypeName(type, generationOptions);
+                    var package = GetPackageName(type, generationOptions);
+                    var filePath = GetFilePath(type, generationOptions);
                     var unstyledBaseMetadata = new ProtoTypeBaseMetadata(name, package, filePath);
-                    styledBaseMetadata = StyleBaseMetadata(type, unstyledBaseMetadata, protoGeneratorConfiguration);
+                    styledBaseMetadata = StyleBaseMetadata(type, unstyledBaseMetadata, generationOptions);
                 }
 
                 styledBaseMetadatas.Add(type, styledBaseMetadata);
@@ -369,7 +370,34 @@ namespace ProtoGenerationLib.Discovery.Internals
         /// <see langword="true"/> if the given <paramref name="type"/> can be mapped by
         /// any of the given <paramref name="mappers"/> otherwise <see langword="false"/>.
         /// </returns>
-        private static bool TryGetProtoTypeMetadataFromMappers(Type type, IEnumerable<ITypeMapper> mappers, out IProtoTypeBaseMetadata protoTypeMetadata)
+        private static bool TryGetProtoTypeMetadataFromMappers(Type type, IEnumerable<ICustomTypeMapper> mappers, out IProtoTypeBaseMetadata protoTypeMetadata)
+        {
+            protoTypeMetadata = default;
+            foreach (var mapper in mappers)
+            {
+                if (mapper.CanHandle(type))
+                {
+                    protoTypeMetadata = mapper.MapTypeToProtoMetadata(type);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Try getting the given <paramref name="type"/>s proto type metadata from the given <paramref name="mappers"/>.
+        /// </summary>
+        /// <param name="type">The csharp type whose proto type metadata is requested.</param>
+        /// <param name="mappers">The mappers.</param>
+        /// <param name="protoTypeMetadata">
+        /// If there is a mapper that can map this <paramref name="type"/> then the mapper
+        /// return metadata otherwise <see cref="string.Empty"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the given <paramref name="type"/> can be mapped by
+        /// any of the given <paramref name="mappers"/> otherwise <see langword="false"/>.
+        /// </returns>
+        private static bool TryGetProtoTypeMetadataFromMappers(Type type, IEnumerable<ITypeMapper> mappers, out IProtoTypeMetadata protoTypeMetadata)
         {
             protoTypeMetadata = default;
             foreach (var mapper in mappers)

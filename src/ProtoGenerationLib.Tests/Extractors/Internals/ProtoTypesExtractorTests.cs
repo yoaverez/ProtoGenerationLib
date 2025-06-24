@@ -1,10 +1,10 @@
 ﻿using Moq;
 using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Customizations;
 using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Extractors.Internals;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Replacers.Abstracts;
-using ProtoGenerationLib.Configurations.Internals;
 
 namespace ProtoGenerationLib.Tests.Extractors.Internals
 {
@@ -13,17 +13,23 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
     {
         private Mock<IProvider> mockIProvider;
 
-        private static IProtoGenerationOptions generationOptions;
+        private IProtoGenerationOptions generationOptions;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
-        {
-            generationOptions = new ProtoGenerationOptions();
-        }
+        private Mock<IProtoGenerationOptions> mockProtoGenerationOptions;
+
+        private IList<ICustomTypesExtractor> customTypesExtractors;
 
         [TestInitialize]
         public void TestInitialize()
         {
+            customTypesExtractors = new List<ICustomTypesExtractor>();
+
+            mockProtoGenerationOptions = new Mock<IProtoGenerationOptions>();
+            mockProtoGenerationOptions.Setup(options => options.GetCustomTypesExtractors())
+                                      .Returns(customTypesExtractors);
+
+            generationOptions = mockProtoGenerationOptions.Object;
+
             mockIProvider = new Mock<IProvider>();
         }
 
@@ -34,8 +40,6 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
         public void ExtractProtoTypes_TypeCouldNotBeHandled_ThrowsArgumentException()
         {
             // Arrange
-            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
-                         .Returns(new List<ITypesExtractor>());
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>());
 
             // Act
@@ -50,8 +54,6 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
         {
             // Arrange
             var testedType = typeof(int);
-            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
-                         .Returns(new List<ITypesExtractor>());
 
             var mockExtractor = new Mock<ITypesExtractor>();
 
@@ -73,8 +75,6 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
             // Arrange
             var testedType = typeof(int);
             var replacingType = typeof(uint);
-            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
-                         .Returns(new List<ITypesExtractor>());
 
             var mockReplacer = new Mock<ITypeReplacer>();
             mockReplacer.Setup(replacer => replacer.CanReplaceType(It.Is<Type>(x => x.Equals(testedType))))
@@ -124,10 +124,10 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
             {
                 typeof(int), typeof(bool)
             };
-            var mockCustomExtractor = new Mock<ITypesExtractor>();
-            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>(), generationOptions))
+            var mockCustomExtractor = new Mock<ICustomTypesExtractor>();
+            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>()))
                                .Returns(true);
-            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.IsAny<Type>(), generationOptions))
+            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.IsAny<Type>()))
                                .Returns(expectedResult.ToList());
 
             var mockDefaultExtractor = new Mock<ITypesExtractor>();
@@ -136,8 +136,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
             mockDefaultExtractor.Setup(defaultExtractor => defaultExtractor.ExtractUsedTypes(It.IsAny<Type>(), generationOptions))
                                 .Returns(new List<Type>());
 
-            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
-                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
+            customTypesExtractors.Add(mockCustomExtractor.Object);
 
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor> { mockDefaultExtractor.Object });
 
@@ -157,14 +156,13 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
             {
                 typeof(int)
             };
-            var mockCustomExtractor = new Mock<ITypesExtractor>();
-            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>(), generationOptions))
+            var mockCustomExtractor = new Mock<ICustomTypesExtractor>();
+            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>()))
                                .Returns(true);
-            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.IsAny<Type>(), generationOptions))
+            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.IsAny<Type>()))
                                .Returns(expectedResult.ToList());
 
-            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
-                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
+            customTypesExtractors.Add(mockCustomExtractor.Object);
 
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>());
 
@@ -184,28 +182,27 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
             {
                 typeof(int), typeof(bool), typeof(object), typeof(double), typeof(float)
             };
-            var mockCustomExtractor = new Mock<ITypesExtractor>();
-            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>(), generationOptions))
+            var mockCustomExtractor = new Mock<ICustomTypesExtractor>();
+            mockCustomExtractor.Setup(customExtractor => customExtractor.CanHandle(It.IsAny<Type>()))
                                .Returns(true);
             // Mock for int.
-            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => type.Equals(typeof(int))), generationOptions))
+            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => type.Equals(typeof(int)))))
                                .Returns(new List<Type> { typeof(bool), typeof(object) });
 
             // Mock for bool.
-            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => type.Equals(typeof(bool))), generationOptions))
+            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => type.Equals(typeof(bool)))))
                                .Returns(new List<Type> { typeof(int), typeof(object), typeof(double) });
 
             // Mock for object.
-            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => type.Equals(typeof(object))), generationOptions))
+            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => type.Equals(typeof(object)))))
                                .Returns(new List<Type> { typeof(double), typeof(float) });
 
             // Mock for anything else.
             var mockedTypes = new HashSet<Type> { typeof(int), typeof(bool), typeof(object) };
-            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => !mockedTypes.Contains(type)), generationOptions))
+            mockCustomExtractor.Setup(customExtractor => customExtractor.ExtractUsedTypes(It.Is<Type>(type => !mockedTypes.Contains(type))))
                                .Returns(new List<Type>());
 
-            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
-                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
+            customTypesExtractors.Add(mockCustomExtractor.Object);
 
             var protoTypesExtractor = CreateProtoTypesExtractor(new List<ITypesExtractor>());
 
@@ -226,9 +223,6 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
         public void ExtractProtoTypes_MiddleTypeCouldNotBeHandled_ThrowsArgumentException()
         {
             // Arrange
-            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
-                         .Returns(new List<ITypesExtractor>());
-
             var testedTypes = new Type[] { typeof(int), typeof(bool), typeof(object) };
 
             var mockTypeExtractor = new Mock<ITypesExtractor>();
@@ -260,16 +254,15 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals
 
             var customType = typeof(short);
             var customTypeUsedType = typeof(double);
-            var mockCustomExtractor = new Mock<ITypesExtractor>();
-            mockCustomExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => x.Equals(customType)), generationOptions))
+            var mockCustomExtractor = new Mock<ICustomTypesExtractor>();
+            mockCustomExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => x.Equals(customType))))
                          .Returns(true);
-            mockCustomExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => !x.Equals(customType)), generationOptions))
+            mockCustomExtractor.Setup(extractor => extractor.CanHandle(It.Is<Type>(x => !x.Equals(customType))))
                          .Returns(false);
-            mockCustomExtractor.Setup(extractor => extractor.ExtractUsedTypes(It.IsAny<Type>(), generationOptions))
+            mockCustomExtractor.Setup(extractor => extractor.ExtractUsedTypes(It.IsAny<Type>()))
                                .Returns(new List<Type> { customTypeUsedType });
 
-            mockIProvider.Setup(componentsProvider => componentsProvider.GetCustomTypesExtractors())
-                         .Returns(new List<ITypesExtractor> { mockCustomExtractor.Object });
+            customTypesExtractors.Add(mockCustomExtractor.Object);
 
             var replacers = new List<ITypeReplacer>();
             var extractors = new List<ITypesExtractor>();

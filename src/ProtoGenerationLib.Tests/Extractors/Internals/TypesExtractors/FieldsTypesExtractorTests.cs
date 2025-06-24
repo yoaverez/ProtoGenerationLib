@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
 using Moq;
-using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Extractors.Internals.TypesExtractors;
-using ProtoGenerationLib.Configurations.Internals;
 
 namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
 {
@@ -12,15 +10,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
     {
         public TestContext TestContext { get; set; }
 
-        private static IProtoGenerationOptions generationOptions;
-
         private IFieldsTypesExtractor extractor;
-
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
-        {
-            generationOptions = new ProtoGenerationOptions();
-        }
 
         [TestInitialize]
         public void TestInitialize()
@@ -42,7 +32,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             };
 
             // Act
-            var actualNeededTypes = RunExtractUsedTypesFromFieldsWithPath(new Type[] { testedType }, generationOptions);
+            var actualNeededTypes = RunExtractUsedTypesFromFieldsWithPath(new Type[] { testedType });
 
             // Assert
             CollectionAssert.AreEqual(expectedNeededTypes, actualNeededTypes.ToList());
@@ -60,7 +50,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             };
 
             // Act
-            var actualNeededTypes = RunExtractUsedTypesFromFieldsWithPath(new Type[] { testedType }, generationOptions);
+            var actualNeededTypes = RunExtractUsedTypesFromFieldsWithPath(new Type[] { testedType });
 
             // Assert
             CollectionAssert.AreEqual(expectedNeededTypes, actualNeededTypes.ToList());
@@ -78,7 +68,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             };
 
             // Act
-            var actualNeededTypes = RunExtractUsedTypesFromFieldsWithPath(new Type[] { testedType }, generationOptions);
+            var actualNeededTypes = RunExtractUsedTypesFromFieldsWithPath(new Type[] { testedType });
 
             // Assert
             CollectionAssert.AreEqual(expectedNeededTypes, actualNeededTypes.ToList());
@@ -104,7 +94,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             };
 
             // Act
-            var actualNeededTypes = RunExtractUsedTypesFromFieldsWithPath(testedTypes, generationOptions);
+            var actualNeededTypes = RunExtractUsedTypesFromFieldsWithPath(testedTypes);
 
             // Assert
             CollectionAssert.AreEquivalent(expectedNeededTypes, actualNeededTypes.ToList());
@@ -112,15 +102,15 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
 
         #endregion ExtractUsedTypesFromFields Tests
 
-        private IEnumerable<Type> RunExtractUsedTypesFromFieldsWithPath(IEnumerable<Type> fieldTypes, IProtoGenerationOptions generationOptions)
+        private IEnumerable<Type> RunExtractUsedTypesFromFieldsWithPath(IEnumerable<Type> fieldTypes)
         {
             var harmony = new Harmony($"{GetType().Name}.{TestContext.TestName}");
 
             var origin = typeof(DefaultTypesExtractorsCreator).GetMethod(nameof(DefaultTypesExtractorsCreator.CreateDefaultWrapperElementTypesExtractors));
 
-            static bool Prefix(ref IEnumerable<ITypesExtractor> __result)
+            static bool Prefix(ref IEnumerable<IWrapperElementTypeExtractor> __result)
             {
-                var wrapperElementTypesExtractors = new List<ITypesExtractor>
+                var wrapperElementTypesExtractors = new List<IWrapperElementTypeExtractor>
                 {
                     CreateExtractorsMock(typeof(int)),
                     CreateExtractorsMock(typeof(bool)),
@@ -132,24 +122,24 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
 
             harmony.Patch(origin, new HarmonyMethod(Prefix));
 
-            var result = extractor.ExtractUsedTypesFromFields(fieldTypes, generationOptions);
+            var result = extractor.ExtractUsedTypesFromFields(fieldTypes);
 
             harmony.UnpatchAll();
             return result;
         }
 
-        private static ITypesExtractor CreateExtractorsMock(Type canHandleType)
+        private static IWrapperElementTypeExtractor CreateExtractorsMock(Type canHandleType)
         {
-            var mockExtractor = new Mock<ITypesExtractor>();
+            var mockExtractor = new Mock<IWrapperElementTypeExtractor>();
 
             // Setup the CanHandle method.
-            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => type.Equals(canHandleType)), generationOptions))
+            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => type.Equals(canHandleType))))
                          .Returns(true);
-            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => !type.Equals(canHandleType)), generationOptions))
+            mockExtractor.Setup(x => x.CanHandle(It.Is<Type>(type => !type.Equals(canHandleType))))
                          .Returns(false);
 
             // Setup the CanHandle method.
-            mockExtractor.Setup(x => x.ExtractUsedTypes(It.IsAny<Type>(), generationOptions))
+            mockExtractor.Setup(x => x.ExtractUsedTypes(It.IsAny<Type>()))
                          .Returns(new Type[] { typeof(IEnumerable<>).MakeGenericType(canHandleType), canHandleType.MakeArrayType() });
 
             return mockExtractor.Object;

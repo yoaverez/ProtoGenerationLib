@@ -1,4 +1,8 @@
 ﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ProtoGenerationLib.Configurations.Internals
 {
@@ -34,6 +38,11 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <inheritdoc/>
         public string ProtoFileSyntax { get; set; }
 
+        public IList<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> ContractTypeCustomConverters { get; private set; }
+        public IList<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> DataTypeCustomConverters { get; private set; }
+        public IList<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>> EnumTypeCustomConverters { get; private set; }
+        public IList<ICustomTypeMapper> CustomTypeMappers { get; private set; }
+
         /// <summary>
         /// Initialize the static members of the <see cref="ProtoGenerationOptions"/> class.
         /// </summary>
@@ -64,6 +73,43 @@ namespace ProtoGenerationLib.Configurations.Internals
             AnalysisOptions = analysisOptions ?? new AnalysisOptions();
             NewTypeNamingStrategiesOptions = newTypeNamingStrategiesOptions ?? new NewTypeNamingStrategiesOptions();
             ProtoFileSyntax = protoFileSyntax;
+
+            ContractTypeCustomConverters = new List<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>>();
+            DataTypeCustomConverters = new List<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>>();
+            EnumTypeCustomConverters = new List<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>>();
+            CustomTypeMappers = new List<ICustomTypeMapper>();
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<ICustomTypesExtractor> GetCustomTypesExtractors()
+        {
+            return ContractTypeCustomConverters.Concat<ICustomTypesExtractor>(DataTypeCustomConverters)
+                                               .Concat(EnumTypeCustomConverters)
+                                               .ToArray();
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> GetContractTypeCustomConverters()
+        {
+            return ContractTypeCustomConverters;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> GetDataTypeCustomConverters()
+        {
+            return DataTypeCustomConverters;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>> GetEnumTypeCustomConverters()
+        {
+            return EnumTypeCustomConverters;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<ICustomTypeMapper> GetCustomTypeMappers()
+        {
+            return CustomTypeMappers;
         }
     }
 }

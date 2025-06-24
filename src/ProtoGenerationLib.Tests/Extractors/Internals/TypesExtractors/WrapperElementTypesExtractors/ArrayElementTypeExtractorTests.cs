@@ -1,8 +1,4 @@
-﻿using Moq;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors;
-using ProtoGenerationLib.Strategies.Abstracts;
-using ProtoGenerationLib.Configurations.Internals;
+﻿using ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors;
 
 namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors
 {
@@ -10,10 +6,6 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.WrapperE
     public class ArrayElementTypeExtractorTests
     {
         private ArrayElementTypeExtractor extractor;
-
-        private IProtoGenerationOptions generationOptions;
-
-        private Mock<INewTypeNamingStrategy> mockINewTypeNamingStrategy;
 
         [TestInitialize]
         public void TestInitialize()
@@ -28,7 +20,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.WrapperE
         public void CanHandle_TypeCanNotBeHandled_ReturnFalse(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.CanHandle_TypeCanNotBeHandled_ReturnFalse(extractor, type, generationOptions);
+            TypesExtractorsCommonTests.CanHandle_TypeCanNotBeHandled_ReturnFalse(extractor, type);
         }
 
         [DynamicData(nameof(GetTypesThatCanBeHandled), DynamicDataSourceType.Method)]
@@ -36,7 +28,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.WrapperE
         public void CanHandle_TypeCanBeHandled_ReturnTrue(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.CanHandle_TypeCanBeHandled_ReturnTrue(extractor, type, generationOptions);
+            TypesExtractorsCommonTests.CanHandle_TypeCanBeHandled_ReturnTrue(extractor, type);
         }
 
         #endregion CanHandle Tests
@@ -48,7 +40,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.WrapperE
         public void ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(Type type)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(extractor, type, generationOptions);
+            TypesExtractorsCommonTests.ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(extractor, type);
         }
 
         [DynamicData(nameof(GetTypesThatCanBeHandledAndTheirUsedTypes), DynamicDataSourceType.Method)]
@@ -56,7 +48,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.WrapperE
         public void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(Type type, IEnumerable<Type> expectedUsedTypes)
         {
             // Act + Assert
-            TypesExtractorsCommonTests.ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(extractor, type, generationOptions, expectedUsedTypes);
+            TypesExtractorsCommonTests.ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(extractor, type, expectedUsedTypes);
         }
 
         #endregion ExtractUsedTypes Tests

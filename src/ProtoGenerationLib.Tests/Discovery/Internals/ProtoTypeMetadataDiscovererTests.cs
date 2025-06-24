@@ -9,6 +9,7 @@ using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Tests.Discovery.Internals.DummyTypes;
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
+using ProtoGenerationLib.Customizations;
 
 namespace ProtoGenerationLib.Tests.Discovery.Internals
 {
@@ -19,7 +20,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
         private Mock<IProvider> mockIProvider;
 
-        private List<ITypeMapper> customMappers;
+        private IList<ICustomTypeMapper> customMappers;
 
         private Mock<ITypeNamingStrategy> mockITypeNamingStrategy;
 
@@ -63,10 +64,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 }
             };
 
-            customMappers = new List<ITypeMapper>();
+            customMappers = generationOptions.CustomTypeMappers;
             mockIProvider = new Mock<IProvider>();
-            mockIProvider.Setup(provider => provider.GetCustomTypeMappers())
-                         .Returns(customMappers);
 
             // SetUp strategies.
             mockITypeNamingStrategy = new Mock<ITypeNamingStrategy>();
@@ -130,6 +129,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
             var incorrectBaseMetadata = new ProtoTypeBaseMetadata("z", "x.y", "");
 
             var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, "b.c.a");
+            var incorrectMetadata = new ProtoTypeMetadata(incorrectBaseMetadata, "x.y.z");
             var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>
             {
                 [type] = correctMetadata
@@ -146,16 +146,16 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 }
                 else if (i == mapperHandlerIndex % numberOfDefaultHandlers)
                 {
-                    defaultTypeMapper = CreateAndSetUpITypeMapperMock(true, correctBaseMetadata);
+                    defaultTypeMapper = CreateAndSetUpITypeMapperMock(true, correctMetadata);
                 }
                 else
                 {
-                    defaultTypeMapper = CreateAndSetUpITypeMapperMock(true, incorrectBaseMetadata);
+                    defaultTypeMapper = CreateAndSetUpITypeMapperMock(true, incorrectMetadata);
                 }
                 defaultTypeMappers.Add(defaultTypeMapper.Object);
             }
 
-            var customTypeMapper = CreateAndSetUpITypeMapperMock(true, incorrectBaseMetadata);
+            var customTypeMapper = CreateAndSetUpICustomTypeMapperMock(true, incorrectBaseMetadata);
             customMappers.Add(customTypeMapper.Object);
 
             var discoverer = CreateDiscoverer(mockIProvider.Object, defaultTypeMappers);
@@ -179,6 +179,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
 
             var correctBaseMetadata = new ProtoTypeBaseMetadata("a", "b.c", "/path");
             var incorrectBaseMetadata = new ProtoTypeBaseMetadata("z", "x.y", "");
+            var incorrectMetadata = new ProtoTypeMetadata("z", "x.y", "x.y.z", "");
 
             var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, "b.c.a");
             var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>
@@ -189,23 +190,23 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
             var numberOfCustomHandlers = 3;
             for (int i = 0; i < numberOfCustomHandlers; i++)
             {
-                Mock<ITypeMapper> customTypeMapper;
+                Mock<ICustomTypeMapper> customTypeMapper;
                 if (i < mapperHandlerIndex % numberOfCustomHandlers)
                 {
-                    customTypeMapper = CreateAndSetUpITypeMapperMock(false);
+                    customTypeMapper = CreateAndSetUpICustomTypeMapperMock(false);
                 }
                 else if (i == mapperHandlerIndex % numberOfCustomHandlers)
                 {
-                    customTypeMapper = CreateAndSetUpITypeMapperMock(true, correctBaseMetadata);
+                    customTypeMapper = CreateAndSetUpICustomTypeMapperMock(true, correctBaseMetadata);
                 }
                 else
                 {
-                    customTypeMapper = CreateAndSetUpITypeMapperMock(true, incorrectBaseMetadata);
+                    customTypeMapper = CreateAndSetUpICustomTypeMapperMock(true, incorrectBaseMetadata);
                 }
                 customMappers.Add(customTypeMapper.Object);
             }
 
-            var defaultTypeMapper = CreateAndSetUpITypeMapperMock(false, incorrectBaseMetadata);
+            var defaultTypeMapper = CreateAndSetUpITypeMapperMock(false, incorrectMetadata);
 
             var discoverer = CreateDiscoverer(mockIProvider.Object, new List<ITypeMapper> { defaultTypeMapper.Object });
 
@@ -245,7 +246,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 [type] = correctMetadata
             };
 
-            customMappers.Add(CreateAndSetUpITypeMapperMock(true, protoTypeBaseMetadata).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(true, protoTypeBaseMetadata).Object);
 
             var discoverer = CreateDiscoverer(mockIProvider.Object);
 
@@ -256,48 +257,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
             CollectionAssert.AreEqual(expectedTypeToProtoMetadataMapping, actualTypeToProtoMetadataMapping.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
         }
 
-        [DynamicData(nameof(GetAllMissingPropsOptions), DynamicDataSourceType.Method)]
         [TestMethod]
-        public void DiscoverProtosMetadata_TypeCanBeHandledByDefaultMapperOnlyAndDefaultMapperDidNotFillAllProps_MissingPropsAreFilled(IProtoTypeBaseMetadata protoTypeBaseMetadata)
-        {
-            // Arrange
-            var type = typeof(int);
-            var types = new List<Type> { type };
-
-            var filledTypeName = "type name";
-            var filledPackageName = new string[] { "package", "name" };
-            var filledFilePath = "file/path.proto";
-            SetUpStrategies(filledTypeName, filledPackageName, filledFilePath, str => str.ToUpperInvariant(), strs => string.Join(".", strs), filePathComponents => string.Join("-", filePathComponents));
-
-            var correctBaseMetadata = new ProtoTypeBaseMetadata(protoTypeBaseMetadata);
-            if (protoTypeBaseMetadata.Name is null)
-                correctBaseMetadata.Name = filledTypeName.ToUpperInvariant();
-
-            if (protoTypeBaseMetadata.Package is null)
-                correctBaseMetadata.Package = string.Join(".", filledPackageName);
-
-            if (protoTypeBaseMetadata.FilePath is null)
-                correctBaseMetadata.FilePath = string.Join("-", filledFilePath.Split("/"));
-
-            var correctMetadata = new ProtoTypeMetadata(correctBaseMetadata, $"{correctBaseMetadata.Package}.{correctBaseMetadata.Name}");
-            var expectedTypeToProtoMetadataMapping = new Dictionary<Type, IProtoTypeMetadata>
-            {
-                [type] = correctMetadata
-            };
-
-            var defaultMapper = CreateAndSetUpITypeMapperMock(true, protoTypeBaseMetadata);
-
-            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { defaultMapper.Object });
-
-            // Act
-            var actualTypeToProtoMetadataMapping = discoverer.DiscoverProtosMetadata(types, generationOptions);
-
-            // Assert
-            CollectionAssert.AreEqual(expectedTypeToProtoMetadataMapping, actualTypeToProtoMetadataMapping.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
-        }
-
-        [TestMethod]
-        public void DiscoverProtosMetadata_TypeIsServiceByAttributeAndCanBeHandledByDefaultMapperOnlyAndDefaultMapperDidNotFillName_MissingNameIsFilled()
+        public void DiscoverProtosMetadata_TypeIsServiceByAttributeAndCanBeHandledByCustomMapperOnlyAndCustomMapperDidNotFillName_MissingNameIsFilled()
         {
             // Arrange
             var protoTypeBaseMetadata = new DummyIProtoTypeBaseMetadata()
@@ -324,9 +285,10 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 [type] = correctMetadata
             };
 
-            var defaultMapper = CreateAndSetUpITypeMapperMock(true, protoTypeBaseMetadata);
+            var customMapper = CreateAndSetUpICustomTypeMapperMock(true, protoTypeBaseMetadata);
+            customMappers.Add(customMapper.Object);
 
-            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { defaultMapper.Object });
+            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { });
 
             // Act
             var actualTypeToProtoMetadataMapping = discoverer.DiscoverProtosMetadata(types, generationOptions);
@@ -336,7 +298,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
         }
 
         [TestMethod]
-        public void DiscoverProtosMetadata_TypeIsServiceByAnotherAttributeAndCanBeHandledByDefaultMapperOnlyAndDefaultMapperDidNotFillName_MissingNameIsFilled()
+        public void DiscoverProtosMetadata_TypeIsServiceByAnotherAttributeAndCanBeHandledByCustomMapperOnlyAndCustomMapperDidNotFillName_MissingNameIsFilled()
         {
             // Arrange
             var protoTypeBaseMetadata = new DummyIProtoTypeBaseMetadata()
@@ -365,9 +327,10 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 [type] = correctMetadata
             };
 
-            var defaultMapper = CreateAndSetUpITypeMapperMock(true, protoTypeBaseMetadata);
+            var customMapper = CreateAndSetUpICustomTypeMapperMock(true, protoTypeBaseMetadata);
+            customMappers.Add(customMapper.Object);
 
-            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { defaultMapper.Object });
+            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { });
 
             // Act
             var actualTypeToProtoMetadataMapping = discoverer.DiscoverProtosMetadata(types, generationOptions);
@@ -377,7 +340,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
         }
 
         [TestMethod]
-        public void DiscoverProtosMetadata_TypeIsServiceByDelegateAndCanBeHandledByDefaultMapperOnlyAndDefaultMapperDidNotFillName_MissingNameIsFilled()
+        public void DiscoverProtosMetadata_TypeIsServiceByDelegateAndCanBeHandledByCustomMapperOnlyAndCustomMapperDidNotFillName_MissingNameIsFilled()
         {
             // Arrange
             var protoTypeBaseMetadata = new DummyIProtoTypeBaseMetadata()
@@ -406,9 +369,10 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 [type] = correctMetadata
             };
 
-            var defaultMapper = CreateAndSetUpITypeMapperMock(true, protoTypeBaseMetadata);
+            var customMapper = CreateAndSetUpICustomTypeMapperMock(true, protoTypeBaseMetadata);
+            customMappers.Add(customMapper.Object);
 
-            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { defaultMapper.Object });
+            var discoverer = CreateDiscoverer(mockIProvider.Object, new ITypeMapper[] { });
 
             // Act
             var actualTypeToProtoMetadataMapping = discoverer.DiscoverProtosMetadata(types, generationOptions);
@@ -462,7 +426,7 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 [type] = correctMetadata
             };
 
-            customMappers.Add(CreateAndSetUpITypeMapperMock(true, correctBaseMetadata).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(true, correctBaseMetadata).Object);
 
             var discoverer = CreateDiscoverer(mockIProvider.Object);
 
@@ -498,8 +462,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 [type2] = correctMetadata2,
             };
 
-            customMappers.Add(CreateAndSetUpITypeMapperMock(type1, correctBaseMetadata1).Object);
-            customMappers.Add(CreateAndSetUpITypeMapperMock(type2, correctBaseMetadata2).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(type1, correctBaseMetadata1).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(type2, correctBaseMetadata2).Object);
 
             var discoverer = CreateDiscoverer(mockIProvider.Object);
 
@@ -543,9 +507,9 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 [type3] = correctMetadata3,
             };
 
-            customMappers.Add(CreateAndSetUpITypeMapperMock(type1, correctBaseMetadata1).Object);
-            customMappers.Add(CreateAndSetUpITypeMapperMock(type2, correctBaseMetadata2).Object);
-            customMappers.Add(CreateAndSetUpITypeMapperMock(type3, correctBaseMetadata3).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(type1, correctBaseMetadata1).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(type2, correctBaseMetadata2).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(type3, correctBaseMetadata3).Object);
 
             var discoverer = CreateDiscoverer(mockIProvider.Object);
 
@@ -581,8 +545,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 [type2] = correctMetadata2,
             };
 
-            customMappers.Add(CreateAndSetUpITypeMapperMock(type1, correctBaseMetadata1).Object);
-            customMappers.Add(CreateAndSetUpITypeMapperMock(type2, correctBaseMetadata2).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(type1, correctBaseMetadata1).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(type2, correctBaseMetadata2).Object);
 
             var discoverer = CreateDiscoverer(mockIProvider.Object);
 
@@ -618,8 +582,8 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
                 [type2] = correctMetadata2,
             };
 
-            customMappers.Add(CreateAndSetUpITypeMapperMock(type1, correctBaseMetadata1).Object);
-            customMappers.Add(CreateAndSetUpITypeMapperMock(type2, correctBaseMetadata2).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(type1, correctBaseMetadata1).Object);
+            customMappers.Add(CreateAndSetUpICustomTypeMapperMock(type2, correctBaseMetadata2).Object);
 
             var discoverer = CreateDiscoverer(mockIProvider.Object);
 
@@ -637,9 +601,39 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
             return new ProtoTypeMetadataDiscoverer(provider, defaultTypeMappers ?? new List<ITypeMapper>());
         }
 
-        private Mock<ITypeMapper> CreateAndSetUpITypeMapperMock(bool canHandle, IProtoTypeBaseMetadata? protoTypeBaseMetadata = null)
+        private Mock<ITypeMapper> CreateAndSetUpITypeMapperMock(bool canHandle, IProtoTypeMetadata? protoTypeMetadata = null)
         {
             var mock = new Mock<ITypeMapper>();
+            mock.Setup(mapper => mapper.CanHandle(It.IsAny<Type>()))
+                .Returns(canHandle);
+
+            if (protoTypeMetadata is not null)
+            {
+                mock.Setup(mapper => mapper.MapTypeToProtoMetadata(It.IsAny<Type>()))
+                    .Returns(protoTypeMetadata);
+            }
+
+            return mock;
+        }
+
+        private Mock<ITypeMapper> CreateAndSetUpITypeMapperMock(Type canHandle, IProtoTypeMetadata? protoTypeMetadata = null)
+        {
+            var mock = new Mock<ITypeMapper>();
+            mock.Setup(mapper => mapper.CanHandle(canHandle))
+                .Returns(true);
+
+            if (protoTypeMetadata is not null)
+            {
+                mock.Setup(mapper => mapper.MapTypeToProtoMetadata(It.IsAny<Type>()))
+                    .Returns(protoTypeMetadata);
+            }
+
+            return mock;
+        }
+
+        private Mock<ICustomTypeMapper> CreateAndSetUpICustomTypeMapperMock(bool canHandle, IProtoTypeBaseMetadata? protoTypeBaseMetadata = null)
+        {
+            var mock = new Mock<ICustomTypeMapper>();
             mock.Setup(mapper => mapper.CanHandle(It.IsAny<Type>()))
                 .Returns(canHandle);
 
@@ -652,9 +646,9 @@ namespace ProtoGenerationLib.Tests.Discovery.Internals
             return mock;
         }
 
-        private Mock<ITypeMapper> CreateAndSetUpITypeMapperMock(Type canHandle, IProtoTypeBaseMetadata? protoTypeBaseMetadata = null)
+        private Mock<ICustomTypeMapper> CreateAndSetUpICustomTypeMapperMock(Type canHandle, IProtoTypeBaseMetadata? protoTypeBaseMetadata = null)
         {
-            var mock = new Mock<ITypeMapper>();
+            var mock = new Mock<ICustomTypeMapper>();
             mock.Setup(mapper => mapper.CanHandle(canHandle))
                 .Returns(true);
 

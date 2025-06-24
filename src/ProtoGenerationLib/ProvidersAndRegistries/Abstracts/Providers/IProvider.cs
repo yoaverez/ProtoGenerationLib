@@ -3,9 +3,7 @@
     /// <summary>
     /// Provider that provide all the customizations.
     /// </summary>
-    internal interface IProvider : ICustomConvertersProvider,
-                                   ICustomTypeMappersProvider,
-                                   ICustomFieldSuffixesProvider,
+    internal interface IProvider : ICustomFieldSuffixesProvider,
                                    INumberingStrategiesProvider,
                                    IProtoNamingStrategiesProvider,
                                    IProtoStylingConventionsStrategiesProvider,

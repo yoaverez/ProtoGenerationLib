@@ -1,15 +1,13 @@
 ﻿using Moq;
-using ProtoGenerationLib.Configurations.Internals;
-using static ProtoGenerationLib.Tests.Converters.Internals.ConvertersTestsUtils;
-using ProtoGenerationLib.Tests.Converters.Internals.DummyTypes;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Attributes;
+using ProtoGenerationLib.Configurations.Internals;
+using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
+using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerationLib.Tests.Converters.Internals.DummyTypes;
 using System.Reflection;
-using ProtoGenerationLib.Tests.CommonUtilities.DummyTypes;
+using static ProtoGenerationLib.Tests.Converters.Internals.ConvertersTestsUtils;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 {
@@ -20,7 +18,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
         private CSharpContractTypeToContractTypeMetadataConverter converter;
 
-        private List<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> customConverters;
+        private IList<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> customConverters;
 
         [TestInitialize]
         public void TestInitialize()
@@ -33,13 +31,12 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                     IsProtoServiceDelegate = (type) => false,
                     ProtoRpcAttribute = typeof(ProtoRpcAttribute),
                     TryGetRpcTypeDelegate = (Type declaringType, MethodInfo method, out ProtoRpcType rpcType) => { rpcType = ProtoRpcType.Unary; return false; },
-                }
+                },
             };
 
-            customConverters = new List<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>>();
+            customConverters = generationOptions.ContractTypeCustomConverters;
+
             var mockIProvider = new Mock<IProvider>();
-            mockIProvider.Setup(provider => provider.GetContractTypeCustomConverters())
-                         .Returns(customConverters);
 
             converter = new CSharpContractTypeToContractTypeMetadataConverter(mockIProvider.Object);
         }
@@ -181,14 +178,14 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                 var mockConverter = new Mock<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>>();
                 if (i != suitableCustomConverterIndex)
                 {
-                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type))))
                                  .Returns(false);
                 }
                 else
                 {
-                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type))))
                                  .Returns(true);
-                    mockConverter.Setup(customConverter => customConverter.ConvertTypeToIntermediateRepresentation(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(customConverter => customConverter.ConvertTypeToIntermediateRepresentation(It.Is<Type>((t) => t.Equals(type))))
                                  .Returns(expectedMetadata);
                 }
                 customConverters.Add(mockConverter.Object);

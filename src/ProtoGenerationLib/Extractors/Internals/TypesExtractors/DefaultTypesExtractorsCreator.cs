@@ -55,9 +55,9 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
         /// The default types extractors to for the extraction of elements
         /// types of a wrapper type.
         /// </returns>
-        public static IEnumerable<ITypesExtractor> CreateDefaultWrapperElementTypesExtractors()
+        public static IEnumerable<IWrapperElementTypeExtractor> CreateDefaultWrapperElementTypesExtractors()
         {
-            return new ITypesExtractor[]
+            return new IWrapperElementTypeExtractor[]
             {
                 // Note that the order of the extractors is important.
                 // Specific type extractors should be located before

@@ -9,16 +9,16 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElement
     /// <summary>
     /// Extractor for extracting the element type from enumerable types.
     /// </summary>
-    internal class EnumerableElementTypeExtractor : BaseTypesExtractor
+    internal class EnumerableElementTypeExtractor : BaseWrapperElementTypeExtractor
     {
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
+        public override bool CanHandle(Type type)
         {
             return type.IsEnumerableType();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type)
         {
             type.TryGetElementOfEnumerableType(out var elementType);
             return new Type[] { elementType };

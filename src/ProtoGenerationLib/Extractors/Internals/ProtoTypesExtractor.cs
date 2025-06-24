@@ -1,5 +1,6 @@
 ﻿using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Constants;
+using ProtoGenerationLib.Customizations;
 using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Extractors.Internals.TypesExtractors;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
@@ -8,7 +9,6 @@ using ProtoGenerationLib.Replacers.Internals;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ProtoGenerationLib.Extractors.Internals
 {
@@ -17,11 +17,6 @@ namespace ProtoGenerationLib.Extractors.Internals
     /// </summary>
     internal class ProtoTypesExtractor : IProtoTypesExtractor
     {
-        /// <summary>
-        /// A provider of custom converters.
-        /// </summary>
-        private ICustomConvertersProvider customConvertersProvider;
-
         /// <summary>
         /// The default types extractors to run after running the custom ones.
         /// </summary>
@@ -50,7 +45,6 @@ namespace ProtoGenerationLib.Extractors.Internals
                                    IEnumerable<ITypeReplacer>? typeReplacers = null,
                                    ISet<Type>? wellKnownTypes = null)
         {
-            customConvertersProvider = componentsProvider;
             this.defaultTypesExtractors = defaultTypesExtractors ?? DefaultTypesExtractorsCreator.CreateStructuralTypesExtractors(componentsProvider);
             this.typeReplacers = typeReplacers ?? DefaultTypeReplacersCreator.CreateDefaultTypeReplacers(componentsProvider);
             this.wellKnownTypes = wellKnownTypes ?? WellKnownTypesConstants.WellKnownTypes.Keys.ToHashSet();
@@ -84,26 +78,21 @@ namespace ProtoGenerationLib.Extractors.Internals
                                                     HashSet<Type> alreadyCheckedTypes,
                                                     out IReadOnlyDictionary<Type, Type> originTypeToNewTypeMapping)
         {
-            var customTypesExtractors = customConvertersProvider.GetCustomTypesExtractors();
-            var typeExtractors = customTypesExtractors.Concat(defaultTypesExtractors).ToArray();
-
             var originTypeToNewTypeMappingDictionary = new Dictionary<Type, Type>();
-            var protoTypes = ExtractProtoTypes(type, generationOptions, typeExtractors, typeReplacers, alreadyCheckedTypes, ref originTypeToNewTypeMappingDictionary);
+            var protoTypes = ExtractProtoTypes(type, generationOptions, typeReplacers, alreadyCheckedTypes, ref originTypeToNewTypeMappingDictionary);
 
             originTypeToNewTypeMapping = originTypeToNewTypeMappingDictionary;
             return protoTypes;
         }
 
-        /// <param name="typesExtractors">The types extractors.</param>
         /// <param name="alreadyCheckedTypes">Types that this method was called on (To prevent endless recursion).</param>
         /// <exception cref="ArgumentException">
         /// Thrown when the given <paramref name="type"/> can not be handled
-        /// by any of the given <paramref name="typesExtractors"/>
+        /// by any of the extractors both predefined and custom ones.
         /// </exception>
         /// <inheritdoc cref="ExtractProtoTypes(Type, IProtoGenerationOptions, out IReadOnlyDictionary{Type, Type})"/>
         private IEnumerable<Type> ExtractProtoTypes(Type type,
                                                     IProtoGenerationOptions generationOptions,
-                                                    IEnumerable<ITypesExtractor> typesExtractors,
                                                     IEnumerable<ITypeReplacer> typeReplacers,
                                                     HashSet<Type> alreadyCheckedTypes,
                                                     ref Dictionary<Type, Type> originTypeToNewTypeMapping)
@@ -130,25 +119,89 @@ namespace ProtoGenerationLib.Extractors.Internals
             }
 
             var types = new HashSet<Type> { type };
-            foreach (var typesExtractor in typesExtractors)
+            IEnumerable<Type> usedTypes;
+
+            var customTypesExtractors = generationOptions.GetCustomTypesExtractors();
+            if (!TryExtractUsedTypes(type, customTypesExtractors, out usedTypes))
             {
-                if (typesExtractor.CanHandle(type, generationOptions))
+                // Try using predefined extractors.
+                if(!TryExtractUsedTypes(type, defaultTypesExtractors, generationOptions, out usedTypes))
                 {
-                    alreadyCheckedTypes.Add(type);
-                    var usedTypes = typesExtractor.ExtractUsedTypes(type, generationOptions);
-                    foreach (var usedType in usedTypes)
-                    {
-                        if (!alreadyCheckedTypes.Contains(usedType))
-                        {
-                            alreadyCheckedTypes.Add(usedType);
-                            types.AddRange(ExtractProtoTypes(usedType, generationOptions, typesExtractors, typeReplacers, alreadyCheckedTypes, ref originTypeToNewTypeMapping));
-                        }
-                    }
-                    return types;
+                    throw new ArgumentException($"There is no types extractor that could extract types from the given {type.FullName}", nameof(type));
                 }
             }
 
-            throw new ArgumentException($"There is no types extractor that could extract types from the given {type.FullName}", nameof(type));
+            alreadyCheckedTypes.Add(type);
+            foreach (var usedType in usedTypes)
+            {
+                if (!alreadyCheckedTypes.Contains(usedType))
+                {
+                    alreadyCheckedTypes.Add(usedType);
+                    types.AddRange(ExtractProtoTypes(usedType, generationOptions, typeReplacers, alreadyCheckedTypes, ref originTypeToNewTypeMapping));
+                }
+            }
+            return types;
+        }
+
+        /// <summary>
+        /// Try extracting the given <paramref name="type"/> used types
+        /// using the given <paramref name="customTypesExtractors"/>.
+        /// </summary>
+        /// <param name="type">The types whose used types are requested.</param>
+        /// <param name="customTypesExtractors">The custom types extractors to try.</param>
+        /// <param name="usedTypes">
+        /// The used types that the given <paramref name="type"/> is using if any
+        /// of the given <paramref name="customTypesExtractors"/> can handle
+        /// the given <paramref name="type"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if any of the given <paramref name="customTypesExtractors"/> can
+        /// extract the used type of the given <paramref name="type"/> otherwise <see langword="false"/>.
+        /// </returns>
+        private bool TryExtractUsedTypes(Type type, IEnumerable<ICustomTypesExtractor> customTypesExtractors, out IEnumerable<Type> usedTypes)
+        {
+            foreach (var customTypeExtractor in customTypesExtractors)
+            {
+                if (customTypeExtractor.CanHandle(type))
+                {
+                    usedTypes = customTypeExtractor.ExtractUsedTypes(type);
+                    return true;
+                }
+            }
+
+            usedTypes = new List<Type>();
+            return false;
+        }
+
+        /// <summary>
+        /// Try extracting the given <paramref name="type"/> used types
+        /// using the given <paramref name="typesExtractors"/>.
+        /// </summary>
+        /// <param name="type">The types whose used types are requested.</param>
+        /// <param name="typesExtractors">The predefined types extractors to try.</param>
+        /// <param name="generationOptions">The generation options.</param>
+        /// <param name="usedTypes">
+        /// The used types that the given <paramref name="type"/> is using if any
+        /// of the given <paramref name="typesExtractors"/> can handle
+        /// the given <paramref name="type"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if any of the given <paramref name="typesExtractors"/> can
+        /// extract the used type of the given <paramref name="type"/> otherwise <see langword="false"/>.
+        /// </returns>
+        private bool TryExtractUsedTypes(Type type, IEnumerable<ITypesExtractor> typesExtractors, IProtoGenerationOptions generationOptions, out IEnumerable<Type> usedTypes)
+        {
+            foreach (var typeExtractor in typesExtractors)
+            {
+                if (typeExtractor.CanHandle(type, generationOptions))
+                {
+                    usedTypes = typeExtractor.ExtractUsedTypes(type, generationOptions);
+                    return true;
+                }
+            }
+
+            usedTypes = new List<Type>();
+            return false;
         }
     }
 }

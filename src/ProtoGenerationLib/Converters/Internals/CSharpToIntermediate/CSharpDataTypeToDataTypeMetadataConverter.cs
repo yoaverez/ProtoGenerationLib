@@ -40,10 +40,10 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
             if (type.IsEnum)
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a data type.", nameof(type));
 
-            var customConverters = componentsProvider.GetDataTypeCustomConverters();
+            var customConverters = generationOptions.GetDataTypeCustomConverters();
 
             IDataTypeMetadata dataTypeMetadata;
-            if (!TryConvertWithCustomConverters(type, customConverters, generationOptions, out dataTypeMetadata))
+            if (!TryConvertWithCustomConverters(type, customConverters, out dataTypeMetadata))
             {
                 var metadata = new DataTypeMetadata();
                 metadata.Type = type;

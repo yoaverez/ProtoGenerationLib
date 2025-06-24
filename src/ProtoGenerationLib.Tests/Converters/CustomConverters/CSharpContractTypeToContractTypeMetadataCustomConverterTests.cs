@@ -1,9 +1,9 @@
 ﻿using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Converters.CustomConverters;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 using ProtoGenerationLib.Configurations.Internals;
 using System.Reflection;
+using ProtoGenerationLib.Customizations.CustomConverters;
 
 namespace ProtoGenerationLib.Tests.Converters.CustomConverters
 {
@@ -12,35 +12,27 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
     {
         private class CustomConverter : CSharpContractTypeToContractTypeMetadataCustomConverter
         {
-            public Func<Type, IProtoGenerationOptions, bool> CanHandleTypeIProtoGenerationOptions { get; set; }
-            public Func<Type, IProtoGenerationOptions, IContractTypeMetadata> BaseConvertTypeToIntermediateRepresentationTypeIProtoGenerationOptions { get; set; }
+            public Func<Type, bool> CanHandleType { get; set; }
+            public Func<Type, IContractTypeMetadata> BaseConvertTypeToIntermediateRepresentationType { get; set; }
 
             public CustomConverter()
             {
-                CanHandleTypeIProtoGenerationOptions = (a, b) => default;
-                BaseConvertTypeToIntermediateRepresentationTypeIProtoGenerationOptions = (a, b) => default;
+                CanHandleType = (a) => default;
+                BaseConvertTypeToIntermediateRepresentationType = (a) => default;
             }
 
-            public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
+            public override bool CanHandle(Type type)
             {
-                return CanHandleTypeIProtoGenerationOptions(type, generationOptions);
+                return CanHandleType(type);
             }
 
-            protected override IContractTypeMetadata BaseConvertTypeToIntermediateRepresentation(Type type, IProtoGenerationOptions generationOptions)
+            protected override IContractTypeMetadata BaseConvertTypeToIntermediateRepresentation(Type type)
             {
-                return BaseConvertTypeToIntermediateRepresentationTypeIProtoGenerationOptions(type, generationOptions);
+                return BaseConvertTypeToIntermediateRepresentationType(type);
             }
         }
-
-        private static IProtoGenerationOptions generationOptions;
 
         private CustomConverter customConverter;
-
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
-        {
-            generationOptions = new ProtoGenerationOptions();
-        }
 
         [TestInitialize]
         public void TestInitialize()
@@ -55,11 +47,11 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
         public void ConvertTypeToIntermediateRepresentation_CanNotHandleType_ThrowsArgumentException()
         {
             // Arrange
-            customConverter.CanHandleTypeIProtoGenerationOptions = (a, b) => false;
+            customConverter.CanHandleType = (a) => false;
             var type = typeof(int);
 
             // Act
-            customConverter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+            customConverter.ConvertTypeToIntermediateRepresentation(type);
 
             // Assert
             // Noting to do.
@@ -71,8 +63,8 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
         public void ConvertTypeToIntermediateRepresentation_CanHandleTypeAndTypeContainsMethodsWithMoreThanOneParameter_ThrowsException()
         {
             // Arrange
-            customConverter.CanHandleTypeIProtoGenerationOptions = (a, b) => true;
-            customConverter.BaseConvertTypeToIntermediateRepresentationTypeIProtoGenerationOptions = (a, b) =>
+            customConverter.CanHandleType = (a) => true;
+            customConverter.BaseConvertTypeToIntermediateRepresentationType = (a) =>
             {
                 return CreateContractTypeMetadata(new List<IMethodMetadata>
                 {
@@ -85,7 +77,7 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
             var type = typeof(int);
 
             // Act
-            customConverter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+            customConverter.ConvertTypeToIntermediateRepresentation(type);
 
             // Assert
             // Noting to do.
@@ -96,7 +88,7 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
         public void ConvertTypeToIntermediateRepresentation_CanHandleTypeAndTypeDoesNotContainMethodsWithMoreThanOneParameter_ReturnSameMetadataAsBaseMethod()
         {
             // Arrange
-            customConverter.CanHandleTypeIProtoGenerationOptions = (a, b) => true;
+            customConverter.CanHandleType = (a) => true;
 
             var expectedMetadata = CreateContractTypeMetadata(new List<IMethodMetadata>
             {
@@ -105,14 +97,14 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
                 CreateMethodMetadata(1),
                 CreateMethodMetadata(0),
             });
-            customConverter.BaseConvertTypeToIntermediateRepresentationTypeIProtoGenerationOptions = (a, b) =>
+            customConverter.BaseConvertTypeToIntermediateRepresentationType = (a) =>
             {
                 return expectedMetadata;
             };
             var type = typeof(int);
 
             // Act
-            var actualMetadata = customConverter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+            var actualMetadata = customConverter.ConvertTypeToIntermediateRepresentation(type);
 
             // Assert
             Assert.AreSame(expectedMetadata, actualMetadata);
@@ -127,11 +119,11 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
         public void ExtractUsedTypes_CanNotHandleType_ThrowsArgumentException()
         {
             // Arrange
-            customConverter.CanHandleTypeIProtoGenerationOptions = (a, b) => false;
+            customConverter.CanHandleType = (a) => false;
             var type = typeof(int);
 
             // Act
-            customConverter.ExtractUsedTypes(type, generationOptions);
+            customConverter.ExtractUsedTypes(type);
 
             // Assert
             // Noting to do.
@@ -143,8 +135,8 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
         public void ExtractUsedTypes_CanHandleTypeAndTypeContainsMethodsWithMoreThanOneParameter_ThrowsException()
         {
             // Arrange
-            customConverter.CanHandleTypeIProtoGenerationOptions = (a, b) => true;
-            customConverter.BaseConvertTypeToIntermediateRepresentationTypeIProtoGenerationOptions = (a, b) =>
+            customConverter.CanHandleType = (a) => true;
+            customConverter.BaseConvertTypeToIntermediateRepresentationType = (a) =>
             {
                 return CreateContractTypeMetadata(new List<IMethodMetadata>
                 {
@@ -157,7 +149,7 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
             var type = typeof(int);
 
             // Act
-            customConverter.ExtractUsedTypes(type, generationOptions);
+            customConverter.ExtractUsedTypes(type);
 
             // Assert
             // Noting to do.
@@ -168,7 +160,7 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
         public void ExtractUsedTypes_CanHandleTypeAndTypeDoesNotContainMethodsWithMoreThanOneParameter_ReturnAllTheMethodsUsedTypes()
         {
             // Arrange
-            customConverter.CanHandleTypeIProtoGenerationOptions = (a, b) => true;
+            customConverter.CanHandleType = (a) => true;
 
             var expectedMetadata = CreateContractTypeMetadata(new List<IMethodMetadata>
             {
@@ -177,7 +169,7 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
                 CreateMethodMetadata(1, typeof(string)),
                 CreateMethodMetadata(0),
             });
-            customConverter.BaseConvertTypeToIntermediateRepresentationTypeIProtoGenerationOptions = (a, b) =>
+            customConverter.BaseConvertTypeToIntermediateRepresentationType = (a) =>
             {
                 return expectedMetadata;
             };
@@ -191,7 +183,7 @@ namespace ProtoGenerationLib.Tests.Converters.CustomConverters
             };
 
             // Act
-            var actualUsedTypes = customConverter.ExtractUsedTypes(type, generationOptions);
+            var actualUsedTypes = customConverter.ExtractUsedTypes(type);
 
             // Assert
             CollectionAssert.AreEquivalent(expectedUsedTypes, actualUsedTypes.ToList());

@@ -32,7 +32,7 @@ namespace ProtoGenerationLib.Mappers.Internals.TypeMappers
         }
 
         /// <inheritdoc/>
-        public IProtoTypeBaseMetadata MapTypeToProtoMetadata(Type type)
+        public IProtoTypeMetadata MapTypeToProtoMetadata(Type type)
         {
             if (!CanHandle(type))
                 throw new ArgumentException();

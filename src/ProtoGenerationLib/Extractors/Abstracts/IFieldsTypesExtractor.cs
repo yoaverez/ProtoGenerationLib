@@ -14,11 +14,10 @@ namespace ProtoGenerationLib.Extractors.Abstracts
         /// from the given <paramref name="fieldTypes"/>.
         /// </summary>
         /// <param name="fieldTypes">The field types from which to extract the needed types.</param>
-        /// <param name="generationOptions">The proto generation options.</param>
         /// <returns>
         /// All the needed types for the proto generation
         /// from the given <paramref name="fieldTypes"/>.
         /// </returns>
-        IEnumerable<Type> ExtractUsedTypesFromFields(IEnumerable<Type> fieldTypes, IProtoGenerationOptions generationOptions);
+        IEnumerable<Type> ExtractUsedTypesFromFields(IEnumerable<Type> fieldTypes);
     }
 }

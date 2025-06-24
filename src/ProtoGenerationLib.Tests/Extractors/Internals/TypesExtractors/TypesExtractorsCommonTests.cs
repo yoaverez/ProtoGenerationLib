@@ -28,6 +28,24 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             Assert.IsTrue(returnValue);
         }
 
+        public static void CanHandle_TypeCanNotBeHandled_ReturnFalse(IWrapperElementTypeExtractor extractor, Type type)
+        {
+            // Act
+            var returnValue = extractor.CanHandle(type);
+
+            // Assert
+            Assert.IsFalse(returnValue);
+        }
+
+        public static void CanHandle_TypeCanBeHandled_ReturnTrue(IWrapperElementTypeExtractor extractor, Type type)
+        {
+            // Act
+            var returnValue = extractor.CanHandle(type);
+
+            // Assert
+            Assert.IsTrue(returnValue);
+        }
+
         #endregion CanHandle Tests
 
         #region ExtractUsedTypes Tests
@@ -54,6 +72,33 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
         {
             // Act
             var actualUsedTypes = extractor.ExtractUsedTypes(type, generationOptions);
+
+            // Assert
+            CollectionAssert.AreEquivalent(expectedUsedTypes.ToList(), actualUsedTypes.ToList());
+        }
+
+        public static void ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(IWrapperElementTypeExtractor extractor, Type type)
+        {
+            var isArgumentExceptionThrown = false;
+
+            // Act
+            try
+            {
+                var actualUsedTypes = extractor.ExtractUsedTypes(type);
+            }
+            catch (ArgumentException)
+            {
+                isArgumentExceptionThrown = true;
+            }
+
+            // Assert
+            Assert.IsTrue(isArgumentExceptionThrown);
+        }
+
+        public static void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(IWrapperElementTypeExtractor extractor, Type type, IEnumerable<Type> expectedUsedTypes)
+        {
+            // Act
+            var actualUsedTypes = extractor.ExtractUsedTypes(type);
 
             // Assert
             CollectionAssert.AreEquivalent(expectedUsedTypes.ToList(), actualUsedTypes.ToList());

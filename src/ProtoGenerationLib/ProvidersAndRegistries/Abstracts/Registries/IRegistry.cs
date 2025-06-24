@@ -1,4 +1,4 @@
-﻿using ProtoGenerationLib.Converters.Abstracts;
+﻿using ProtoGenerationLib.Customizations;
 using ProtoGenerationLib.Mappers.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Strategies.Abstracts;
@@ -10,30 +10,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
     /// </summary>
     public interface IRegistry
     {
-        #region Custom Converters Registry
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomConvertersRegistry.RegisterDataTypeCustomConverter(ICSharpToIntermediateCustomConverter{IDataTypeMetadata})"/>
-        IRegistry RegisterDataTypeCustomConverter(ICSharpToIntermediateCustomConverter<IDataTypeMetadata> customConverter);
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomConvertersRegistry.RegisterContractTypeCustomConverter(ICSharpToIntermediateCustomConverter{IContractTypeMetadata})"/>
-        IRegistry RegisterContractTypeCustomConverter(ICSharpToIntermediateCustomConverter<IContractTypeMetadata> customConverter);
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomConvertersRegistry.RegisterEnumTypeCustomConverter(ICSharpToIntermediateCustomConverter{IEnumTypeMetadata})"/>
-        IRegistry RegisterEnumTypeCustomConverter(ICSharpToIntermediateCustomConverter<IEnumTypeMetadata> customConverter);
-
-        #endregion Custom Converters Registry
-
-        #region Custom Type Mappers Registry
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomTypeMappersRegistry.RegisterCustomTypeMapper(ITypeMapper)"/>
-        IRegistry RegisterCustomTypeMapper(ITypeMapper typeNameMapper);
-
-        #endregion Custom Type Mappers Registry
-
         #region Custom Field Suffixes Registry
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>

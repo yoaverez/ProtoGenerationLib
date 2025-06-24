@@ -1,37 +1,30 @@
 ﻿using Moq;
-using ProtoGenerationLib.Configurations.Internals;
-using static ProtoGenerationLib.Tests.Converters.Internals.ConvertersTestsUtils;
-using ProtoGenerationLib.Tests.Converters.Internals.DummyTypes;
 using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
+using ProtoGenerationLib.Customizations;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Converters.Abstracts;
+using ProtoGenerationLib.Tests.Converters.Internals.DummyTypes;
+using static ProtoGenerationLib.Tests.Converters.Internals.ConvertersTestsUtils;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 {
     [TestClass]
     public class CSharpEnumTypeToEnumTypeMetadataConverterTests
     {
-        private static IProtoGenerationOptions generationOptions;
+        private ProtoGenerationOptions generationOptions;
 
         private CSharpEnumTypeToEnumTypeMetadataConverter converter;
 
-        private List<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>> customConverters;
-
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
-        {
-            generationOptions = new ProtoGenerationOptions();
-        }
+        private IList<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>> customConverters;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            customConverters = new List<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>>();
+            generationOptions = new ProtoGenerationOptions();
+            customConverters = generationOptions.EnumTypeCustomConverters;
             var mockIProvider = new Mock<IProvider>();
-            mockIProvider.Setup(provider => provider.GetEnumTypeCustomConverters())
-                         .Returns(customConverters);
 
             converter = new CSharpEnumTypeToEnumTypeMetadataConverter(mockIProvider.Object);
         }
@@ -91,14 +84,14 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                 var mockConverter = new Mock<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>>();
                 if (i != suitableCustomConverterIndex)
                 {
-                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type))))
                                  .Returns(false);
                 }
                 else
                 {
-                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(customConverter => customConverter.CanHandle(It.Is<Type>((t) => t.Equals(type))))
                                  .Returns(true);
-                    mockConverter.Setup(customConverter => customConverter.ConvertTypeToIntermediateRepresentation(It.Is<Type>((t) => t.Equals(type)), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(customConverter => customConverter.ConvertTypeToIntermediateRepresentation(It.Is<Type>((t) => t.Equals(type))))
                                  .Returns(expectedMetadata);
                 }
                 customConverters.Add(mockConverter.Object);

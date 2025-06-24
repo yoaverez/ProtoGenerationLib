@@ -2,10 +2,10 @@
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib;
 using System.Reflection;
-using ProtoGenerationLib.Converters.CustomConverters;
 using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+using ProtoGenerationLib.Customizations.CustomConverters;
 
 namespace SampleApp.Samples.CustomizationsSamples
 {
@@ -22,12 +22,12 @@ namespace SampleApp.Samples.CustomizationsSamples
 
         public class CustomConverter : CSharpDataTypeToDataTypeMetadataCustomConverter
         {
-            public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
+            public override bool CanHandle(Type type)
             {
                 return type.Equals(typeof(Velocity));
             }
 
-            protected override IDataTypeMetadata BaseConvertTypeToIntermediateRepresentation(Type type, IProtoGenerationOptions generationOptions)
+            protected override IDataTypeMetadata BaseConvertTypeToIntermediateRepresentation(Type type)
             {
                 var dataType = typeof(Velocity);
                 return new DataTypeMetadata()
@@ -55,7 +55,7 @@ namespace SampleApp.Samples.CustomizationsSamples
             Common.SetPackageName(GetType(), protoGenerator.Registry, generationOptions);
 
             // Register the custom converter.
-            protoGenerator.Registry.RegisterDataTypeCustomConverter(new CustomConverter());
+            generationOptions.DataTypeCustomConverters.Add(new CustomConverter());
 
             protoGenerator.GenerateProtos(new Type[] { sampleType }, generationOptions)
                           .WriteToFiles(Common.PATH_TO_PROTO_ROOT, baseFilePaths);

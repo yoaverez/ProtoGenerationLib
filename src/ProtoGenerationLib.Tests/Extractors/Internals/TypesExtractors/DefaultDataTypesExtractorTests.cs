@@ -42,8 +42,8 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
                                              .Returns(mockIFieldsAndPropertiesExtractionStrategy.Object);
 
             var mockIFieldsTypesExtractor = new Mock<IFieldsTypesExtractor>();
-            mockIFieldsTypesExtractor.Setup(fieldExtractor => fieldExtractor.ExtractUsedTypesFromFields(It.IsAny<IEnumerable<Type>>(), It.IsAny<IProtoGenerationOptions>()))
-                                     .Returns<IEnumerable<Type>, IProtoGenerationOptions>((fieldTypes, _) => fieldTypes.Append(typeof(DefaultDataTypesExtractorTests)).ToList());
+            mockIFieldsTypesExtractor.Setup(fieldExtractor => fieldExtractor.ExtractUsedTypesFromFields(It.IsAny<IEnumerable<Type>>()))
+                                     .Returns<IEnumerable<Type>>((fieldTypes) => fieldTypes.Append(typeof(DefaultDataTypesExtractorTests)).ToList());
 
             extractor = new DefaultDataTypesExtractor(mockIExtractionStrategiesProvider.Object, mockIFieldsTypesExtractor.Object);
         }

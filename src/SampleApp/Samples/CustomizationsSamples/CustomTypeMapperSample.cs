@@ -1,10 +1,6 @@
-﻿using ProtoGenerationLib.Configurations.Abstracts;
+﻿using ProtoGenerationLib;
 using ProtoGenerationLib.Configurations.Internals;
-using ProtoGenerationLib.Converters.CustomConverters;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
-using ProtoGenerationLib;
-using ProtoGenerationLib.Mappers.Abstracts;
+using ProtoGenerationLib.Customizations;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
 using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 
@@ -23,7 +19,7 @@ namespace SampleApp.Samples.CustomizationsSamples
             public NestedDataType NestedType { get; set; }
         }
 
-        public class CustomTypeMapper : ITypeMapper
+        public class CustomTypeMapper : ICustomTypeMapper
         {
             public bool CanHandle(Type type)
             {
@@ -56,7 +52,7 @@ namespace SampleApp.Samples.CustomizationsSamples
             Common.SetPackageName(GetType(), protoGenerator.Registry, generationOptions);
 
             // Register the custom mapper.
-            protoGenerator.Registry.RegisterCustomTypeMapper(new CustomTypeMapper());
+            generationOptions.CustomTypeMappers.Add(new CustomTypeMapper());
 
             protoGenerator.GenerateProtos(new Type[] { sampleType }, generationOptions)
                           .WriteToFiles(Common.PATH_TO_PROTO_ROOT, baseFilePaths);

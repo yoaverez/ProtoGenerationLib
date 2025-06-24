@@ -11,16 +11,16 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElement
     /// like <see cref="Dictionary{TKey, TValue}"/>s
     /// and <see cref="IEnumerable{T}"/> of <see cref="KeyValuePair{TKey, TValue}"/>.
     /// </summary>
-    internal class DictionaryElementTypesExtractor : BaseTypesExtractor
+    internal class DictionaryElementTypesExtractor : BaseWrapperElementTypeExtractor
     {
         /// <inheritdoc/>
-        public override bool CanHandle(Type type, IProtoGenerationOptions generationOptions)
+        public override bool CanHandle(Type type)
         {
             return type.IsKeyValuePairEnumerableType();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
+        protected override IEnumerable<Type> BaseExtractUsedTypes(Type type)
         {
             type.TryGetElementsOfKeyValuePairEnumerableType(out var keyType, out var valueType);
             return new Type[] { keyType, valueType };

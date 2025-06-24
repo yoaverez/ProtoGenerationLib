@@ -34,10 +34,10 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
             if (!type.IsEnum)
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not an enum.", nameof(type));
 
-            var customConverters = componentsProvider.GetEnumTypeCustomConverters();
+            var customConverters = generationOptions.GetEnumTypeCustomConverters();
 
             IEnumTypeMetadata enumMetadata;
-            if (!TryConvertWithCustomConverters(type, customConverters, generationOptions, out enumMetadata))
+            if (!TryConvertWithCustomConverters(type, customConverters, out enumMetadata))
             {
                 var metadata = new EnumTypeMetadata();
                 metadata.Type = type;

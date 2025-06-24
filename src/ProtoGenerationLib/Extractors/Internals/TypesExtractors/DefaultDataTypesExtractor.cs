@@ -49,7 +49,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
                                                                   .Select(member => member.Type)
                                                                   .ToHashSet();
 
-            return fieldsTypesExtractor.ExtractUsedTypesFromFields(fieldTypes, generationOptions);
+            return fieldsTypesExtractor.ExtractUsedTypesFromFields(fieldTypes);
         }
     }
 }

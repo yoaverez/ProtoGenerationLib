@@ -1,22 +1,12 @@
 ﻿using Moq;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
-using ProtoGenerationLib.Configurations.Internals;
+using ProtoGenerationLib.Customizations;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 {
     [TestClass]
     public class CSharpToIntermediateUtilsTests
     {
-        private static IProtoGenerationOptions generationOptions;
-
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
-        {
-            generationOptions = new ProtoGenerationOptions();
-        }
-
         [TestMethod]
         public void TryConvertWithCustomConverters_ZeroConverters_ReturnFalse()
         {
@@ -25,7 +15,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
             var customConverters = new List<ICSharpToIntermediateCustomConverter<string>>();
 
             // Act
-            var actualResult = CSharpToIntermediateUtils.TryConvertWithCustomConverters(type, customConverters, generationOptions, out _);
+            var actualResult = CSharpToIntermediateUtils.TryConvertWithCustomConverters(type, customConverters, out _);
 
             // Assert
             Assert.IsFalse(actualResult);
@@ -41,12 +31,12 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
             for (int i = 0; i < 3; i++)
             {
                 var mockConverter = new Mock<ICSharpToIntermediateCustomConverter<string>>();
-                mockConverter.Setup(converter => converter.CanHandle(It.IsAny<Type>(), It.IsAny<IProtoGenerationOptions>()))
+                mockConverter.Setup(converter => converter.CanHandle(It.IsAny<Type>()))
                              .Returns(false);
             }
 
             // Act
-            var actualResult = CSharpToIntermediateUtils.TryConvertWithCustomConverters(type, customConverters, generationOptions, out _);
+            var actualResult = CSharpToIntermediateUtils.TryConvertWithCustomConverters(type, customConverters, out _);
 
             // Assert
             Assert.IsFalse(actualResult);
@@ -67,14 +57,14 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                 var mockConverter = new Mock<ICSharpToIntermediateCustomConverter<int>>();
                 if (i < suitableCustomConverterIndex)
                 {
-                    mockConverter.Setup(converter => converter.CanHandle(It.IsAny<Type>(), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(converter => converter.CanHandle(It.IsAny<Type>()))
                                  .Returns(false);
                 }
                 else
                 {
-                    mockConverter.Setup(converter => converter.CanHandle(It.IsAny<Type>(), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(converter => converter.CanHandle(It.IsAny<Type>()))
                                  .Returns(true);
-                    mockConverter.Setup(converter => converter.ConvertTypeToIntermediateRepresentation(It.IsAny<Type>(), It.IsAny<IProtoGenerationOptions>()))
+                    mockConverter.Setup(converter => converter.ConvertTypeToIntermediateRepresentation(It.IsAny<Type>()))
                                  .Returns(i);
                 }
                 customConverters.Add(mockConverter.Object);
@@ -83,7 +73,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
             var expectedConvertedObject = suitableCustomConverterIndex;
 
             // Act
-            var actualResult = CSharpToIntermediateUtils.TryConvertWithCustomConverters(type, customConverters, generationOptions, out var actualConvertedObject);
+            var actualResult = CSharpToIntermediateUtils.TryConvertWithCustomConverters(type, customConverters, out var actualConvertedObject);
 
             // Assert
             Assert.IsTrue(actualResult);

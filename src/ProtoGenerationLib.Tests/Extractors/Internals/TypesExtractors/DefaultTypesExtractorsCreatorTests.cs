@@ -115,7 +115,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
 
         #region Auxiliary Methods
 
-        private int GetExtractorIndex(IEnumerable<ITypesExtractor> extractors, Type extractorType)
+        private int GetExtractorIndex<T>(IEnumerable<T> extractors, Type extractorType)
         {
             return extractors.TakeWhile(extractor => !extractor.GetType().Equals(extractorType)).Count();
         }

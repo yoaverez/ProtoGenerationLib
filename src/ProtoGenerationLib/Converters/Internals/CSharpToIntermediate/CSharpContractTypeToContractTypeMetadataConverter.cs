@@ -35,10 +35,10 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
             if (!type.IsProtoService(generationOptions.AnalysisOptions))
                 throw new ArgumentException($"Given {nameof(type)}: {type.Name} is not a contract type.", nameof(type));
 
-            var customConverters = componentsProvider.GetContractTypeCustomConverters();
+            var customConverters = generationOptions.GetContractTypeCustomConverters();
 
             IContractTypeMetadata contractMetadata;
-            if (!TryConvertWithCustomConverters(type, customConverters, generationOptions, out contractMetadata))
+            if (!TryConvertWithCustomConverters(type, customConverters, out contractMetadata))
             {
                 var contractTypeMetadata = new ContractTypeMetadata();
                 contractTypeMetadata.Type = type;
