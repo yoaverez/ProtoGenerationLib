@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations
     /// <summary>
     /// Represents a meta data of single method.
     /// </summary>
-    public interface IMethodMetadata
+    public interface IMethodMetadata : IDocumentable
     {
         /// <summary>
         /// The method info from which the method meta data was created.

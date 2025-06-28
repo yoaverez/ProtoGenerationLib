@@ -1,9 +1,10 @@
+using ProtoGenerationLib.Models.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
 
 namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
 {
     /// <inheritdoc cref="IEnumValueDefinition"/>
-    public class EnumValueDefinition : IEnumValueDefinition
+    public class EnumValueDefinition : DocumentableObject, IEnumValueDefinition
     {
         /// <inheritdoc/>
         public string Name { get; set; }
@@ -18,6 +19,7 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         /// </summary>
         public EnumValueDefinition()
         {
+            // Noting to do.
         }
 
         /// <summary>
@@ -31,12 +33,20 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
             Value = value;
         }
 
+        /// <inheritdoc cref="EnumValueDefinition(string, int)"/>
+        /// <inheritdoc cref="DocumentableObject(string)" path="/param"/>
+        public EnumValueDefinition(string name, int value, string documentation) : base(documentation)
+        {
+            Name = name;
+            Value = value;
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="EnumValueDefinition"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The object to copy.</param>
-        public EnumValueDefinition(IEnumValueDefinition other)
+        public EnumValueDefinition(IEnumValueDefinition other) : base(other)
         {
             Name = other.Name;
             Value = other.Value;
@@ -51,6 +61,7 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         {
             var other = obj as EnumValueDefinition;
             return other != null
+                   && base.Equals(other)
                    && Name.Equals(other.Name)
                    && Value.Equals(other.Value);
         }
@@ -58,7 +69,8 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (Name,
+            return (base.GetHashCode(),
+                    Name,
                     Value).GetHashCode();
         }
 

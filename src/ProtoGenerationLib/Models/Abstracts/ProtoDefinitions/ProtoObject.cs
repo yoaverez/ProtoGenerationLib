@@ -5,7 +5,7 @@ using System.Linq;
 namespace ProtoGenerationLib.Models.Abstracts.ProtoDefinitions
 {
     /// <inheritdoc cref="IProtoObject"/>
-    public abstract class ProtoObject : IProtoObject
+    public abstract class ProtoObject : DocumentableObject, IProtoObject
     {
         /// <inheritdoc/>
         public string Name { get; set; }
@@ -40,12 +40,21 @@ namespace ProtoGenerationLib.Models.Abstracts.ProtoDefinitions
             Imports = imports.ToHashSet();
         }
 
+        /// <inheritdoc cref="ProtoObject(string, string, IEnumerable{string})"/>
+        /// <param name="documentation"><inheritdoc cref="DocumentableObject(string)" path="/param"/></param>
+        public ProtoObject(string name, string package, IEnumerable<string> imports, string documentation) : base(documentation)
+        {
+            Name = name;
+            Package = package;
+            Imports = imports.ToHashSet();
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="ProtoObject"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The object to copy.</param>
-        public ProtoObject(IProtoObject other)
+        public ProtoObject(IProtoObject other) : base(other)
         {
             Name = other.Name;
             Package = other.Package;
@@ -61,6 +70,7 @@ namespace ProtoGenerationLib.Models.Abstracts.ProtoDefinitions
         {
             var other = obj as ProtoObject;
             return other != null
+                   && base.Equals(other)
                    && Name.Equals(other.Name)
                    && Package.Equals(other.Package)
                    && Imports.SequenceEquivalence(other.Imports);
@@ -69,7 +79,8 @@ namespace ProtoGenerationLib.Models.Abstracts.ProtoDefinitions
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (Name,
+            return (base.GetHashCode(),
+                    Name,
                     Package,
                     Imports.CalcHashCode()).GetHashCode();
         }

@@ -5,7 +5,7 @@ namespace ProtoGenerationLib.Models.Abstracts.ProtoDefinitions
     /// <summary>
     /// Represents a the common ground of proto objects.
     /// </summary>
-    public interface IProtoObject
+    public interface IProtoObject : IDocumentable
     {
         /// <summary>
         /// The name of the proto object.

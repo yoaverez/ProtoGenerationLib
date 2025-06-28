@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a single enum value meta data.
     /// </summary>
-    public interface IEnumValueMetadata
+    public interface IEnumValueMetadata : IDocumentable
     {
         /// <summary>
         /// The name of the enum value.

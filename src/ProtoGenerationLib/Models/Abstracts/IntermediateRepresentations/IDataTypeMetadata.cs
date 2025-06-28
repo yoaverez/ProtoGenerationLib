@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations
     /// <summary>
     /// Represents a meta data of a type.
     /// </summary>
-    public interface IDataTypeMetadata
+    public interface IDataTypeMetadata : IDocumentable
     {
         /// <summary>
         /// The type whose meta data this it.

@@ -3,7 +3,7 @@ namespace ProtoGenerationLib.Models.Abstracts.ProtoDefinitions
     /// <summary>
     /// Represents a field in a Protocol Buffer message, equivalent to a C# property.
     /// </summary>
-    public interface IFieldDefinition
+    public interface IFieldDefinition : IDocumentable
     {
         /// <summary>
         /// The name of the field.

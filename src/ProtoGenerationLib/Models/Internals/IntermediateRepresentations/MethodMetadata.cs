@@ -1,4 +1,5 @@
-﻿using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Models.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Reflection;
 namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
 {
     /// <inheritdoc cref="IMethodMetadata"/>
-    public class MethodMetadata : IMethodMetadata
+    public class MethodMetadata : DocumentableObject, IMethodMetadata
     {
         /// <inheritdoc/>
         public MethodInfo MethodInfo { get; set; }
@@ -36,14 +37,21 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         /// <param name="methodInfo"><inheritdoc cref="MethodInfo" path="/node()"/></param>
         /// <param name="returnType"><inheritdoc cref="ReturnType" path="/node()"/></param>
         /// <param name="parameters"><inheritdoc cref="Parameters" path="/node()"/></param>
-        public MethodMetadata(MethodInfo methodInfo, Type returnType, IEnumerable<IMethodParameterMetadata> parameters) : this(methodInfo)
+        public MethodMetadata(MethodInfo methodInfo, Type returnType, IEnumerable<IMethodParameterMetadata> parameters)
         {
             MethodInfo = methodInfo;
             ReturnType = returnType;
             Parameters = parameters.ToList();
         }
 
-
+        /// <inheritdoc cref="MethodMetadata(MethodInfo, Type, IEnumerable{IMethodParameterMetadata})"/>
+        /// <inheritdoc cref="DocumentableObject(string)" path="/param"/>
+        public MethodMetadata(MethodInfo methodInfo, Type returnType, IEnumerable<IMethodParameterMetadata> parameters, string documentation) : base(documentation)
+        {
+            MethodInfo = methodInfo;
+            ReturnType = returnType;
+            Parameters = parameters.ToList();
+        }
 
         /// <summary>
         /// Create new instance of the <see cref="MethodMetadata"/> class.
@@ -56,11 +64,20 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
             Parameters = methodInfo.GetParameters().Select(parameterInfo => new MethodParameterMetadata(parameterInfo)).Cast<IMethodParameterMetadata>().ToList();
         }
 
+        /// <inheritdoc cref="MethodMetadata(MethodInfo)"/>
+        /// <inheritdoc cref="DocumentableObject(string)" path="/param"/>
+        public MethodMetadata(MethodInfo methodInfo, string documentation) : base(documentation)
+        {
+            MethodInfo = methodInfo;
+            ReturnType = methodInfo.ReturnType;
+            Parameters = methodInfo.GetParameters().Select(parameterInfo => new MethodParameterMetadata(parameterInfo)).Cast<IMethodParameterMetadata>().ToList();
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="MethodMetadata"/> class.
         /// </summary>
         /// <param name="other"></param>
-        public MethodMetadata(IMethodMetadata other)
+        public MethodMetadata(IMethodMetadata other) : base(other)
         {
             MethodInfo = other.MethodInfo;
             ReturnType = other.ReturnType;
@@ -76,6 +93,7 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         {
             var other = obj as MethodMetadata;
             return other != null
+                   && base.Equals(other)
                    && MethodInfo.Equals(other.MethodInfo)
                    && ReturnType.Equals(other.ReturnType)
                    && Parameters.SequenceEqual(other.Parameters);
@@ -84,7 +102,8 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (MethodInfo,
+            return (base.GetHashCode(),
+                    MethodInfo,
                     ReturnType,
                     Parameters.CalcHashCode()).GetHashCode();
         }

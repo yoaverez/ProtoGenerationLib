@@ -5,7 +5,7 @@ namespace ProtoGenerationLib.Models.Abstracts.ProtoDefinitions
     /// <summary>
     /// Represents RPC in a Protocol Buffer service.
     /// </summary>
-    public interface IRpcDefinition
+    public interface IRpcDefinition : IDocumentable
     {
         /// <summary>
         /// The name of the RPC method.

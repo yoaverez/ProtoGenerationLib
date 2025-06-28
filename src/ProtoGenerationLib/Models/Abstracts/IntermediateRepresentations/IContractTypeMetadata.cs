@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations
     /// <summary>
     /// Represents a Type with only methods i.e contract types.
     /// </summary>
-    public interface IContractTypeMetadata
+    public interface IContractTypeMetadata : IDocumentable
     {
         /// <summary>
         /// The type of the contract object.

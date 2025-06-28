@@ -1,10 +1,11 @@
 ﻿using ProtoGenerationLib.Attributes;
+using ProtoGenerationLib.Models.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
 
 namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
 {
     /// <inheritdoc cref="IRpcDefinition"/>
-    public class RpcDefinition : IRpcDefinition
+    public class RpcDefinition : DocumentableObject, IRpcDefinition
     {
         /// <inheritdoc/>
         public string Name { get; set; }
@@ -46,12 +47,22 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
             RpcType = rpcType;
         }
 
+        /// <inheritdoc cref="RpcDefinition(string, string, string, ProtoRpcType)"/>
+        /// <inheritdoc cref="DocumentableObject(string)" path="/param"/>
+        public RpcDefinition(string name, string responseType, string requestType, ProtoRpcType rpcType, string documentation) : base(documentation)
+        {
+            Name = name;
+            ResponseType = responseType;
+            RequestType = requestType;
+            RpcType = rpcType;
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="RpcDefinition"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The object to copy.</param>
-        public RpcDefinition(IRpcDefinition other)
+        public RpcDefinition(IRpcDefinition other) : base(other)
         {
             Name = other.Name;
             ResponseType = other.ResponseType;
@@ -68,6 +79,7 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         {
             var other = obj as RpcDefinition;
             return other != null
+                   && base.Equals(other)
                    && Name.Equals(other.Name)
                    && ResponseType.Equals(other.ResponseType)
                    && RequestType.Equals(other.RequestType)
@@ -77,7 +89,8 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (Name,
+            return (base.GetHashCode(),
+                    Name,
                     ResponseType,
                     RequestType,
                     RpcType).GetHashCode();

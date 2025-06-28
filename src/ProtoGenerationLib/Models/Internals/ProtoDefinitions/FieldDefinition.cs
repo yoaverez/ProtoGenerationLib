@@ -1,9 +1,10 @@
+using ProtoGenerationLib.Models.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
 
 namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
 {
     /// <inheritdoc cref="IFieldDefinition"/>
-    public class FieldDefinition : IFieldDefinition
+    public class FieldDefinition : DocumentableObject, IFieldDefinition
     {
         /// <inheritdoc/>
         public string Name { get; set; }
@@ -42,12 +43,22 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
             Rule = rule;
         }
 
+        /// <inheritdoc cref="FieldDefinition(string, string, uint, FieldRule)"/>
+        /// <inheritdoc cref="DocumentableObject(string)" path="/param"/>
+        public FieldDefinition(string name, string type, uint number, string documentation,FieldRule rule = FieldRule.None) : base(documentation)
+        {
+            Name = name;
+            Type = type;
+            Number = number;
+            Rule = rule;
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="FieldDefinition"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The object to copy.</param>
-        public FieldDefinition(IFieldDefinition other)
+        public FieldDefinition(IFieldDefinition other) : base(other)
         {
             Name = other.Name;
             Type = other.Type;
@@ -64,6 +75,7 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         {
             var other = obj as FieldDefinition;
             return other != null
+                   && base.Equals(other)
                    && Name.Equals(other.Name)
                    && Type.Equals(other.Type)
                    && Number.Equals(other.Number)
@@ -73,7 +85,8 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (Name,
+            return (base.GetHashCode(),
+                    Name,
                     Type,
                     Number,
                     Rule).GetHashCode();

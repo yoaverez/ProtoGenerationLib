@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations
     /// <summary>
     /// Represents a field meta data.
     /// </summary>
-    public interface IFieldMetadata
+    public interface IFieldMetadata : IDocumentable
     {
         /// <summary>
         /// The type of the field.

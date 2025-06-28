@@ -1,6 +1,6 @@
-﻿using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Models.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
-using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Linq;
 namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
 {
     /// <inheritdoc cref="IEnumTypeMetadata"/>
-    public class EnumTypeMetadata : IEnumTypeMetadata
+    public class EnumTypeMetadata : DocumentableObject, IEnumTypeMetadata
     {
         /// <inheritdoc/>
         public Type Type { get; set; }
@@ -38,12 +38,20 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
             Values = values;
         }
 
+        /// <inheritdoc cref="EnumTypeMetadata(Type, List{IEnumValueMetadata})"/>
+        /// <inheritdoc cref="DocumentableObject(string)" path="/param"/>
+        public EnumTypeMetadata(Type type, List<IEnumValueMetadata> values, string documentation) : base(documentation)
+        {
+            Type = type;
+            Values = values;
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="EnumTypeMetadata"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The object to copy.</param>
-        public EnumTypeMetadata(IEnumTypeMetadata other)
+        public EnumTypeMetadata(IEnumTypeMetadata other) : base(other)
         {
             Type = other.Type;
             Values = other.Values.Select(value => new EnumValueMetadata(value)).Cast<IEnumValueMetadata>().ToList();
@@ -58,6 +66,7 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         {
             var other = obj as EnumTypeMetadata;
             return other != null
+                   && base.Equals(other)
                    && Type.Equals(other.Type)
 
                    // Since Enum.GetValues and Enum.GetName returns the
@@ -69,7 +78,8 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (Type,
+            return (base.GetHashCode(),
+                    Type,
                     Values.CalcHashCode()).GetHashCode();
         }
 

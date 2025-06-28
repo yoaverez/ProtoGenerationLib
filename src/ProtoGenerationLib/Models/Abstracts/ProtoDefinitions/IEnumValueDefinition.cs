@@ -3,7 +3,7 @@ namespace ProtoGenerationLib.Models.Abstracts.ProtoDefinitions
     /// <summary>
     /// Represents a value in a Protocol Buffer enum, equivalent to a C# enum value.
     /// </summary>
-    public interface IEnumValueDefinition
+    public interface IEnumValueDefinition : IDocumentable
     {
         /// <summary>
         /// The name of the enum value.

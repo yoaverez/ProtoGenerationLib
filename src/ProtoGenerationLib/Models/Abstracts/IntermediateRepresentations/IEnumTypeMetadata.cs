@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations
     /// <summary>
     /// Represents an enum type meta data.
     /// </summary>
-    public interface IEnumTypeMetadata
+    public interface IEnumTypeMetadata : IDocumentable
     {
         /// <summary>
         /// The type of the enum.

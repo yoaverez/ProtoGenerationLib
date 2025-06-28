@@ -1,14 +1,14 @@
-﻿using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Models.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Utilities.CollectionUtilities;
 
 namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
 {
     /// <inheritdoc cref="IDataTypeMetadata"/>
-    public class DataTypeMetadata : IDataTypeMetadata
+    public class DataTypeMetadata : DocumentableObject, IDataTypeMetadata
     {
         /// <inheritdoc/>
         public Type Type { get; set; }
@@ -52,14 +52,22 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
             NestedEnumTypes = nestedEnumTypes.ToList();
         }
 
-
+        /// <inheritdoc cref="DataTypeMetadata(Type, IEnumerable{IFieldMetadata}, IEnumerable{IDataTypeMetadata}, IEnumerable{IEnumTypeMetadata})"/>
+        /// <inheritdoc cref="DocumentableObject(string)" path="/param"/>
+        public DataTypeMetadata(Type type, IEnumerable<IFieldMetadata> fields, IEnumerable<IDataTypeMetadata> nestedDataTypes, IEnumerable<IEnumTypeMetadata> nestedEnumTypes, string documentation) : base(documentation)
+        {
+            Type = type;
+            Fields = fields.ToList();
+            NestedDataTypes = nestedDataTypes.ToList();
+            NestedEnumTypes = nestedEnumTypes.ToList();
+        }
 
         /// <summary>
         /// Create new instance of the <see cref="DataTypeMetadata"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The object to copy.</param>
-        public DataTypeMetadata(IDataTypeMetadata other)
+        public DataTypeMetadata(IDataTypeMetadata other) : base(other)
         {
             Type = other.Type;
             Fields = other.Fields.Select(field => new FieldMetadata(field)).Cast<IFieldMetadata>().ToList();
@@ -76,6 +84,7 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         {
             var other = obj as DataTypeMetadata;
             return other != null
+                   && base.Equals(other)
                    && Type.Equals(other.Type)
                    && Fields.SequenceEqual(other.Fields)
                    && NestedDataTypes.SequenceEqual(other.NestedDataTypes)
@@ -85,7 +94,8 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (Type,
+            return (base.GetHashCode(),
+                    Type,
                     Fields.CalcHashCode(),
                     NestedDataTypes.CalcHashCode(),
                     NestedEnumTypes.CalcHashCode()).GetHashCode();

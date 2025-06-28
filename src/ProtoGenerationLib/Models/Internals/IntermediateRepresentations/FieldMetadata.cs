@@ -1,4 +1,5 @@
-﻿using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Models.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
 {
     /// <inheritdoc cref="IFieldMetadata"/>
-    public class FieldMetadata : IFieldMetadata
+    public class FieldMetadata : DocumentableObject, IFieldMetadata
     {
         /// <inheritdoc/>
         public Type Type { get; set; }
@@ -47,12 +48,22 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
             DeclaringType = declaringType;
         }
 
+        /// <inheritdoc cref="FieldMetadata(Type, string, IEnumerable{Attribute}, Type)"/>
+        /// <inheritdoc cref="DocumentableObject(string)" path="/param"/>
+        public FieldMetadata(Type type, string name, IEnumerable<Attribute> attributes, Type declaringType, string documentation) : base(documentation)
+        {
+            Type = type;
+            Name = name;
+            Attributes = attributes.ToList();
+            DeclaringType = declaringType;
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="FieldMetadata"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The object to copy.</param>
-        public FieldMetadata(IFieldMetadata other)
+        public FieldMetadata(IFieldMetadata other) : base(other)
         {
             Type = other.Type;
             Name = other.Name;
@@ -69,6 +80,7 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         {
             var other = obj as FieldMetadata;
             return other != null
+                   && base.Equals(other)
                    && Type.Equals(other.Type)
                    && Name.Equals(other.Name)
                    && Attributes.SequenceEqual(other.Attributes)
@@ -78,7 +90,8 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (Type,
+            return (base.GetHashCode(),
+                    Type,
                     Name,
                     Attributes.CalcHashCode(),
                     DeclaringType).GetHashCode();

@@ -1,4 +1,5 @@
-﻿using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Models.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
 {
     /// <inheritdoc cref="IContractTypeMetadata"/>
-    public class ContractTypeMetadata : IContractTypeMetadata
+    public class ContractTypeMetadata : DocumentableObject, IContractTypeMetadata
     {
         /// <inheritdoc/>
         public Type Type { get; set; }
@@ -37,12 +38,20 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
             Methods = methods.ToList();
         }
 
+        /// <inheritdoc cref="ContractTypeMetadata(Type, IEnumerable{IMethodMetadata})"/>
+        /// <inheritdoc cref="DocumentableObject(string)" path="/param"/>
+        public ContractTypeMetadata(Type type, IEnumerable<IMethodMetadata> methods, string documentation) : base(documentation)
+        {
+            Type = type;
+            Methods = methods.ToList();
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="ContractTypeMetadata"/> class
         /// which is a copy of the given <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The object to copy.</param>
-        public ContractTypeMetadata(IContractTypeMetadata other)
+        public ContractTypeMetadata(IContractTypeMetadata other) : base(other)
         {
             Type = other.Type;
             Methods = other.Methods.Select(method => new MethodMetadata(method)).Cast<IMethodMetadata>().ToList();
@@ -57,6 +66,7 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         {
             var other = obj as ContractTypeMetadata;
             return other != null
+                   && base.Equals(other)
                    && Type.Equals(other.Type)
                    && Methods.SequenceEqual(other.Methods);
         }
@@ -64,7 +74,8 @@ namespace ProtoGenerationLib.Models.Internals.IntermediateRepresentations
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (Type,
+            return (base.GetHashCode(),
+                    Type,
                     Methods.CalcHashCode()).GetHashCode();
         }
 
