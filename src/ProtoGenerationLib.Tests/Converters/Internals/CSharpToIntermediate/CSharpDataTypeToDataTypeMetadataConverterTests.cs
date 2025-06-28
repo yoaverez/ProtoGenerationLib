@@ -8,7 +8,7 @@ using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
 using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Converters.Abstracts;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 {

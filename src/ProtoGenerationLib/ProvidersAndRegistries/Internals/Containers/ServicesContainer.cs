@@ -1,13 +1,6 @@
-﻿using ProtoGenerationLib.Customizations;
-using ProtoGenerationLib.Extractors.Abstracts;
-using ProtoGenerationLib.Mappers.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.CustomCollections;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Models.Internals.CustomCollections;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts;
+﻿using ProtoGenerationLib.ProvidersAndRegistries.Abstracts;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries;
 using ProtoGenerationLib.Strategies.Abstracts;
-using System.Collections.Generic;
 
 namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
 {
@@ -17,9 +10,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
     /// </summary>
     internal class ServicesContainer : IProviderAndRegister
     {
-        /// <inheritdoc cref="FieldSuffixProviderAndRegister"/>
-        private FieldSuffixProviderAndRegister fieldSuffixProviderAndRegister;
-
         /// <inheritdoc cref="ProtoStylingConventionsStrategiesContainer"/>
         private ProtoStylingConventionsStrategiesContainer protoStylingConventionsStrategiesContainer;
 
@@ -40,7 +30,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         /// </summary>
         public ServicesContainer()
         {
-            fieldSuffixProviderAndRegister = new FieldSuffixProviderAndRegister();
             protoStylingConventionsStrategiesContainer = new ProtoStylingConventionsStrategiesContainer();
             protoNamingStrategiesContainer = new ProtoNamingStrategiesContainer();
             numberingStrategiesContainer = new NumberingStrategiesContainer();
@@ -49,16 +38,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         }
 
         #region IProvider Implementation
-
-        #region ICustomFieldSuffixesProvider
-
-        /// <inheritdoc/>
-        public IFieldSuffixProvider GetFieldSuffixProvider()
-        {
-            return fieldSuffixProviderAndRegister;
-        }
-
-        #endregion ICustomFieldSuffixesProvider
 
         #region IProtoStylingConventionsStrategiesProvider Implementation
 
@@ -149,38 +128,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         #endregion IProvider Implementation
 
         #region IRegistry Implementation
-
-        #region ICustomFieldSuffixesRegistry
-
-        /// <inheritdoc/>
-        public IRegistry RegisterCustomFieldSuffix<TFieldType>(string suffix)
-        {
-            fieldSuffixProviderAndRegister.RegisterFieldSuffix<TFieldType>(suffix);
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IRegistry RegisterCustomFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix)
-        {
-            fieldSuffixProviderAndRegister.RegisterFieldSuffix<TFieldDeclaringType>(fieldName, suffix);
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IRegistry RegisterCustomFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix)
-        {
-            fieldSuffixProviderAndRegister.RegisterFieldSuffix<TFieldDeclaringType, TFieldType>(suffix);
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IRegistry RegisterCustomFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName)
-        {
-            fieldSuffixProviderAndRegister.RegisterFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(fieldName);
-            return this;
-        }
-
-        #endregion ICustomFieldSuffixesRegistry
 
         #region IProtoStylingConventionsStrategiesRegistry Implementation
 

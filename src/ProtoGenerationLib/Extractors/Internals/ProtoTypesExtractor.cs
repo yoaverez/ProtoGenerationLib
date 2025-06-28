@@ -1,6 +1,6 @@
 ﻿using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Constants;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Extractors.Internals.TypesExtractors;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;

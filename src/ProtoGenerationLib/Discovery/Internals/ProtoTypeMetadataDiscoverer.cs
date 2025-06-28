@@ -1,6 +1,6 @@
 ﻿using ProtoGenerationLib.CommonUtilities;
 using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Discovery.Abstracts;
 using ProtoGenerationLib.Mappers.Abstracts;
 using ProtoGenerationLib.Mappers.Internals;

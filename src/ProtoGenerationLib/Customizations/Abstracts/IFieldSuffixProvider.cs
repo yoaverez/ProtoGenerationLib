@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace ProtoGenerationLib.Models.Abstracts.CustomCollections
+namespace ProtoGenerationLib.Customizations.Abstracts
 {
     /// <summary>
     /// Provider for field names suffixes.
     /// </summary>
-    internal interface IFieldSuffixProvider
+    public interface IFieldSuffixProvider
     {
         /// <summary>
         /// Try getting the suffix of the field with the given <paramref name="fieldName"/>

@@ -113,11 +113,10 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             var numberingStrategy = componentsProvider.GetFieldNumberingStrategy(generationOptions.NumberingStrategiesOptions.FieldNumberingStrategy);
             var fieldNumber = numberingStrategy.GetFieldNumber(fieldMetadata, fieldIndex, numOfFields);
 
-            var fieldSuffixProvider = componentsProvider.GetFieldSuffixProvider();
             var fieldStylingStrategy = componentsProvider.GetProtoStylingStrategy(generationOptions.ProtoStylingConventionsStrategiesOptions.FieldStylingStrategy);
             string fieldName;
 
-            if (fieldSuffixProvider.TryGetFieldSuffix(fieldMetadata.DeclaringType, fieldMetadata.Type, fieldMetadata.Name, out var fieldSuffix))
+            if (generationOptions.TryGetFieldSuffix(fieldMetadata.DeclaringType, fieldMetadata.Type, fieldMetadata.Name, out var fieldSuffix))
                 fieldName = fieldStylingStrategy.ToProtoStyle(new string[] { fieldMetadata.Name, fieldSuffix });
 
             else

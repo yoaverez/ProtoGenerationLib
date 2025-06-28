@@ -1,6 +1,6 @@
 ﻿using ProtoGenerationLib;
 using ProtoGenerationLib.Configurations.Internals;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
 using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 

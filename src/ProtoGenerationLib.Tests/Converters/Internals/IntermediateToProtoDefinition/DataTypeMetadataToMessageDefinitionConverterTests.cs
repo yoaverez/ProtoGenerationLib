@@ -4,7 +4,7 @@ using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition;
-using ProtoGenerationLib.Models.Abstracts.CustomCollections;
+using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
 using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
@@ -26,16 +26,14 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
 
         private Mock<IFieldNumberingStrategy> mockIFieldNumberingStrategy;
 
-        private Mock<IFieldSuffixProvider> mockIFieldSuffixProvider;
-
         private DataTypeMetadataToMessageDefinitionConverter converter;
 
         private Mock<IIntermediateToProtoDefinitionConverter<IEnumTypeMetadata, IEnumDefinition>> mockEnumConverter;
 
-        private static ProtoGenerationOptions generationOptions;
+        private ProtoGenerationOptions generationOptions;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
+        [TestInitialize]
+        public void TestInitialize()
         {
             generationOptions = new ProtoGenerationOptions
             {
@@ -53,11 +51,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
                     OptionalFieldAttribute = typeof(ProtoServiceAttribute),
                 }
             };
-        }
 
-        [TestInitialize]
-        public void TestInitialize()
-        {
             mockIPackageStylingStrategy = new Mock<IPackageStylingStrategy>();
             mockIPackageStylingStrategy.Setup(strategy => strategy.PackageComponentsSeparator)
                                        .Returns(".");
@@ -70,8 +64,6 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
 
             mockIFieldNumberingStrategy = new Mock<IFieldNumberingStrategy>();
 
-            mockIFieldSuffixProvider = new Mock<IFieldSuffixProvider>();
-
             mockIProvider = new Mock<IProvider>();
             mockIProvider.Setup(provider => provider.GetFieldNumberingStrategy("1"))
                          .Returns(mockIFieldNumberingStrategy.Object);
@@ -79,8 +71,6 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
                          .Returns(mockIPackageStylingStrategy.Object);
             mockIProvider.Setup(provider => provider.GetProtoStylingStrategy("3"))
                          .Returns(mockIProtoStylingStrategy.Object);
-            mockIProvider.Setup(provider => provider.GetFieldSuffixProvider())
-                         .Returns(mockIFieldSuffixProvider.Object);
 
             mockEnumConverter = new Mock<IIntermediateToProtoDefinitionConverter<IEnumTypeMetadata, IEnumDefinition>>();
             mockEnumConverter.Setup(converter => converter.ConvertIntermediateRepresentationToProtoDefinition(It.IsAny<IEnumTypeMetadata>(), It.IsAny<IReadOnlyDictionary<Type, IProtoTypeMetadata>>(), generationOptions))
@@ -388,8 +378,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             var fieldMetadata2 = new FieldMetadata(typeof(char), "a2", Array.Empty<Attribute>(), type);
 
             var field1Suffix = "Field1Suffix";
-            mockIFieldSuffixProvider.Setup(provider => provider.TryGetFieldSuffix(type, typeof(byte), "a1", out field1Suffix))
-                                    .Returns(true);
+            generationOptions.AddFieldSuffix<object, byte>(field1Suffix);
 
             var fieldDefinition1 = new FieldDefinition($"a1_{field1Suffix}".ToUpperInvariant(), "byte", 1, FieldRule.None);
             var fieldDefinition2 = new FieldDefinition("a2".ToUpperInvariant(), "char", 2, FieldRule.None);

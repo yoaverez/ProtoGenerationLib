@@ -2,7 +2,7 @@
 using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Tests.Converters.Internals.DummyTypes;

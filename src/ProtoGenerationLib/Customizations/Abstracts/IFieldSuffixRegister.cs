@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace ProtoGenerationLib.Models.Abstracts.CustomCollections
+namespace ProtoGenerationLib.Customizations.Abstracts
 {
     /// <summary>
     /// Register field suffixes.
     /// </summary>
-    internal interface IFieldSuffixRegister
+    public interface IFieldSuffixRegister
     {
         /// <summary>
-        /// Register the given <paramref name="suffix"/> to the
+        /// Add the given <paramref name="suffix"/> to the
         /// field suffixes collection.
         /// This suffix will be appended to all the fields names of type <typeparamref name="TFieldType"/>.
         /// </summary>
@@ -22,10 +22,10 @@ namespace ProtoGenerationLib.Models.Abstracts.CustomCollections
         /// Thrown when the field suffixes collection already contains a
         /// suffix for the given <typeparamref name="TFieldType"/>.
         /// </exception>
-        void RegisterFieldSuffix<TFieldType>(string suffix);
+        void AddFieldSuffix<TFieldType>(string suffix);
 
         /// <summary>
-        /// Register the given <paramref name="suffix"/> to the
+        /// Add the given <paramref name="suffix"/> to the
         /// field suffixes collection.
         /// This suffix will be appended to the field with the given <paramref name="fieldName"/> in
         /// the <typeparamref name="TFieldDeclaringType"/>.
@@ -42,10 +42,10 @@ namespace ProtoGenerationLib.Models.Abstracts.CustomCollections
         /// suffix for the given <paramref name="fieldName"/> that was declared
         /// in the given <typeparamref name="TFieldDeclaringType"/>.
         /// </exception>
-        void RegisterFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix);
+        void AddFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix);
 
         /// <summary>
-        /// Register the given <paramref name="suffix"/> to the
+        /// Add the given <paramref name="suffix"/> to the
         /// field suffixes collection.
         /// This suffix will be appended to all the fields names of type <typeparamref name="TFieldType"/>
         /// that are declared in the given <typeparamref name="TFieldDeclaringType"/>.
@@ -58,10 +58,10 @@ namespace ProtoGenerationLib.Models.Abstracts.CustomCollections
         /// entry for the given <typeparamref name="TFieldType"/> that was
         /// declared in the given <typeparamref name="TFieldDeclaringType"/>.
         /// </exception>
-        void RegisterFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix);
+        void AddFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix);
 
         /// <summary>
-        /// Register the given <paramref name="fieldName"/> to a collection excluded fields.
+        /// Add the given <paramref name="fieldName"/> to a collection excluded fields.
         /// i.e fields of type <typeparamref name="TFieldType"/> that was declared in the
         /// given <typeparamref name="TFieldDeclaringType"/> and should not get a suffix appended to them.
         /// </summary>
@@ -77,6 +77,6 @@ namespace ProtoGenerationLib.Models.Abstracts.CustomCollections
         /// entry for the given <paramref name="fieldName"/> of type <typeparamref name="TFieldType"/> that was
         /// declared in the given <typeparamref name="TFieldDeclaringType"/>.
         /// </exception>
-        void RegisterFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName);
+        void AddFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
 using System;
 
-namespace ProtoGenerationLib.Customizations
+namespace ProtoGenerationLib.Customizations.Abstracts
 {
     /// <summary>
     /// Contract for user custom type mapper.

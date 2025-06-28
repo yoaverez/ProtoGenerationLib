@@ -1,9 +1,10 @@
-﻿using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Customizations.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ProtoGenerationLib.Customizations.CustomConverters
+namespace ProtoGenerationLib.Customizations.Abstracts.CustomConverters
 {
     /// <summary>
     /// Abstract custom converter for contract types.

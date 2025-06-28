@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProtoGenerationLib.Customizations
+namespace ProtoGenerationLib.Customizations.Abstracts
 {
     /// <summary>
     /// Contract for user custom converter.

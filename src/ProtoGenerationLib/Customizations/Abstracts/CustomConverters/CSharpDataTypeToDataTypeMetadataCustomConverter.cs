@@ -1,11 +1,12 @@
-﻿using ProtoGenerationLib.Extractors.Internals.TypesExtractors;
+﻿using ProtoGenerationLib.Customizations.Abstracts;
+using ProtoGenerationLib.Extractors.Internals.TypesExtractors;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ProtoGenerationLib.Customizations.CustomConverters
+namespace ProtoGenerationLib.Customizations.Abstracts.CustomConverters
 {
     /// <summary>
     /// Abstract custom converter for data types.

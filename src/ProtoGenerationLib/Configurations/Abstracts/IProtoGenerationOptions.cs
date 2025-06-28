@@ -1,4 +1,4 @@
-﻿using ProtoGenerationLib.Customizations;
+﻿using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using System.Collections.Generic;
 
@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Configurations.Abstracts
     /// <summary>
     /// The proto generator configurations.
     /// </summary>
-    public interface IProtoGenerationOptions
+    public interface IProtoGenerationOptions : IFieldSuffixProvider
     {
         /// <inheritdoc cref="IAnalysisOptions"/>
         IAnalysisOptions AnalysisOptions { get; }

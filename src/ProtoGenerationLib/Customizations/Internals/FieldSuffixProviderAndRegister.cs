@@ -1,8 +1,8 @@
-﻿using ProtoGenerationLib.Models.Abstracts.CustomCollections;
+﻿using ProtoGenerationLib.Customizations.Abstracts;
 using System;
 using System.Collections.Generic;
 
-namespace ProtoGenerationLib.Models.Internals.CustomCollections
+namespace ProtoGenerationLib.Customizations.Internals
 {
     /// <summary>
     /// Provider and register for field name suffixes.
@@ -44,7 +44,7 @@ namespace ProtoGenerationLib.Models.Internals.CustomCollections
         #region IFieldSuffixRegister Implementation
 
         /// <inheritdoc/>
-        public void RegisterFieldSuffix<TFieldType>(string suffix)
+        public void AddFieldSuffix<TFieldType>(string suffix)
         {
             var fieldType = typeof(TFieldType);
             if (fieldTypesSuffixes.ContainsKey(fieldType))
@@ -54,7 +54,7 @@ namespace ProtoGenerationLib.Models.Internals.CustomCollections
         }
 
         /// <inheritdoc/>
-        public void RegisterFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix)
+        public void AddFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix)
         {
             var fieldDeclaringType = typeof(TFieldDeclaringType);
 
@@ -74,7 +74,7 @@ namespace ProtoGenerationLib.Models.Internals.CustomCollections
         }
 
         /// <inheritdoc/>
-        public void RegisterFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix)
+        public void AddFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix)
         {
             var fieldDeclaringType = typeof(TFieldDeclaringType);
             var fieldType = typeof(TFieldType);
@@ -95,7 +95,7 @@ namespace ProtoGenerationLib.Models.Internals.CustomCollections
         }
 
         /// <inheritdoc/>
-        public void RegisterFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName)
+        public void AddFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName)
         {
             var fieldDeclaringType = typeof(TFieldDeclaringType);
             var fieldType = typeof(TFieldType);

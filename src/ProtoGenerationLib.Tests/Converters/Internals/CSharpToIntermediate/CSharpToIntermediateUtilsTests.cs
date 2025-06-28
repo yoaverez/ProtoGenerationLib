@@ -1,6 +1,6 @@
 ﻿using Moq;
 using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 {

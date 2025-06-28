@@ -5,7 +5,7 @@ using System.Reflection;
 using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
-using ProtoGenerationLib.Customizations.CustomConverters;
+using ProtoGenerationLib.Customizations.Abstracts.CustomConverters;
 
 namespace SampleApp.Samples.CustomizationsSamples
 {

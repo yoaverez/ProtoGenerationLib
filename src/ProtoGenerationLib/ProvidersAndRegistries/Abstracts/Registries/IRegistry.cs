@@ -1,7 +1,4 @@
-﻿using ProtoGenerationLib.Customizations;
-using ProtoGenerationLib.Mappers.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Strategies.Abstracts;
+﻿using ProtoGenerationLib.Strategies.Abstracts;
 
 namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
 {
@@ -10,27 +7,6 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
     /// </summary>
     public interface IRegistry
     {
-        #region Custom Field Suffixes Registry
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomFieldSuffixesRegistry.RegisterCustomFieldSuffix{TFieldType}(string)"/>
-        IRegistry RegisterCustomFieldSuffix<TFieldType>(string suffix);
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomFieldSuffixesRegistry.RegisterFieldSuffix{TFieldDeclaringType}(string, string)"/>
-        IRegistry RegisterCustomFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix);
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomFieldSuffixesRegistry.RegisterCustomFieldSuffix{TFieldDeclaringType, TFieldType}(string)"/>
-        IRegistry RegisterCustomFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix);
-
-        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
-        /// <inheritdoc cref="ICustomFieldSuffixesRegistry.RegisterCustomFieldThatShouldNotHaveSuffix{TFieldDeclaringType, TFieldType}(string)"/>
-        IRegistry RegisterCustomFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName);
-
-
-        #endregion Custom Field Suffixes Registry
-
         #region Proto Styling Conventions Strategies Registry
 
         /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>

@@ -5,7 +5,7 @@ using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
-using ProtoGenerationLib.Customizations.CustomConverters;
+using ProtoGenerationLib.Customizations.Abstracts.CustomConverters;
 
 namespace ProtoGenerationLib.Tests.Converters.CustomConverters
 {

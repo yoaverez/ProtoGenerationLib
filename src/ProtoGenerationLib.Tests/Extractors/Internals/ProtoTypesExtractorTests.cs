@@ -1,6 +1,6 @@
 ﻿using Moq;
 using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Extractors.Abstracts;
 using ProtoGenerationLib.Extractors.Internals;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;

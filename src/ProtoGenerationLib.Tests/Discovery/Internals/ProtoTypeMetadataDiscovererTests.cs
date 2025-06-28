@@ -9,7 +9,7 @@ using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Tests.Discovery.Internals.DummyTypes;
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
 
 namespace ProtoGenerationLib.Tests.Discovery.Internals
 {

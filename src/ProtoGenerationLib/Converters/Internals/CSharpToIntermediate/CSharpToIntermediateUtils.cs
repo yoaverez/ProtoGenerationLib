@@ -1,5 +1,5 @@
 ﻿using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
 using System;
 using System.Collections.Generic;
 

@@ -43,10 +43,10 @@ namespace SampleApp.Samples.CustomizationsSamples
             Common.SetPackageName(GetType(), protoGenerator.Registry, generationOptions);
 
             // Set the field suffixes.
-            protoGenerator.Registry.RegisterCustomFieldSuffix<MovingEntity.Location, double>("in meters");
-            protoGenerator.Registry.RegisterCustomFieldSuffix<MovingEntity.Velocity>(nameof(MovingEntity.Velocity.Value), "in meters per seconds");
-            protoGenerator.Registry.RegisterCustomFieldSuffix<MovingEntity.Velocity>(nameof(MovingEntity.Velocity.Direction), "in degrees");
-            protoGenerator.Registry.RegisterCustomFieldSuffix<TimeSpan>("in utc");
+            generationOptions.AddFieldSuffix<MovingEntity.Location, double>("in meters");
+            generationOptions.AddFieldSuffix<MovingEntity.Velocity>(nameof(MovingEntity.Velocity.Value), "in meters per seconds");
+            generationOptions.AddFieldSuffix<MovingEntity.Velocity>(nameof(MovingEntity.Velocity.Direction), "in degrees");
+            generationOptions.AddFieldSuffix<TimeSpan>("in utc");
 
             protoGenerator.GenerateProtos(new Type[] { sampleType }, generationOptions)
                           .WriteToFiles(Common.PATH_TO_PROTO_ROOT, baseFilePaths);

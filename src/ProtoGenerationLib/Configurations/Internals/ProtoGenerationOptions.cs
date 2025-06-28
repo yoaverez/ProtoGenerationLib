@@ -1,13 +1,15 @@
 ﻿using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Customizations;
+using ProtoGenerationLib.Customizations.Abstracts;
+using ProtoGenerationLib.Customizations.Internals;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ProtoGenerationLib.Configurations.Internals
 {
     /// <inheritdoc cref="IProtoGenerationOptions"/>
-    public class ProtoGenerationOptions : IProtoGenerationOptions
+    public class ProtoGenerationOptions : IProtoGenerationOptions, IFieldSuffixRegister
     {
         /// <summary>
         /// An instance of the <see cref="ProtoGenerationOptions"/> class
@@ -74,6 +76,9 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// </remarks>
         public IList<ICustomTypeMapper> CustomTypeMappers { get; private set; }
 
+        /// <inheritdoc cref="FieldSuffixProviderAndRegister"/>
+        private FieldSuffixProviderAndRegister fieldSuffixProviderAndRegister;
+
         /// <summary>
         /// Initialize the static members of the <see cref="ProtoGenerationOptions"/> class.
         /// </summary>
@@ -109,6 +114,8 @@ namespace ProtoGenerationLib.Configurations.Internals
             DataTypeCustomConverters = new List<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>>();
             EnumTypeCustomConverters = new List<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>>();
             CustomTypeMappers = new List<ICustomTypeMapper>();
+
+            fieldSuffixProviderAndRegister = new FieldSuffixProviderAndRegister();
         }
 
         /// <inheritdoc/>
@@ -142,5 +149,43 @@ namespace ProtoGenerationLib.Configurations.Internals
         {
             return CustomTypeMappers;
         }
+
+        #region IFieldSuffixProvider Implementation
+
+        /// <inheritdoc/>
+        public bool TryGetFieldSuffix(Type fieldDeclaringType, Type fieldType, string fieldName, out string suffix)
+        {
+            return fieldSuffixProviderAndRegister.TryGetFieldSuffix(fieldDeclaringType, fieldType, fieldName, out suffix);
+        }
+
+        #endregion IFieldSuffixProvider Implementation
+
+        #region IFieldSuffixRegister Implementation
+
+        /// <inheritdoc/>
+        public void AddFieldSuffix<TFieldType>(string suffix)
+        {
+            fieldSuffixProviderAndRegister.AddFieldSuffix<TFieldType>(suffix);
+        }
+
+        /// <inheritdoc/>
+        public void AddFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix)
+        {
+            fieldSuffixProviderAndRegister.AddFieldSuffix<TFieldDeclaringType>(fieldName, suffix);
+        }
+
+        /// <inheritdoc/>
+        public void AddFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix)
+        {
+            fieldSuffixProviderAndRegister.AddFieldSuffix<TFieldDeclaringType, TFieldType>(suffix);
+        }
+
+        /// <inheritdoc/>
+        public void AddFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName)
+        {
+            fieldSuffixProviderAndRegister.AddFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(fieldName);
+        }
+
+        #endregion IFieldSuffixRegister Implementation
     }
 }
