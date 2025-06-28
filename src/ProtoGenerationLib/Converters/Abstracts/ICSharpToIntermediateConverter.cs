@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Converters.Abstracts
     /// Converter between csharp type to the type's intermediate representation.
     /// </summary>
     /// <typeparam name="TIntermediate">The type of the intermediate representation object.</typeparam>
-    public interface ICSharpToIntermediateConverter<TIntermediate>
+    internal interface ICSharpToIntermediateConverter<TIntermediate>
     {
         /// <summary>
         /// Convert the given <paramref name="type"/> to it's intermediate representation.

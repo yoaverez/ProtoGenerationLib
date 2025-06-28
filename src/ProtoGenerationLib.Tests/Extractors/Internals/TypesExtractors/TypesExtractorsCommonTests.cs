@@ -10,7 +10,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
     {
         #region CanHandle Tests
 
-        public static void CanHandle_TypeCanNotBeHandled_ReturnFalse(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions)
+        internal static void CanHandle_TypeCanNotBeHandled_ReturnFalse(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions)
         {
             // Act
             var returnValue = extractor.CanHandle(type, generationOptions);
@@ -19,7 +19,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             Assert.IsFalse(returnValue);
         }
 
-        public static void CanHandle_TypeCanBeHandled_ReturnTrue(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions)
+        internal static void CanHandle_TypeCanBeHandled_ReturnTrue(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions)
         {
             // Act
             var returnValue = extractor.CanHandle(type, generationOptions);
@@ -28,7 +28,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             Assert.IsTrue(returnValue);
         }
 
-        public static void CanHandle_TypeCanNotBeHandled_ReturnFalse(IWrapperElementTypeExtractor extractor, Type type)
+        internal static void CanHandle_TypeCanNotBeHandled_ReturnFalse(IWrapperElementTypeExtractor extractor, Type type)
         {
             // Act
             var returnValue = extractor.CanHandle(type);
@@ -37,7 +37,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             Assert.IsFalse(returnValue);
         }
 
-        public static void CanHandle_TypeCanBeHandled_ReturnTrue(IWrapperElementTypeExtractor extractor, Type type)
+        internal static void CanHandle_TypeCanBeHandled_ReturnTrue(IWrapperElementTypeExtractor extractor, Type type)
         {
             // Act
             var returnValue = extractor.CanHandle(type);
@@ -50,7 +50,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
 
         #region ExtractUsedTypes Tests
 
-        public static void ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions)
+        internal static void ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions)
         {
             var isArgumentExceptionThrown = false;
 
@@ -68,7 +68,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             Assert.IsTrue(isArgumentExceptionThrown);
         }
 
-        public static void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions, IEnumerable<Type> expectedUsedTypes)
+        internal static void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(ITypesExtractor extractor, Type type, IProtoGenerationOptions generationOptions, IEnumerable<Type> expectedUsedTypes)
         {
             // Act
             var actualUsedTypes = extractor.ExtractUsedTypes(type, generationOptions);
@@ -77,7 +77,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             CollectionAssert.AreEquivalent(expectedUsedTypes.ToList(), actualUsedTypes.ToList());
         }
 
-        public static void ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(IWrapperElementTypeExtractor extractor, Type type)
+        internal static void ExtractUsedTypes_TypeCanNotBeHandled_ThrowsArgumentException(IWrapperElementTypeExtractor extractor, Type type)
         {
             var isArgumentExceptionThrown = false;
 
@@ -95,7 +95,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             Assert.IsTrue(isArgumentExceptionThrown);
         }
 
-        public static void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(IWrapperElementTypeExtractor extractor, Type type, IEnumerable<Type> expectedUsedTypes)
+        internal static void ExtractUsedTypes_TypeCanBeHandled_ReturnAllTheUsedTypes(IWrapperElementTypeExtractor extractor, Type type, IEnumerable<Type> expectedUsedTypes)
         {
             // Act
             var actualUsedTypes = extractor.ExtractUsedTypes(type);

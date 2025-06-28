@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Extractors.Abstracts
     /// <summary>
     /// Extractor for used types.
     /// </summary>
-    public interface ITypesExtractor
+    internal interface ITypesExtractor
     {
         /// <summary>
         /// Check whether or not the given <paramref name="type"/> can be handled

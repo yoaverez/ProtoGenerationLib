@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.Mappers.Abstracts
     /// <summary>
     /// Mapper between csharp type to its <see cref="IProtoTypeMetadata"/>.
     /// </summary>
-    public interface ITypeMapper
+    internal interface ITypeMapper
     {
         /// <summary>
         /// Check whether or not the given <paramref name="type"/> can be handled
