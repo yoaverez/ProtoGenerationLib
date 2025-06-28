@@ -38,9 +38,40 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <inheritdoc/>
         public string ProtoFileSyntax { get; set; }
 
+        /// <summary>
+        /// A collection containing all the contract type custom converters.
+        /// </summary>
+        /// <remarks>
+        /// The first converter that can handle a type will be the only converter that
+        /// will handle the type.
+        /// </remarks>
         public IList<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> ContractTypeCustomConverters { get; private set; }
+
+        /// <summary>
+        /// A collection containing all the data type custom converters.
+        /// </summary>
+        /// <remarks>
+        /// The first converter that can handle a type will be the only converter that
+        /// will handle the type.
+        /// </remarks>
         public IList<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> DataTypeCustomConverters { get; private set; }
+
+        /// <summary>
+        /// A collection containing all the enum type custom converters.
+        /// </summary>
+        /// <remarks>
+        /// The first converter that can handle a type will be the only converter that
+        /// will handle the type.
+        /// </remarks>
         public IList<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>> EnumTypeCustomConverters { get; private set; }
+
+        /// <summary>
+        /// A collection containing all the custom type mappers.
+        /// </summary>
+        /// <remarks>
+        /// The first mapper that can handle a type will be the only mapper that
+        /// will handle the type.
+        /// </remarks>
         public IList<ICustomTypeMapper> CustomTypeMappers { get; private set; }
 
         /// <summary>
