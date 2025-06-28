@@ -1,7 +1,6 @@
 ﻿using ProtoGenerationLib.Attributes;
 using ProtoGenerationLib.Constants;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
-using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -143,6 +142,9 @@ namespace ProtoGenerationLib.Serialization
         {
             var indent = GetIndent(indentLevel, serializationOptions.IndentSize);
 
+            // Write documentation.
+            WriteTypeDocumentation(writer, serviceDefinition.Documentation, indentLevel, serializationOptions);
+
             // Write service declaration.
             writer.AppendLine($"{indent}service {serviceDefinition.Name} {{");
 
@@ -175,6 +177,9 @@ namespace ProtoGenerationLib.Serialization
         private static void WriteRpcDefinition(StringBuilder writer, IRpcDefinition rpcDefinition, uint indentLevel, ISerializationOptions serializationOptions)
         {
             var indent = GetIndent(indentLevel, serializationOptions.IndentSize);
+
+            // Write documentation.
+            WriteNoneTypeDocumentation(writer, rpcDefinition.Documentation, indentLevel, serializationOptions);
 
             var rpcRequestType = ShouldRequestBeAStream(rpcDefinition.RpcType) ? $"{STREAM} {rpcDefinition.RequestType}" : $"{rpcDefinition.RequestType}";
             var rpcResponseType = ShouldResponseBeAStream(rpcDefinition.RpcType) ? $"{STREAM} {rpcDefinition.ResponseType}" : $"{rpcDefinition.ResponseType}";
@@ -216,6 +221,9 @@ namespace ProtoGenerationLib.Serialization
         {
             var indent = GetIndent(indentLevel, serializationOptions.IndentSize);
 
+            // Write documentation.
+            WriteTypeDocumentation(writer, messageDefinition.Documentation, indentLevel, serializationOptions);
+
             // Write message declaration.
             writer.AppendLine($"{indent}message {messageDefinition.Name} {{");
 
@@ -255,6 +263,10 @@ namespace ProtoGenerationLib.Serialization
             for (int i = 0; i < fields.Count; i++)
             {
                 var field = fields[i];
+
+                // Write documentation.
+                WriteNoneTypeDocumentation(writer, field.Documentation, indentLevel, serializationOptions);
+
                 var rule = GetFieldRule(field.Rule);
                 if (string.IsNullOrEmpty(rule))
                     writer.AppendLine($"{indent}{field.Type} {field.Name} = {field.Number};");
@@ -300,6 +312,9 @@ namespace ProtoGenerationLib.Serialization
         private static void WriteEnumDefinition(StringBuilder writer, IEnumDefinition enumDefinition, uint indentLevel, ISerializationOptions serializationOptions)
         {
             var indent = GetIndent(indentLevel, serializationOptions.IndentSize);
+
+            // Write documentation.
+            WriteTypeDocumentation(writer, enumDefinition.Documentation, indentLevel, serializationOptions);
 
             // Write enum declaration.
             writer.AppendLine($"{indent}enum {enumDefinition.Name} {{");
@@ -349,7 +364,84 @@ namespace ProtoGenerationLib.Serialization
         {
             var indent = GetIndent(indentLevel, serializationOptions.IndentSize);
 
+            // Write documentation.
+            WriteNoneTypeDocumentation(writer, enumValue.Documentation, indentLevel, serializationOptions);
+
             writer.AppendLine($"{indent}{enumValue.Name} = {enumValue.Value};");
+        }
+
+        /// <summary>
+        /// Write a type documentation to the given <paramref name="writer"/>.
+        /// </summary>
+        /// <param name="writer">The writer to write the documentation into.</param>
+        /// <param name="documentation">The documentation to write.</param>
+        /// <param name="indentLevel">The indentation level of the documentation.</param>
+        /// <param name="serializationOptions">The serialization options.</param>
+        private static void WriteTypeDocumentation(StringBuilder writer, string documentation, uint indentLevel, ISerializationOptions serializationOptions)
+        {
+            if (!string.IsNullOrEmpty(documentation))
+            {
+                var indent = GetIndent(indentLevel, serializationOptions.IndentSize);
+                writer.AppendLine($"{indent}/**");
+
+                var lines = SplitToLines(documentation);
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrEmpty(line))
+                    {
+                        // Do not add unnecessary spaces.
+                        // But also don't ignore the empty line.
+                        writer.AppendLine($"{indent} *");
+                    }
+                    else
+                    {
+                        writer.AppendLine($"{indent} * {line}");
+                    }
+                }
+
+                writer.AppendLine($"{indent} */");
+            }
+        }
+
+        /// <summary>
+        /// Write documentation for a none type object (i.e. field or enum value or rpc) to the given <paramref name="writer"/>.
+        /// </summary>
+        /// <param name="writer">The writer to write the documentation into.</param>
+        /// <param name="documentation">The documentation to write.</param>
+        /// <param name="indentLevel">The indentation level of the documentation.</param>
+        /// <param name="serializationOptions">The serialization options.</param>
+        private static void WriteNoneTypeDocumentation(StringBuilder writer, string documentation, uint indentLevel, ISerializationOptions serializationOptions)
+        {
+            if (!string.IsNullOrEmpty(documentation))
+            {
+                var indent = GetIndent(indentLevel, serializationOptions.IndentSize);
+                var lines = SplitToLines(documentation);
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrEmpty(line))
+                    {
+                        // Do not add unnecessary spaces.
+                        // But also don't ignore the empty line.
+                        writer.AppendLine($"{indent}//");
+                    }
+                    else
+                    {
+                        writer.AppendLine($"{indent}// {line}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Split the given <paramref name="text"/> by any new line character.
+        /// </summary>
+        /// <param name="text">The text to split to lines.</param>
+        /// <returns>
+        /// The lines that creates the given <paramref name="text"/>.
+        /// </returns>
+        private static string[] SplitToLines(string text)
+        {
+            return text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }
 
         /// <summary>

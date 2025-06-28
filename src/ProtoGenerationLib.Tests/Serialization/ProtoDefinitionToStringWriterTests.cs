@@ -38,9 +38,12 @@ namespace ProtoGenerationLib.Tests.Serialization
                         {
                             new RpcDefinition("DRpc", "ResponseType1", "RequestType1", ProtoRpcType.Unary),
                             new RpcDefinition("ARpc", "ResponseType2", "RequestType2", ProtoRpcType.ClientStreaming),
-                            new RpcDefinition("BRpc", "ResponseType3", "RequestType3", ProtoRpcType.ServerStreaming),
+                            new RpcDefinition("BRpc", "ResponseType3", "RequestType3", ProtoRpcType.ServerStreaming, "BRpc docs"),
                             new RpcDefinition("CRpc", "ResponseType4", "RequestType4", ProtoRpcType.BidirectionalStreaming),
-                        }
+                        },
+                        Documentation = $"\n" +
+                                        $"This is the DService1\r" +
+                                        $"Show some respect\r\n"
                     },
                     new ServiceDefinition
                     {
@@ -73,9 +76,10 @@ namespace ProtoGenerationLib.Tests.Serialization
                                 Name = "DInnerMessage",
                                 Package = "z",
                                 Imports = new HashSet<string> {"dummyImport2"},
+                                Documentation = "DInnerMessage docs",
                                 Fields = new List<IFieldDefinition>
                                 {
-                                    new FieldDefinition("DInnerField", "DType", 4, FieldRule.None),
+                                    new FieldDefinition("DInnerField", "DType", 4, "DInnerField\ndocs" , FieldRule.None),
                                     new FieldDefinition("CInnerField", "CType", 2, FieldRule.Repeated),
                                     new FieldDefinition("BInnerField", "BType", 3, FieldRule.Optional),
                                 },
@@ -122,8 +126,9 @@ namespace ProtoGenerationLib.Tests.Serialization
                                 {
                                     new EnumValueDefinition("aInner", 1),
                                     new EnumValueDefinition("bInner", -1),
-                                    new EnumValueDefinition("cInner", 0),
-                                }
+                                    new EnumValueDefinition("cInner", 0, "cInner docs"),
+                                },
+                                Documentation = "DInnerEnum docs",
                             }
                         }
                     },
@@ -185,9 +190,16 @@ service BService1 {
     rpc Rpc(RequestType) returns (ResponseType);
 }
 
+/**
+ *
+ * This is the DService1
+ * Show some respect
+ *
+ */
 service DService1 {
     rpc ARpc(stream RequestType2) returns (ResponseType2);
 
+    // BRpc docs
     rpc BRpc(RequestType3) returns (stream ResponseType3);
 
     rpc CRpc(stream RequestType4) returns (stream ResponseType4);
@@ -204,6 +216,9 @@ message AMessage {
 }
 
 message DMessage {
+    /**
+     * DInnerMessage docs
+     */
     message DInnerMessage {
         message DInnerInnerMessage {
             repeated CType CInnerInnerField = 2;
@@ -225,10 +240,16 @@ message DMessage {
 
         optional BType BInnerField = 3;
 
+        // DInnerField
+        // docs
         DType DInnerField = 4;
     }
 
+    /**
+     * DInnerEnum docs
+     */
     enum DInnerEnum {
+        // cInner docs
         cInner = 0;
 
         bInner = -1;
@@ -286,9 +307,16 @@ service BService1 {
     rpc Rpc(RequestType) returns (ResponseType);
 }
 
+/**
+ *
+ * This is the DService1
+ * Show some respect
+ *
+ */
 service DService1 {
     rpc ARpc(stream RequestType2) returns (ResponseType2);
 
+    // BRpc docs
     rpc BRpc(RequestType3) returns (stream ResponseType3);
 
     rpc CRpc(stream RequestType4) returns (stream ResponseType4);
@@ -305,6 +333,9 @@ message AMessage {
 }
 
 message DMessage {
+    /**
+     * DInnerMessage docs
+     */
     message DInnerMessage {
         message DInnerInnerMessage {
             repeated CType CInnerInnerField = 2;
@@ -326,10 +357,16 @@ message DMessage {
 
         optional BType BInnerField = 3;
 
+        // DInnerField
+        // docs
         DType DInnerField = 4;
     }
 
+    /**
+     * DInnerEnum docs
+     */
     enum DInnerEnum {
+        // cInner docs
         cInner = 0;
 
         bInner = -1;
@@ -383,9 +420,16 @@ service BService1 {
     rpc Rpc(RequestType) returns (ResponseType);
 }
 
+/**
+ *
+ * This is the DService1
+ * Show some respect
+ *
+ */
 service DService1 {
     rpc ARpc(stream RequestType2) returns (ResponseType2);
 
+    // BRpc docs
     rpc BRpc(RequestType3) returns (stream ResponseType3);
 
     rpc CRpc(stream RequestType4) returns (stream ResponseType4);
@@ -402,6 +446,9 @@ message AMessage {
 }
 
 message DMessage {
+    /**
+     * DInnerMessage docs
+     */
     message DInnerMessage {
         message DInnerInnerMessage {
             repeated CType CInnerInnerField = 2;
@@ -423,10 +470,16 @@ message DMessage {
 
         optional BType BInnerField = 3;
 
+        // DInnerField
+        // docs
         DType DInnerField = 4;
     }
 
+    /**
+     * DInnerEnum docs
+     */
     enum DInnerEnum {
+        // cInner docs
         cInner = 0;
 
         bInner = -1;
