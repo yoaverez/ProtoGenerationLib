@@ -42,6 +42,12 @@ namespace ProtoGenerationLib.Configurations.Abstracts
         string FieldsAndPropertiesExtractionStrategy { get; }
 
         /// <summary>
+        /// The name of the strategy for extracting documentation from
+        /// csharp entities.
+        /// </summary>
+        string DocumentationExtractionStrategy { get; }
+
+        /// <summary>
         /// The type of the attribute that ask to ignore some
         /// fields or properties.
         /// </summary>

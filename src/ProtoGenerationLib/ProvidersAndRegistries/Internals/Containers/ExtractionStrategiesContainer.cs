@@ -17,11 +17,17 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         private Dictionary<string, IFieldsAndPropertiesExtractionStrategy> fieldsAndPropertiesStrategies;
 
         /// <summary>
+        /// A mapping between strategy name to its documentation extraction strategy.
+        /// </summary>
+        private Dictionary<string, IDocumentationExtractionStrategy> documentationExtractionStrategies;
+
+        /// <summary>
         /// Create new instance of the <see cref="ExtractionStrategiesContainer"/> class.
         /// </summary>
         public ExtractionStrategiesContainer()
         {
             fieldsAndPropertiesStrategies = new Dictionary<string, IFieldsAndPropertiesExtractionStrategy>();
+            documentationExtractionStrategies = new Dictionary<string, IDocumentationExtractionStrategy>();
         }
 
         #region IExtractionStrategiesProvider Implementation
@@ -32,6 +38,12 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
             return GetStrategy(fieldsAndPropertiesStrategies, strategyName);
         }
 
+        /// <inheritdoc/>
+        public IDocumentationExtractionStrategy GetDocumentationExtractionStrategy(string strategyName)
+        {
+            return GetStrategy(documentationExtractionStrategies, strategyName);
+        }
+
         #endregion IExtractionStrategiesProvider Implementation
 
         #region IExtractionStrategiesRegistry Implementation
@@ -40,6 +52,12 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         public void RegisterFieldsAndPropertiesExtractionStrategy(string strategyName, IFieldsAndPropertiesExtractionStrategy strategy)
         {
             RegisterStrategy(fieldsAndPropertiesStrategies, strategyName, strategy);
+        }
+
+        /// <inheritdoc/>
+        public void RegisterDocumentationExtractionStrategy(string strategyName, IDocumentationExtractionStrategy strategy)
+        {
+            RegisterStrategy(documentationExtractionStrategies, strategyName, strategy);
         }
 
         #endregion IExtractionStrategiesRegistry Implementation

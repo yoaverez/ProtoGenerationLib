@@ -11,6 +11,7 @@ using ProtoGenerationLib.Strategies.Internals.TypeNamingStrategies;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts;
 using ProtoGenerationLib.ProvidersAndRegistries.External;
 using ProtoGenerationLib.ProvidersAndRegistries.External.StrategiesNamesEnums;
+using ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrategies;
 
 namespace ProtoGenerationLib.ProvidersAndRegistries.Internals
 {
@@ -55,6 +56,9 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals
             // Register fields and properties extraction strategies.
             container.RegisterFieldsAndPropertiesExtractionStrategy(StrategyNamesLookup.FieldsAndPropertiesExtractionStrategiesLookup[FieldsAndPropertiesExtractionStrategyKind.Composite], new CompositeFieldsAndPropertiesExtractionStrategy());
             container.RegisterFieldsAndPropertiesExtractionStrategy(StrategyNamesLookup.FieldsAndPropertiesExtractionStrategiesLookup[FieldsAndPropertiesExtractionStrategyKind.Flatten], new FlattenedFieldsAndPropertiesExtractionStrategy());
+
+            // Register documentation extraction strategies.
+            container.RegisterDocumentationExtractionStrategy(StrategyNamesLookup.DocumentationExtractionStrategiesLookup[DocumentationExtractionStrategyKind.None], new NoDocumentationExtractionStrategy());
 
             // Register file naming strategies.
             container.RegisterFileNamingStrategy(StrategyNamesLookup.FilePathStrategiesLookup[FilePathStrategyKind.NameSpace], new NameSpaceAsFileNameStrategy());

@@ -1,12 +1,7 @@
 ﻿using Microsoft.Win32;
 using Moq;
-using ProtoGenerationLib.Customizations;
-using ProtoGenerationLib.Extractors.Abstracts;
-using ProtoGenerationLib.Mappers.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers;
 using ProtoGenerationLib.Strategies.Abstracts;
-using ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers.DummyTypes;
 
 namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
 {
@@ -308,6 +303,52 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
         }
 
         #endregion GetFieldsAndPropertiesExtractionStrategy Tests
+
+        #region GetDocumentationExtractionStrategy Tests
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetDocumentationExtractionStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Act
+            container.GetDocumentationExtractionStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetDocumentationExtractionStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Arrange
+            var strategy = new Mock<IDocumentationExtractionStrategy>();
+            container.RegisterDocumentationExtractionStrategy("a", strategy.Object);
+
+            // Act
+            container.GetDocumentationExtractionStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        public void GetDocumentationExtractionStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IDocumentationExtractionStrategy>().Object;
+            container.RegisterDocumentationExtractionStrategy("a", expectedStrategy);
+
+            // Act
+            var actualStrategy = container.GetDocumentationExtractionStrategy("a");
+
+            // Assert
+            Assert.AreSame(expectedStrategy, actualStrategy);
+        }
+
+        #endregion GetDocumentationExtractionStrategy Tests
 
         #endregion IExtractionStrategiesProvider Tests
 
@@ -786,6 +827,43 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
         }
 
         #endregion RegisterFieldsAndPropertiesExtractionStrategy Tests
+
+        #region RegisterDocumentationExtractionStrategy Tests
+
+        [TestMethod]
+        public void RegisterDocumentationExtractionStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IDocumentationExtractionStrategy>().Object;
+            var strategyName = "a";
+
+            // Act
+            var registry = container.RegisterDocumentationExtractionStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            var actualStrategy = container.GetDocumentationExtractionStrategy(strategyName);
+            Assert.AreSame(expectedStrategy, actualStrategy);
+            Assert.AreSame(container, registry);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterDocumentationExtractionStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IDocumentationExtractionStrategy>().Object;
+            var strategyName = "a";
+            container.RegisterDocumentationExtractionStrategy(strategyName, expectedStrategy);
+
+            // Act
+            container.RegisterDocumentationExtractionStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        #endregion RegisterDocumentationExtractionStrategy Tests
 
         #endregion IExtractionStrategiesRegistry Tests
 

@@ -85,6 +85,12 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
             return extractionStrategiesContainer.GetFieldsAndPropertiesExtractionStrategy(strategyName);
         }
 
+        /// <inheritdoc/>
+        public IDocumentationExtractionStrategy GetDocumentationExtractionStrategy(string strategyName)
+        {
+            return extractionStrategiesContainer.GetDocumentationExtractionStrategy(strategyName);
+        }
+
         #endregion IExtractionStrategiesProvider Implementation
 
         #region IProtoNamingStrategiesProvider Implementation
@@ -178,6 +184,13 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         public IRegistry RegisterFieldsAndPropertiesExtractionStrategy(string strategyName, IFieldsAndPropertiesExtractionStrategy strategy)
         {
             extractionStrategiesContainer.RegisterFieldsAndPropertiesExtractionStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterDocumentationExtractionStrategy(string strategyName, IDocumentationExtractionStrategy strategy)
+        {
+            extractionStrategiesContainer.RegisterDocumentationExtractionStrategy(strategyName, strategy);
             return this;
         }
 

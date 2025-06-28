@@ -29,6 +29,9 @@ namespace ProtoGenerationLib.Configurations.Internals
         public string FieldsAndPropertiesExtractionStrategy { get; set; }
 
         /// <inheritdoc/>
+        public string DocumentationExtractionStrategy { get; set; }
+
+        /// <inheritdoc/>
         public Type IgnoreFieldOrPropertyAttribute { get; set; }
 
         /// <inheritdoc/>
@@ -60,6 +63,7 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <param name="includeStatics"><inheritdoc cref="IncludeStatics" path="/node()"/><br/> Default to <see langword="false"/>.</param>
         /// <param name="removeEmptyMembers"><inheritdoc cref="RemoveEmptyMembers" path="/node()"/><br/> Default to <see langword="true"/>.</param>
         /// <param name="fieldsAndPropertiesExtractionStrategy"><inheritdoc cref="FieldsAndPropertiesExtractionStrategy" path="/node()"/><br/> Default to null converted to "Composite".</param>
+        /// <param name="documentationExtractionStrategy"><inheritdoc cref="DocumentationExtractionStrategy" path="/node()"/><br/> Default to null converted to "None".</param>
         /// <param name="ignoreFieldOrPropertyAttribute"><inheritdoc cref="IgnoreFieldOrPropertyAttribute" path="/node()"/><br/> Default to null converted to the type of <see cref="ProtoIgnoreAttribute"/>.</param>
         /// <param name="dataTypeConstructorAttribute"><inheritdoc cref="DataTypeConstructorAttribute" path="/node()"/><br/> Default to null converted to the type of <see cref="ProtoMessageConstructorAttribute"/>.</param>
         /// <param name="protoServiceAttribute"><inheritdoc cref="ProtoServiceAttribute" path="/node()"/><br/> Default to null converted to the type of <see cref="Attributes.ProtoServiceAttribute"/>.</param>
@@ -72,6 +76,7 @@ namespace ProtoGenerationLib.Configurations.Internals
                                bool includeStatics = false,
                                bool removeEmptyMembers = true,
                                string? fieldsAndPropertiesExtractionStrategy = null,
+                               string? documentationExtractionStrategy = null,
                                Type? ignoreFieldOrPropertyAttribute = null,
                                Type? dataTypeConstructorAttribute = null,
                                Type? protoServiceAttribute = null,
@@ -86,6 +91,8 @@ namespace ProtoGenerationLib.Configurations.Internals
             RemoveEmptyMembers = removeEmptyMembers;
             FieldsAndPropertiesExtractionStrategy = fieldsAndPropertiesExtractionStrategy ??
                 StrategyNamesLookup.FieldsAndPropertiesExtractionStrategiesLookup[FieldsAndPropertiesExtractionStrategyKind.Composite];
+            DocumentationExtractionStrategy = documentationExtractionStrategy ??
+                StrategyNamesLookup.DocumentationExtractionStrategiesLookup[DocumentationExtractionStrategyKind.None];
             IgnoreFieldOrPropertyAttribute = ignoreFieldOrPropertyAttribute ?? typeof(ProtoIgnoreAttribute);
             DataTypeConstructorAttribute = dataTypeConstructorAttribute ?? typeof(ProtoMessageConstructorAttribute);
             ProtoServiceAttribute = protoServiceAttribute ?? typeof(ProtoServiceAttribute);

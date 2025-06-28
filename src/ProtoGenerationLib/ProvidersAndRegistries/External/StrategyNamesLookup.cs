@@ -24,6 +24,11 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.External
         public static IReadOnlyDictionary<FieldsAndPropertiesExtractionStrategyKind, string> FieldsAndPropertiesExtractionStrategiesLookup { get; private set; }
 
         /// <summary>
+        /// A lookup table for documentation extraction strategies names.
+        /// </summary>
+        public static IReadOnlyDictionary<DocumentationExtractionStrategyKind, string> DocumentationExtractionStrategiesLookup { get; private set; }
+
+        /// <summary>
         /// A lookup table for file path strategies names.
         /// </summary>
         public static IReadOnlyDictionary<FilePathStrategyKind, string> FilePathStrategiesLookup { get; private set; }
@@ -83,6 +88,11 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.External
             {
                 [FieldsAndPropertiesExtractionStrategyKind.Composite] = "Composite",
                 [FieldsAndPropertiesExtractionStrategyKind.Flatten] = "Flatten",
+            };
+
+            DocumentationExtractionStrategiesLookup = new Dictionary<DocumentationExtractionStrategyKind, string>
+            {
+                [DocumentationExtractionStrategyKind.None] = "None",
             };
 
             FilePathStrategiesLookup = new Dictionary<FilePathStrategyKind, string>
