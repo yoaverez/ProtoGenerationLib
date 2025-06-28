@@ -2,6 +2,7 @@
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Tests.Configurations.Internals.DummyTypes;
 using ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers.DummyTypes;
 
 namespace ProtoGenerationLib.Tests.Configurations.Internals
@@ -287,5 +288,233 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         }
 
         #endregion ISuffixesProviderAndRegister Tests
+
+        #region IDocumentationAdder Tests
+
+        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]
+        public void AddTypeDocumentation_ThereIsAlreadyDocumentationForType_ThrowsArgumentException()
+        {
+            // Arrange
+            generationOptions.AddDocumentation<int>("abc");
+
+            // Act
+            generationOptions.AddDocumentation<int>("");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will assert the test.
+        }
+
+        [TestMethod]
+        public void AddTypeDocumentation_ThereIsNotAlreadyDocumentationForType_TypeIsAssociatedWithDocumentation()
+        {
+            // Arrange
+            var expectedDocs = "abc";
+
+            // Act
+            generationOptions.AddDocumentation<int>(expectedDocs);
+
+            // Assert
+            var result = generationOptions.TryGetTypeDocumentation(typeof(int), out var actualDocs);
+            Assert.IsTrue(result);
+            Assert.AreEqual(expectedDocs, actualDocs);
+        }
+
+        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]
+        public void AddFieldDocumentation_ThereIsAlreadyDocumentationForField_ThrowsArgumentException()
+        {
+            // Arrange
+            generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), "abc");
+
+            // Act
+            generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), "");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will assert the test.
+        }
+
+        [TestMethod]
+        public void AddFieldDocumentation_ThereIsNotAlreadyDocumentationForField_FieldIsAssociatedWithDocumentation()
+        {
+            // Arrange
+            var expectedDocs = "abc";
+
+            // Act
+            generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1) ,expectedDocs);
+
+            // Assert
+            var result = generationOptions.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out var actualDocs);
+            Assert.IsTrue(result);
+            Assert.AreEqual(expectedDocs, actualDocs);
+        }
+
+        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]
+        public void AddMethodDocumentation_ThereIsAlreadyDocumentationForMethod_ThrowsArgumentException()
+        {
+            // Arrange
+            generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, "abc");
+
+            // Act
+            generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, "");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will assert the test.
+        }
+
+        [TestMethod]
+        public void AddMethodDocumentation_ThereIsNotAlreadyDocumentationForMethod_MethodIsAssociatedWithDocumentation()
+        {
+            // Arrange
+            var expectedDocs = "abc";
+
+            // Act
+            generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, expectedDocs);
+
+            // Assert
+            var result = generationOptions.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out var actualDocs);
+            Assert.IsTrue(result);
+            Assert.AreEqual(expectedDocs, actualDocs);
+        }
+
+        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]
+        public void AddEnumValueDocumentation_ThereIsAlreadyDocumentationForEnumValue_ThrowsArgumentException()
+        {
+            // Arrange
+            generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, "abc");
+
+            // Act
+            generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, "");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will assert the test.
+        }
+
+        [TestMethod]
+        public void AddEnumValueDocumentation_ThereIsNotAlreadyDocumentationForEnumValue_EnumValueIsAssociatedWithDocumentation()
+        {
+            // Arrange
+            var expectedDocs = "abc";
+
+            // Act
+            generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, expectedDocs);
+
+            // Assert
+            var result = generationOptions.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out var actualDocs);
+            Assert.IsTrue(result);
+            Assert.AreEqual(expectedDocs, actualDocs);
+        }
+
+        #endregion IDocumentationAdder Tests
+
+        #region IDocumentationProvider Tests
+
+        [TestMethod]
+        public void TryGetTypeDocumentation_TypeHasNoAssociatedDocumentation_ReturnFalse()
+        {
+            // Act
+            var result = generationOptions.TryGetTypeDocumentation(typeof(int), out _);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void TryGetTypeDocumentation_TypeHasAssociatedDocumentation_ReturnTrueAndAssociatedDocumentation()
+        {
+            // Arrange
+            var expectedDocumentation = "abc";
+            generationOptions.AddDocumentation<int>(expectedDocumentation);
+
+            // Act
+            var result = generationOptions.TryGetTypeDocumentation(typeof(int), out var actualDocumentation);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(expectedDocumentation, actualDocumentation);
+        }
+
+        [TestMethod]
+        public void TryGetFieldDocumentation_FieldHasNoAssociatedDocumentation_ReturnFalse()
+        {
+            // Act
+            var result = generationOptions.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out _);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void TryGetFieldDocumentation_FieldHasAssociatedDocumentation_ReturnTrueAndAssociatedDocumentation()
+        {
+            // Arrange
+            var expectedDocumentation = "abc";
+            generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), expectedDocumentation);
+
+            // Act
+            var result = generationOptions.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out var actualDocumentation);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(expectedDocumentation, actualDocumentation);
+        }
+
+        [TestMethod]
+        public void TryGetMethodDocumentation_MethodHasNoAssociatedDocumentation_ReturnFalse()
+        {
+            // Act
+            var result = generationOptions.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out _);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void TryGetMethodDocumentation_MethodHasAssociatedDocumentation_ReturnTrueAndAssociatedDocumentation()
+        {
+            // Arrange
+            var expectedDocumentation = "abc";
+            generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, expectedDocumentation);
+
+            // Act
+            var result = generationOptions.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out var actualDocumentation);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(expectedDocumentation, actualDocumentation);
+        }
+
+        [TestMethod]
+        public void TryGetEnumValueDocumentation_EnumValueHasNoAssociatedDocumentation_ReturnFalse()
+        {
+            // Act
+            var result = generationOptions.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out _);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void TryGetEnumValueDocumentation_EnumValueHasAssociatedDocumentation_ReturnTrueAndAssociatedDocumentation()
+        {
+            // Arrange
+            var expectedDocumentation = "abc";
+            generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, expectedDocumentation);
+
+            // Act
+            var result = generationOptions.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out var actualDocumentation);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(expectedDocumentation, actualDocumentation);
+        }
+
+        #endregion IDocumentationProvider Tests
     }
 }

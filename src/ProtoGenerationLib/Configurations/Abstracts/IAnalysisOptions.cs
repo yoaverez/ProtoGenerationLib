@@ -1,5 +1,6 @@
 ﻿using ProtoGenerationLib.Attributes;
 using ProtoGenerationLib.Configurations.Delegates;
+using ProtoGenerationLib.Customizations.Abstracts;
 using System;
 
 namespace ProtoGenerationLib.Configurations.Abstracts
@@ -7,7 +8,7 @@ namespace ProtoGenerationLib.Configurations.Abstracts
     /// <summary>
     /// Options for the csharp types analysis.
     /// </summary>
-    public interface IAnalysisOptions
+    public interface IAnalysisOptions : IDocumentationProvider
     {
         /// <summary>
         /// Whether or not to include csharp fields in the proto message fields.
