@@ -188,58 +188,30 @@ namespace ProtoGenerationLib.Configurations.Internals
 
         #endregion IFieldSuffixRegister Implementation
 
-        #region IDocumentationProvider Implementation
-
-        /// <inheritdoc/>
-        public bool TryGetTypeDocumentation(Type type, out string documentation)
-        {
-            return AnalysisOptions.TryGetTypeDocumentation(type, out documentation);
-        }
-
-        /// <inheritdoc/>
-        public bool TryGetFieldDocumentation(Type fieldDeclaringType, string fieldName, out string documentation)
-        {
-            return AnalysisOptions.TryGetFieldDocumentation(fieldDeclaringType, fieldName, out documentation);
-        }
-
-        /// <inheritdoc/>
-        public bool TryGetMethodDocumentation(Type methodDeclaringType, string methodName, int methodNumOfParams, out string documentation)
-        {
-            return AnalysisOptions.TryGetMethodDocumentation(methodDeclaringType, methodName, methodNumOfParams, out documentation);
-        }
-
-        /// <inheritdoc/>
-        public bool TryGetEnumValueDocumentation(Type enumType, int enumValue, out string documentation)
-        {
-            return AnalysisOptions.TryGetEnumValueDocumentation(enumType, enumValue, out documentation);
-        }
-
-        #endregion IDocumentationProvider Implementation
-
         #region IDocumentationAdder Implementation
 
         /// <inheritdoc/>
         public void AddDocumentation<TType>(string documentation)
         {
-            AnalysisOptions.AddDocumentation<TType>(documentation);
+            AnalysisOptions.DocumentationProviderAndAdder.AddDocumentation<TType>(documentation);
         }
 
         /// <inheritdoc/>
         public void AddDocumentation<TFieldDeclaringType>(string fieldName, string documentation)
         {
-            AnalysisOptions.AddDocumentation<TFieldDeclaringType>(fieldName, documentation);
+            AnalysisOptions.DocumentationProviderAndAdder.AddDocumentation<TFieldDeclaringType>(fieldName, documentation);
         }
 
         /// <inheritdoc/>
         public void AddDocumentation<TMethodDeclaringType>(string methodName, int numOfParameters, string documentation)
         {
-            AnalysisOptions.AddDocumentation<TMethodDeclaringType>(methodName, numOfParameters, documentation);
+            AnalysisOptions.DocumentationProviderAndAdder.AddDocumentation<TMethodDeclaringType>(methodName, numOfParameters, documentation);
         }
 
         /// <inheritdoc/>
         public void AddDocumentation<TEnumType>(int enumValue, string documentation) where TEnumType : Enum
         {
-            AnalysisOptions.AddDocumentation<TEnumType>(enumValue, documentation);
+            AnalysisOptions.DocumentationProviderAndAdder.AddDocumentation<TEnumType>(enumValue, documentation);
         }
 
         #endregion IDocumentationAdder Implementation

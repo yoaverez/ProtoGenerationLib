@@ -8,7 +8,7 @@ namespace ProtoGenerationLib.Configurations.Abstracts
     /// <summary>
     /// Options for the csharp types analysis.
     /// </summary>
-    public interface IAnalysisOptions : IDocumentationProvider
+    public interface IAnalysisOptions
     {
         /// <summary>
         /// Whether or not to include csharp fields in the proto message fields.
@@ -97,5 +97,10 @@ namespace ProtoGenerationLib.Configurations.Abstracts
         /// <see cref="ProtoRpcAttribute"/> or this delegate returns <see langword="true"/>.
         /// </remarks>
         TryGetRpcType TryGetRpcTypeDelegate { get; }
+
+        /// <summary>
+        /// A provider for user documentation customization.
+        /// </summary>
+        IDocumentationProvider DocumentationProvider { get; }
     }
 }

@@ -316,7 +316,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             generationOptions.AddDocumentation<int>(expectedDocs);
 
             // Assert
-            var result = generationOptions.TryGetTypeDocumentation(typeof(int), out var actualDocs);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetTypeDocumentation(typeof(int), out var actualDocs);
             Assert.IsTrue(result);
             Assert.AreEqual(expectedDocs, actualDocs);
         }
@@ -346,7 +346,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1) ,expectedDocs);
 
             // Assert
-            var result = generationOptions.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out var actualDocs);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out var actualDocs);
             Assert.IsTrue(result);
             Assert.AreEqual(expectedDocs, actualDocs);
         }
@@ -376,7 +376,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, expectedDocs);
 
             // Assert
-            var result = generationOptions.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out var actualDocs);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out var actualDocs);
             Assert.IsTrue(result);
             Assert.AreEqual(expectedDocs, actualDocs);
         }
@@ -406,7 +406,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, expectedDocs);
 
             // Assert
-            var result = generationOptions.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out var actualDocs);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out var actualDocs);
             Assert.IsTrue(result);
             Assert.AreEqual(expectedDocs, actualDocs);
         }
@@ -419,7 +419,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         public void TryGetTypeDocumentation_TypeHasNoAssociatedDocumentation_ReturnFalse()
         {
             // Act
-            var result = generationOptions.TryGetTypeDocumentation(typeof(int), out _);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetTypeDocumentation(typeof(int), out _);
 
             // Assert
             Assert.IsFalse(result);
@@ -433,7 +433,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             generationOptions.AddDocumentation<int>(expectedDocumentation);
 
             // Act
-            var result = generationOptions.TryGetTypeDocumentation(typeof(int), out var actualDocumentation);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetTypeDocumentation(typeof(int), out var actualDocumentation);
 
             // Assert
             Assert.IsTrue(result);
@@ -444,7 +444,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         public void TryGetFieldDocumentation_FieldHasNoAssociatedDocumentation_ReturnFalse()
         {
             // Act
-            var result = generationOptions.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out _);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out _);
 
             // Assert
             Assert.IsFalse(result);
@@ -458,7 +458,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), expectedDocumentation);
 
             // Act
-            var result = generationOptions.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out var actualDocumentation);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out var actualDocumentation);
 
             // Assert
             Assert.IsTrue(result);
@@ -469,7 +469,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         public void TryGetMethodDocumentation_MethodHasNoAssociatedDocumentation_ReturnFalse()
         {
             // Act
-            var result = generationOptions.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out _);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out _);
 
             // Assert
             Assert.IsFalse(result);
@@ -483,7 +483,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, expectedDocumentation);
 
             // Act
-            var result = generationOptions.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out var actualDocumentation);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out var actualDocumentation);
 
             // Assert
             Assert.IsTrue(result);
@@ -494,7 +494,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         public void TryGetEnumValueDocumentation_EnumValueHasNoAssociatedDocumentation_ReturnFalse()
         {
             // Act
-            var result = generationOptions.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out _);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out _);
 
             // Assert
             Assert.IsFalse(result);
@@ -508,7 +508,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, expectedDocumentation);
 
             // Act
-            var result = generationOptions.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out var actualDocumentation);
+            var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out var actualDocumentation);
 
             // Assert
             Assert.IsTrue(result);

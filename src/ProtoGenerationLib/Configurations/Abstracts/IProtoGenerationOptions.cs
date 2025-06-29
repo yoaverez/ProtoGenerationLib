@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Configurations.Abstracts
     /// <summary>
     /// The proto generator configurations.
     /// </summary>
-    public interface IProtoGenerationOptions : IFieldSuffixProvider, IDocumentationProvider
+    public interface IProtoGenerationOptions : IFieldSuffixProvider
     {
         /// <inheritdoc cref="IAnalysisOptions"/>
         IAnalysisOptions AnalysisOptions { get; }

@@ -11,7 +11,7 @@ using System.Reflection;
 namespace ProtoGenerationLib.Configurations.Internals
 {
     /// <inheritdoc cref="IAnalysisOptions"/>
-    public class AnalysisOptions : IAnalysisOptions, IDocumentationAdder
+    public class AnalysisOptions : IAnalysisOptions
     {
         /// <inheritdoc/>
         public bool IncludeFields { get; set; }
@@ -53,7 +53,9 @@ namespace ProtoGenerationLib.Configurations.Internals
         public TryGetRpcType TryGetRpcTypeDelegate { get; set; }
 
         /// <inheritdoc cref="DocumentationProviderAndAdder"/>
-        private DocumentationProviderAndAdder documentationProviderAndAdder;
+        internal DocumentationProviderAndAdder DocumentationProviderAndAdder { get; private set; }
+        /// <inheritdoc/>
+        public IDocumentationProvider DocumentationProvider => DocumentationProviderAndAdder;
 
         /// <summary>
         /// Create new instance of the <see cref="AnalysisOptions"/> class.
@@ -101,63 +103,7 @@ namespace ProtoGenerationLib.Configurations.Internals
             IsProtoServiceDelegate = isProtoServiceDelegate ?? ((type) => false);
             TryGetRpcTypeDelegate = tryGetRpcTypeDelegate ?? ((Type serviceType, MethodInfo method, out ProtoRpcType rpcType) => { rpcType = ProtoRpcType.Unary; return false; });
 
-            documentationProviderAndAdder = new DocumentationProviderAndAdder();
+            DocumentationProviderAndAdder = new DocumentationProviderAndAdder();
         }
-
-        #region IDocumentationProvider Implementation
-
-        /// <inheritdoc/>
-        public bool TryGetTypeDocumentation(Type type, out string documentation)
-        {
-            return documentationProviderAndAdder.TryGetTypeDocumentation(type, out documentation);
-        }
-
-        /// <inheritdoc/>
-        public bool TryGetFieldDocumentation(Type fieldDeclaringType, string fieldName, out string documentation)
-        {
-            return documentationProviderAndAdder.TryGetFieldDocumentation(fieldDeclaringType, fieldName, out documentation);
-        }
-
-        /// <inheritdoc/>
-        public bool TryGetMethodDocumentation(Type methodDeclaringType, string methodName, int methodNumOfParams, out string documentation)
-        {
-            return documentationProviderAndAdder.TryGetMethodDocumentation(methodDeclaringType, methodName, methodNumOfParams, out documentation);
-        }
-
-        /// <inheritdoc/>
-        public bool TryGetEnumValueDocumentation(Type enumType, int enumValue, out string documentation)
-        {
-            return documentationProviderAndAdder.TryGetEnumValueDocumentation(enumType, enumValue, out documentation);
-        }
-
-        #endregion IDocumentationProvider Implementation
-
-        #region IDocumentationAdder Implementation
-
-        /// <inheritdoc/>
-        public void AddDocumentation<TType>(string documentation)
-        {
-            documentationProviderAndAdder.AddDocumentation<TType>(documentation);
-        }
-
-        /// <inheritdoc/>
-        public void AddDocumentation<TFieldDeclaringType>(string fieldName, string documentation)
-        {
-            documentationProviderAndAdder.AddDocumentation<TFieldDeclaringType>(fieldName, documentation);
-        }
-
-        /// <inheritdoc/>
-        public void AddDocumentation<TMethodDeclaringType>(string methodName, int numOfParameters, string documentation)
-        {
-            documentationProviderAndAdder.AddDocumentation<TMethodDeclaringType>(methodName, numOfParameters, documentation);
-        }
-
-        /// <inheritdoc/>
-        public void AddDocumentation<TEnumType>(int enumValue, string documentation) where TEnumType : Enum
-        {
-            documentationProviderAndAdder.AddDocumentation<TEnumType>(enumValue, documentation);
-        }
-
-        #endregion IDocumentationAdder Implementation
     }
 }

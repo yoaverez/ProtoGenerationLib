@@ -48,11 +48,11 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
             {
                 var bindingFlags = CreateBindingFlags(analysisOptions);
                 var namesToIgnore = new HashSet<string>();
-                var props = ExtractProperties(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions, namesToIgnore);
+                var props = ExtractProperties(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions.DocumentationProvider, namesToIgnore);
                 IEnumerable<IFieldMetadata> fields = new List<IFieldMetadata>();
                 if (analysisOptions.IncludeFields)
                 {
-                    fields = ExtractFields(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions, namesToIgnore);
+                    fields = ExtractFields(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions.DocumentationProvider, namesToIgnore);
                 }
 
                 // Combine the fields and properties.
