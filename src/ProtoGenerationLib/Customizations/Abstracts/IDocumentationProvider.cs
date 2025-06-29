@@ -14,7 +14,7 @@ namespace ProtoGenerationLib.Customizations.Abstracts
         /// <param name="documentation">The documentation if found.</param>
         /// <returns>
         /// <see langword="true"/> if the given type has documentation associated with
-        /// it otherwise <see langword="false"/>
+        /// it otherwise <see langword="false"/>.
         /// </returns>
         bool TryGetTypeDocumentation(Type type, out string documentation);
 
@@ -28,7 +28,7 @@ namespace ProtoGenerationLib.Customizations.Abstracts
         /// <param name="documentation">The documentation of the field if found.</param>
         /// <returns>
         /// <see langword="true"/> if the field with the given <paramref name="fieldName"/> has
-        /// documentation associated with it otherwise <see langword="false"/>
+        /// documentation associated with it otherwise <see langword="false"/>.
         /// </returns>
         bool TryGetFieldDocumentation(Type fieldDeclaringType, string fieldName, out string documentation);
 
@@ -44,7 +44,7 @@ namespace ProtoGenerationLib.Customizations.Abstracts
         /// <returns>
         /// <see langword="true"/> if the method with the given <paramref name="methodName"/> and
         /// <paramref name="methodNumOfParams"/> has documentation associated with it
-        /// otherwise <see langword="false"/>
+        /// otherwise <see langword="false"/>.
         /// </returns>
         bool TryGetMethodDocumentation(Type methodDeclaringType, string methodName, int methodNumOfParams, out string documentation);
 
@@ -58,7 +58,7 @@ namespace ProtoGenerationLib.Customizations.Abstracts
         /// <param name="documentation">The documentation of the enum value if found.</param>
         /// <returns>
         /// <see langword="true"/> if the enum value with the given <paramref name="enumValue"/>
-        /// has documentation associated with it otherwise <see langword="false"/>
+        /// has documentation associated with it otherwise <see langword="false"/>.
         /// </returns>
         bool TryGetEnumValueDocumentation(Type enumType, int enumValue, out string documentation);
     }
