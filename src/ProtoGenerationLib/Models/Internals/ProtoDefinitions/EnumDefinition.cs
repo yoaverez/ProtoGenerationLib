@@ -36,6 +36,13 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
             Values = values.ToList();
         }
 
+        /// <inheritdoc cref="EnumDefinition(string, string, IEnumerable{IEnumValueDefinition})"/>
+        /// <inheritdoc cref="ProtoObject(string, string, IEnumerable{string}, string)" path="/param"/>
+        public EnumDefinition(string name, string package, IEnumerable<IEnumValueDefinition> values, string documentation) : base(name, package, Array.Empty<string>(), documentation)
+        {
+            Values = values.ToList();
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="EnumDefinition"/>
         /// which is a copy of the given <paramref name="other"/>.

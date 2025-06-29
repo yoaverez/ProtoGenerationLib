@@ -63,13 +63,13 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             {
                 var enumValueName = enumValueStylingStrategy.ToProtoStyle($"{protoMetadata.Name}_{enumValue.Name}");
                 var enumValueNumber = enumValueNumberingStrategy.GetEnumValueNumber(intermediateType, enumValue, i, numOfValues);
-                enumValueDefinitions.Add(new EnumValueDefinition(enumValueName, enumValueNumber));
+                enumValueDefinitions.Add(new EnumValueDefinition(enumValueName, enumValueNumber, enumValue.Documentation));
                 i++;
             }
 
             EnsureZeroValueFirst(ref enumValueDefinitions, protoMetadata.Name!, enumValueStylingStrategy, intermediateType.Type);
             ThrowIfThereAreEnumValuesWithTheSameEnumValue(intermediateType.Type, enumValueDefinitions);
-            return new EnumDefinition(protoMetadata.Name!, protoMetadata.Package!, enumValueDefinitions.Cast<IEnumValueDefinition>());
+            return new EnumDefinition(protoMetadata.Name!, protoMetadata.Package!, enumValueDefinitions.Cast<IEnumValueDefinition>(), intermediateType.Documentation);
         }
 
         /// <summary>

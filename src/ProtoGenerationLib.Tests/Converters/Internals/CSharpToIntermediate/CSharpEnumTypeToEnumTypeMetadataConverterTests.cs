@@ -5,6 +5,7 @@ using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
 using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Tests.Converters.Internals.DummyTypes;
 using static ProtoGenerationLib.Tests.Converters.Internals.ConvertersTestsUtils;
 
@@ -19,12 +20,19 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
         private IList<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>> customConverters;
 
+        private Mock<IDocumentationExtractionStrategy> mockDocumentationExtractionStrategy;
+
         [TestInitialize]
         public void TestInitialize()
         {
             generationOptions = new ProtoGenerationOptions();
             customConverters = generationOptions.EnumTypeCustomConverters;
+
+            mockDocumentationExtractionStrategy = new Mock<IDocumentationExtractionStrategy>();
+
             var mockIProvider = new Mock<IProvider>();
+            mockIProvider.Setup(provider => provider.GetDocumentationExtractionStrategy(It.IsAny<string>()))
+                         .Returns(mockDocumentationExtractionStrategy.Object);
 
             converter = new CSharpEnumTypeToEnumTypeMetadataConverter(mockIProvider.Object);
         }
@@ -102,6 +110,97 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
             // Assert
             Assert.AreSame(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_EnumHasDocumentationFromProvider_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(Enum1);
+
+            var providerTypeDocs = "provider type docs";
+            var providerEnumValueDocs = "provider enum value docs";
+            generationOptions.AddDocumentation<Enum1>(providerTypeDocs);
+            generationOptions.AddDocumentation<Enum1>(2, providerEnumValueDocs);
+
+            var extractorTypeDocs = "extractor type docs";
+            var extractorEnumValueDocs = "extractor enum value docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorTypeDocs))
+                                               .Returns(false);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetEnumValueDocumentation(type, 2, out extractorEnumValueDocs))
+                                               .Returns(false);
+
+            var expectedMetadata = CreateEnumTypeMetadata(type, new List<IEnumValueMetadata>
+            {
+                CreateEnumValueMetadata("Value1", 5),
+                CreateEnumValueMetadata("Value2", 2, providerEnumValueDocs),
+                CreateEnumValueMetadata("Value3", -4),
+            }, providerTypeDocs);
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_EnumHasDocumentationFromProviderAndExtractor_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(Enum1);
+
+            var providerTypeDocs = "provider type docs";
+            var providerEnumValueDocs = "provider enum value docs";
+            generationOptions.AddDocumentation<Enum1>(providerTypeDocs);
+            generationOptions.AddDocumentation<Enum1>(2, providerEnumValueDocs);
+
+            var extractorTypeDocs = "extractor type docs";
+            var extractorEnumValueDocs = "extractor enum value docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorTypeDocs))
+                                               .Returns(true);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetEnumValueDocumentation(type, 2, out extractorEnumValueDocs))
+                                               .Returns(true);
+
+            var expectedMetadata = CreateEnumTypeMetadata(type, new List<IEnumValueMetadata>
+            {
+                CreateEnumValueMetadata("Value1", 5),
+                CreateEnumValueMetadata("Value2", 2, providerEnumValueDocs),
+                CreateEnumValueMetadata("Value3", -4),
+            }, providerTypeDocs);
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_EnumHasDocumentationFromExtractor_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(Enum1);
+
+            var extractorTypeDocs = "extractor type docs";
+            var extractorEnumValueDocs = "extractor enum value docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorTypeDocs))
+                                               .Returns(true);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetEnumValueDocumentation(type, 2, out extractorEnumValueDocs))
+                                               .Returns(true);
+
+            var expectedMetadata = CreateEnumTypeMetadata(type, new List<IEnumValueMetadata>
+            {
+                CreateEnumValueMetadata("Value1", 5),
+                CreateEnumValueMetadata("Value2", 2, extractorEnumValueDocs),
+                CreateEnumValueMetadata("Value3", -4),
+            }, extractorTypeDocs);
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
         }
     }
 }

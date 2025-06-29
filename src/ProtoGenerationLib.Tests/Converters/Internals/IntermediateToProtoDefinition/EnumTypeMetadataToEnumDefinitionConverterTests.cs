@@ -71,8 +71,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             var enumType = typeof(Enum1);
             var enumValues = new List<IEnumValueMetadata>
             {
-                new EnumValueMetadata("a", 1),
-                new EnumValueMetadata("b", 0),
+                new EnumValueMetadata("a", 1, "a docs"),
+                new EnumValueMetadata("b", 0, "b docs"),
             };
             var enumMetadata = new EnumTypeMetadata(enumType, enumValues);
 
@@ -86,8 +86,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
 
             var valueDefinitions = new List<IEnumValueDefinition>
             {
-                new EnumValueDefinition($"{enumName}_a".ToUpperInvariant(), 1),
-                new EnumValueDefinition($"{enumName}_b".ToUpperInvariant(), 0),
+                new EnumValueDefinition($"{enumName}_a".ToUpperInvariant(), 1, "a docs"),
+                new EnumValueDefinition($"{enumName}_b".ToUpperInvariant(), 0, "b docs"),
             };
             var expectedEnumDefinition = new EnumDefinition(enumName, enumPackage, valueDefinitions);
 

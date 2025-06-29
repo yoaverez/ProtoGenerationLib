@@ -7,14 +7,18 @@ namespace ProtoGenerationLib.Tests.Converters.Internals
     internal static class ConvertersTestsUtils
     {
         /// <inheritdoc cref="EnumTypeMetadata(Type, List{IEnumValueMetadata})"/>
-        public static EnumTypeMetadata CreateEnumTypeMetadata(Type type, List<IEnumValueMetadata> values)
+        public static EnumTypeMetadata CreateEnumTypeMetadata(Type type, List<IEnumValueMetadata> values, string? documentation = null)
         {
+            if (documentation is not null)
+                return new EnumTypeMetadata(type, values, documentation);
             return new EnumTypeMetadata(type, values);
         }
 
         /// <inheritdoc cref="EnumValueMetadata(string, int)"/>
-        public static EnumValueMetadata CreateEnumValueMetadata(string name, int value)
+        public static EnumValueMetadata CreateEnumValueMetadata(string name, int value, string? documentation = null)
         {
+            if (documentation is not null)
+                return new EnumValueMetadata(name, value, documentation);
             return new EnumValueMetadata(name, value);
         }
 
