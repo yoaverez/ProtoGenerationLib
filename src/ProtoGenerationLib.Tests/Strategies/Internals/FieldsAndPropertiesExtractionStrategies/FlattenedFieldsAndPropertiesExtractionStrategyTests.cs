@@ -1,10 +1,11 @@
-﻿using static ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.TypesExtractorsUtils;
-using ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies.DummyTypes;
-using ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrategies;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Configurations.Internals;
+﻿using Moq;
 using ProtoGenerationLib.Attributes;
-using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+using ProtoGenerationLib.Configurations.Internals;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Strategies.Abstracts;
+using ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrategies;
+using ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies.DummyTypes;
+using static ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.TypesExtractorsUtils;
 
 namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
 {
@@ -13,10 +14,18 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
     {
         private static FlattenedFieldsAndPropertiesExtractionStrategy strategy;
 
+        private Mock<IDocumentationExtractionStrategy> mockDocumentationExtractionStrategy;
+
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
         {
             strategy = new FlattenedFieldsAndPropertiesExtractionStrategy();
+        }
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            mockDocumentationExtractionStrategy = new Mock<IDocumentationExtractionStrategy>();
         }
 
         #region TypeContainsEmptyMembers Tests
@@ -357,10 +366,181 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
         #endregion Edge Cases
 
-        private void ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(Type type, AnalysisOptions analysisOptions, List<IFieldMetadata> expectedMembers)
+        #region Type Contains Documentation Tests
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_ThereAreFieldsWithDocumentationFromProvider_ExtractedCorrectFieldsAndProperties()
+        {
+            // Arrange
+            var type = typeof(TypeWithPropertiesAndFields);
+            var analysisOptions = CreateAnalysisOptions(true, false, false);
+
+            var providerPropDocumentation = "provider prop docs";
+            var providerFieldDocumentation = "provider field docs";
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.Prop), providerPropDocumentation);
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.field), providerFieldDocumentation);
+
+            var extractorPropDocumentation = "extractor prop docs";
+            var extractorFieldDocumentation = "extractor field docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetPropertyDocumentation(typeof(TypeWithPropertiesAndFields).GetProperty(nameof(TypeWithPropertiesAndFields.Prop)), out extractorPropDocumentation))
+                                               .Returns(false);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetFieldDocumentation(typeof(TypeWithPropertiesAndFields).GetField(nameof(TypeWithPropertiesAndFields.field)), out extractorFieldDocumentation))
+                                               .Returns(false);
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "Prop", type, documentation: providerPropDocumentation),
+                CreateFieldMetadata(typeof(bool), "field", type, documentation: providerFieldDocumentation),
+            };
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers, mockDocumentationExtractionStrategy.Object);
+        }
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_ThereAreFieldsWithDocumentationFromProviderAndExtractor_ExtractedCorrectFieldsAndProperties()
+        {
+            // Arrange
+            var type = typeof(TypeWithPropertiesAndFields);
+            var analysisOptions = CreateAnalysisOptions(true, false, false);
+
+            var providerPropDocumentation = "provider prop docs";
+            var providerFieldDocumentation = "provider field docs";
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.Prop), providerPropDocumentation);
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.field), providerFieldDocumentation);
+
+            var extractorPropDocumentation = "extractor prop docs";
+            var extractorFieldDocumentation = "extractor field docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetPropertyDocumentation(typeof(TypeWithPropertiesAndFields).GetProperty(nameof(TypeWithPropertiesAndFields.Prop)), out extractorPropDocumentation))
+                                               .Returns(true);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetFieldDocumentation(typeof(TypeWithPropertiesAndFields).GetField(nameof(TypeWithPropertiesAndFields.field)), out extractorFieldDocumentation))
+                                               .Returns(true);
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "Prop", type, documentation: providerPropDocumentation),
+                CreateFieldMetadata(typeof(bool), "field", type, documentation: providerFieldDocumentation),
+            };
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers, mockDocumentationExtractionStrategy.Object);
+        }
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_ThereAreFieldsWithDocumentationFromExtractor_ExtractedCorrectFieldsAndProperties()
+        {
+            // Arrange
+            var type = typeof(TypeWithPropertiesAndFields);
+            var analysisOptions = CreateAnalysisOptions(true, false, false);
+
+            var extractorPropDocumentation = "extractor prop docs";
+            var extractorFieldDocumentation = "extractor field docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetPropertyDocumentation(typeof(TypeWithPropertiesAndFields).GetProperty(nameof(TypeWithPropertiesAndFields.Prop)), out extractorPropDocumentation))
+                                               .Returns(true);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetFieldDocumentation(typeof(TypeWithPropertiesAndFields).GetField(nameof(TypeWithPropertiesAndFields.field)), out extractorFieldDocumentation))
+                                               .Returns(true);
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "Prop", type, documentation: extractorPropDocumentation),
+                CreateFieldMetadata(typeof(bool), "field", type, documentation: extractorFieldDocumentation),
+            };
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers, mockDocumentationExtractionStrategy.Object);
+        }
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_TypeWithConstructorAttributeWithDocumentationFromProvider_ExtractedCorrectFieldsAndProperties()
+        {
+            // Arrange
+            var type = typeof(TypeWithConstructorAttribute);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+
+            var providerParam1Documentation = "provider param1 docs";
+            var providerParam2Documentation = "provider param2 docs";
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithConstructorAttribute>("a", providerParam1Documentation);
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithConstructorAttribute>("b", providerParam2Documentation);
+
+            var extractorParam1Documentation = "extractor param1 docs";
+            var extractorParam2Documentation = "extractor param2 docs";
+            var ctor = typeof(TypeWithConstructorAttribute).GetConstructors().Single();
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetMethodParameterDocumentation(ctor, "a", out extractorParam1Documentation))
+                                               .Returns(false);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetMethodParameterDocumentation(ctor, "b", out extractorParam2Documentation))
+                                               .Returns(false);
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", type, documentation: providerParam1Documentation),
+                CreateFieldMetadata(typeof(bool), "b", type, documentation: providerParam2Documentation),
+            };
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers, mockDocumentationExtractionStrategy.Object);
+        }
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_TypeWithConstructorAttributeWithDocumentationFromProviderAndExtractor_ExtractedCorrectFieldsAndProperties()
+        {
+            // Arrange
+            var type = typeof(TypeWithConstructorAttribute);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+
+            var providerParam1Documentation = "provider param1 docs";
+            var providerParam2Documentation = "provider param2 docs";
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithConstructorAttribute>("a", providerParam1Documentation);
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithConstructorAttribute>("b", providerParam2Documentation);
+
+            var extractorParam1Documentation = "extractor param1 docs";
+            var extractorParam2Documentation = "extractor param2 docs";
+            var ctor = typeof(TypeWithConstructorAttribute).GetConstructors().Single();
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetMethodParameterDocumentation(ctor, "a", out extractorParam1Documentation))
+                                               .Returns(true);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetMethodParameterDocumentation(ctor, "b", out extractorParam2Documentation))
+                                               .Returns(true);
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", type, documentation: providerParam1Documentation),
+                CreateFieldMetadata(typeof(bool), "b", type, documentation: providerParam2Documentation),
+            };
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers, mockDocumentationExtractionStrategy.Object);
+        }
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_TypeWithConstructorAttributeWithDocumentationFromExtractor_ExtractedCorrectFieldsAndProperties()
+        {
+            // Arrange
+            var type = typeof(TypeWithConstructorAttribute);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+
+            var extractorParam1Documentation = "extractor param1 docs";
+            var extractorParam2Documentation = "extractor param2 docs";
+            var ctor = typeof(TypeWithConstructorAttribute).GetConstructors().Single();
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetMethodParameterDocumentation(ctor, "a", out extractorParam1Documentation))
+                                               .Returns(true);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetMethodParameterDocumentation(ctor, "b", out extractorParam2Documentation))
+                                               .Returns(true);
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", type, documentation: extractorParam1Documentation),
+                CreateFieldMetadata(typeof(bool), "b", type, documentation: extractorParam2Documentation),
+            };
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers, mockDocumentationExtractionStrategy.Object);
+        }
+
+        #endregion Type Contains Documentation Tests
+
+        private void ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(Type type, AnalysisOptions analysisOptions, List<IFieldMetadata> expectedMembers, IDocumentationExtractionStrategy? documentationExtractionStrategy = null)
         {
             // Act
-            var actualMembers = strategy.ExtractFieldsAndProperties(type, analysisOptions).ToList();
+            var actualMembers = strategy.ExtractFieldsAndProperties(type, analysisOptions, documentationExtractionStrategy).ToList();
 
             // Assert
             CollectionAssert.AreEquivalent(expectedMembers, actualMembers);

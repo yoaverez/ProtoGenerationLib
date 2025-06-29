@@ -42,15 +42,28 @@ namespace ProtoGenerationLib.Strategies.Abstracts
         bool TryGetPropertyDocumentation(PropertyInfo propertyInfo, out string documentation);
 
         /// <summary>
-        /// Try getting the documentation of the given <paramref name="methodInfo"/>.
+        /// Try getting the documentation of the given <paramref name="methodBase"/>.
         /// </summary>
-        /// <param name="methodInfo">The method whose documentation is requested.</param>
-        /// <param name="documentation">The documentation of the given <paramref name="methodInfo"/> if found.</param>
+        /// <param name="methodBase">The method whose documentation is requested.</param>
+        /// <param name="documentation">The documentation of the given <paramref name="methodBase"/> if found.</param>
         /// <returns>
         /// <see langword="true"/> if a documentation for the given
-        /// <paramref name="methodInfo"/> was found otherwise <see langword="false"/>.
+        /// <paramref name="methodBase"/> was found otherwise <see langword="false"/>.
         /// </returns>
-        bool TryGetMethodDocumentation(MethodInfo methodInfo, out string documentation);
+        bool TryGetMethodDocumentation(MethodBase methodBase, out string documentation);
+
+        /// <summary>
+        /// Try getting the documentation of the given <paramref name="MethodBase"/>
+        /// parameter named <paramref name="parameterName"/>.
+        /// </summary>
+        /// <param name="MethodBase">The method whose parameter documentation is requested.</param>
+        /// <param name="parameterName">The name of the parameter whose documentation is requested.</param>
+        /// <param name="documentation">The documentation of the given <paramref name="MethodBase"/> parameter if found.</param>
+        /// <returns>
+        /// <see langword="true"/> if a documentation for the given
+        /// <paramref name="MethodBase"/> parameter was found otherwise <see langword="false"/>.
+        /// </returns>
+        bool TryGetMethodParameterDocumentation(MethodBase MethodBase, string parameterName, out string documentation);
 
         /// <summary>
         /// Try getting the documentation of the given <paramref name="enumValue"/>.

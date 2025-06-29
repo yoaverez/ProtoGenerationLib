@@ -21,7 +21,9 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
         private CSharpDataTypeToDataTypeMetadataConverter converter;
 
-        private Mock<IFieldsAndPropertiesExtractionStrategy> mockStrategy;
+        private Mock<IFieldsAndPropertiesExtractionStrategy> mockFieldsAndPropertiesExtractionStrategy;
+
+        private Mock<IDocumentationExtractionStrategy> mockDocumentationExtractionStrategy;
 
         private IList<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> customConverters;
 
@@ -43,17 +45,21 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
             {
                 AnalysisOptions = new AnalysisOptions
                 {
-                    FieldsAndPropertiesExtractionStrategy = "a"
+                    FieldsAndPropertiesExtractionStrategy = "a",
+                    DocumentationExtractionStrategy = "b",
                 }
             };
 
             customConverters = generationOptions.DataTypeCustomConverters;
 
-            mockStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>();
+            mockFieldsAndPropertiesExtractionStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>();
+            mockDocumentationExtractionStrategy = new Mock<IDocumentationExtractionStrategy>();
 
             var mockProvider = new Mock<IProvider>();
             mockProvider.Setup(provider => provider.GetFieldsAndPropertiesExtractionStrategy(It.IsAny<string>()))
-                        .Returns(mockStrategy.Object);
+                        .Returns(mockFieldsAndPropertiesExtractionStrategy.Object);
+            mockProvider.Setup(provider => provider.GetDocumentationExtractionStrategy(It.IsAny<string>()))
+                        .Returns(mockDocumentationExtractionStrategy.Object);
 
             var mockEnumConverter = new Mock<ICSharpToIntermediateConverter<IEnumTypeMetadata>>();
             mockEnumConverter.Setup(enumConverter => enumConverter.ConvertTypeToIntermediateRepresentation(It.IsAny<Type>(), It.IsAny<IProtoGenerationOptions>()))
@@ -103,13 +109,13 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                 enumTypeMetadata, enumTypeMetadata,
             });
 
-            mockStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
                         .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "a", typeof(int)) });
 
-            mockStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType2), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType2), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
                         .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "b", typeof(int)) });
 
-            mockStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType3), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType3), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
                         .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "c", typeof(int)) });
 
             // Act
@@ -156,6 +162,167 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
             // Assert
             Assert.AreSame(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_TypeHasDocumentationFromProvider_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(DataType1);
+
+            var providerTypeDocumentation = "provider type docs";
+            generationOptions.AddDocumentation<DataType1>(providerTypeDocumentation);
+            generationOptions.AddDocumentation<DataType1.DataType2>(providerTypeDocumentation);
+
+            var extractorTypeDocumentation = "extractor type docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(typeof(DataType1), out extractorTypeDocumentation))
+                                               .Returns(false);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(typeof(DataType1.DataType2), out extractorTypeDocumentation))
+                                               .Returns(false);
+
+            var fieldDocumentation = "field docs";
+
+            var dataType2Metadata = CreateDataTypeMetadata(typeof(DataType1.DataType2), new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "b", typeof(int)),
+            }, new List<IDataTypeMetadata>(), new List<IEnumTypeMetadata>(), providerTypeDocumentation);
+
+            var dataType3Metadata = CreateDataTypeMetadata(typeof(DataType1.DataType3), new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "c", typeof(int), documentation: fieldDocumentation),
+            }, new List<IDataTypeMetadata>(), new List<IEnumTypeMetadata>());
+
+            var expectedMetadata = CreateDataTypeMetadata(type, new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", typeof(int)),
+            }, new List<IDataTypeMetadata>
+            {
+                dataType2Metadata, dataType3Metadata,
+            }, new List<IEnumTypeMetadata>
+            {
+                enumTypeMetadata, enumTypeMetadata,
+            }, providerTypeDocumentation);
+
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                        .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "a", typeof(int)) });
+
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType2), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                        .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "b", typeof(int)) });
+
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType3), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                        .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "c", typeof(int), documentation: fieldDocumentation) });
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_TypeHasDocumentationFromProviderAndExtractor_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(DataType1);
+
+            var providerTypeDocumentation = "provider type docs";
+            generationOptions.AddDocumentation<DataType1>(providerTypeDocumentation);
+            generationOptions.AddDocumentation<DataType1.DataType2>(providerTypeDocumentation);
+
+            var extractorTypeDocumentation = "extractor type docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(typeof(DataType1), out extractorTypeDocumentation))
+                                               .Returns(true);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(typeof(DataType1.DataType2), out extractorTypeDocumentation))
+                                               .Returns(true);
+
+            var fieldDocumentation = "field docs";
+
+            var dataType2Metadata = CreateDataTypeMetadata(typeof(DataType1.DataType2), new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "b", typeof(int)),
+            }, new List<IDataTypeMetadata>(), new List<IEnumTypeMetadata>(), providerTypeDocumentation);
+
+            var dataType3Metadata = CreateDataTypeMetadata(typeof(DataType1.DataType3), new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "c", typeof(int), documentation: fieldDocumentation),
+            }, new List<IDataTypeMetadata>(), new List<IEnumTypeMetadata>());
+
+            var expectedMetadata = CreateDataTypeMetadata(type, new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", typeof(int)),
+            }, new List<IDataTypeMetadata>
+            {
+                dataType2Metadata, dataType3Metadata,
+            }, new List<IEnumTypeMetadata>
+            {
+                enumTypeMetadata, enumTypeMetadata,
+            }, providerTypeDocumentation);
+
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                        .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "a", typeof(int)) });
+
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType2), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                        .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "b", typeof(int)) });
+
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType3), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                        .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "c", typeof(int), documentation: fieldDocumentation) });
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_TypeHasDocumentationFromExtractor_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(DataType1);
+
+            var extractorTypeDocumentation = "extractor type docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(typeof(DataType1), out extractorTypeDocumentation))
+                                               .Returns(true);
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(typeof(DataType1.DataType2), out extractorTypeDocumentation))
+                                               .Returns(true);
+
+            var fieldDocumentation = "field docs";
+
+            var dataType2Metadata = CreateDataTypeMetadata(typeof(DataType1.DataType2), new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "b", typeof(int)),
+            }, new List<IDataTypeMetadata>(), new List<IEnumTypeMetadata>(), extractorTypeDocumentation);
+
+            var dataType3Metadata = CreateDataTypeMetadata(typeof(DataType1.DataType3), new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "c", typeof(int), documentation: fieldDocumentation),
+            }, new List<IDataTypeMetadata>(), new List<IEnumTypeMetadata>());
+
+            var expectedMetadata = CreateDataTypeMetadata(type, new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", typeof(int)),
+            }, new List<IDataTypeMetadata>
+            {
+                dataType2Metadata, dataType3Metadata,
+            }, new List<IEnumTypeMetadata>
+            {
+                enumTypeMetadata, enumTypeMetadata,
+            }, extractorTypeDocumentation);
+
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                        .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "a", typeof(int)) });
+
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType2), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                        .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "b", typeof(int)) });
+
+            mockFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType3), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                        .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "c", typeof(int), documentation: fieldDocumentation) });
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
         }
     }
 }

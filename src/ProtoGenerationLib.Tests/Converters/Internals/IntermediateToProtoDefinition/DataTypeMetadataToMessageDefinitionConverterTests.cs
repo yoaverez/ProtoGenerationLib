@@ -413,5 +413,54 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             // Assert
             Assert.AreEqual(expectedDefinition, actualDefinition);
         }
+
+        [TestMethod]
+        public void ConvertIntermediateRepresentationToProtoDefinition_TypeContainsDocumentation_MessageDefinitionAreCorrect()
+        {
+            // Arrange
+            mockIFieldNumberingStrategy.Setup(strategy => strategy.GetFieldNumber(It.IsAny<IFieldMetadata>(), It.IsAny<int>(), It.IsAny<int>()))
+                                       .Returns<IFieldMetadata, int, int>((a, idx, b) => Convert.ToUInt32(idx + 1));
+
+            var type = typeof(object);
+
+            // Those are used for the imports.
+            var fieldMetadata1 = new FieldMetadata(typeof(byte), "a1", Array.Empty<Attribute>(), type, "a1 docs");
+            var fieldMetadata2 = new FieldMetadata(typeof(char), "a2", Array.Empty<Attribute>(), type);
+
+            var fieldDefinition1 = new FieldDefinition($"a1".ToUpperInvariant(), "byte", 1, "a1 docs", FieldRule.None);
+            var fieldDefinition2 = new FieldDefinition("a2".ToUpperInvariant(), "char", 2, FieldRule.None);
+
+            var dataTypeMetadata = new DataTypeMetadata(type,
+                                                        new IFieldMetadata[] { fieldMetadata1, fieldMetadata2 },
+                                                        Array.Empty<IDataTypeMetadata>(),
+                                                        Array.Empty<IEnumTypeMetadata>(),
+                                                        "dataTypeMetadata docs");
+
+            var protoTypesMetadatas = new Dictionary<Type, IProtoTypeMetadata>
+            {
+                [type] = new ProtoTypeMetadata(type.Name,
+                                               "pac",
+                                               $"pac.{type.Name}",
+                                               "path"),
+
+                // For the imports.
+                [typeof(byte)] = new ProtoTypeMetadata("byte", "pac", "pac.byte", "import1"),
+                [typeof(char)] = new ProtoTypeMetadata("char", "pac", "pac.char", "import2"),
+            };
+
+            var expectedDefinition = new MessageDefinition(type.Name,
+                                                           "pac",
+                                                           new string[] { "import1", "import2" },
+                                                           new IFieldDefinition[] { fieldDefinition1, fieldDefinition2 },
+                                                           Array.Empty<IMessageDefinition>(),
+                                                           Array.Empty<IEnumDefinition>(),
+                                                           "dataTypeMetadata docs");
+
+            // Act
+            var actualDefinition = converter.ConvertIntermediateRepresentationToProtoDefinition(dataTypeMetadata, protoTypesMetadatas, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedDefinition, actualDefinition);
+        }
     }
 }

@@ -17,10 +17,13 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
         private Mock<IFieldsAndPropertiesExtractionStrategy> mockFlattenedStrategy;
 
+        private Mock<IDocumentationExtractionStrategy> mockDocumentationExtractionStrategy;
+
         [TestInitialize]
         public void TestInitialize()
         {
             mockFlattenedStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>();
+            mockDocumentationExtractionStrategy = new Mock<IDocumentationExtractionStrategy>();
             strategy = new CompositeFieldsAndPropertiesExtractionStrategy(mockFlattenedStrategy.Object);
         }
 
@@ -219,12 +222,154 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers);
         }
 
+        #region Type Contains Documentation Tests
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_BaseTypeHasDocumentationFromProvider_ReturnBaseTypeAndUniqueMembersFromFlattenedStrategy()
+        {
+            // Arrange
+            var type = typeof(TypeWithBaseType);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+
+            var providerBaseTypeFieldDocumentation = "provider base type field docs";
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithBaseType>(nameof(TypeWithoutBaseType), providerBaseTypeFieldDocumentation);
+
+            var extractorBaseTypeFieldDocumentation = "extractor base type field docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetBaseTypeFieldDocumentation(typeof(TypeWithBaseType), typeof(TypeWithoutBaseType), out extractorBaseTypeFieldDocumentation))
+                                               .Returns(false);
+
+            var baseMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
+            };
+
+            var allMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
+            };
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(TypeWithoutBaseType), nameof(TypeWithoutBaseType), type, documentation: providerBaseTypeFieldDocumentation),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
+            };
+
+            // Mock the base type.
+            mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                                 .Returns(baseMembers);
+
+            // Mock the rest of the types.
+            mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => !type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                                 .Returns(allMembers);
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers, mockDocumentationExtractionStrategy.Object);
+        }
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_BaseTypeHasDocumentationFromProviderAndExtractor_ReturnBaseTypeAndUniqueMembersFromFlattenedStrategy()
+        {
+            // Arrange
+            var type = typeof(TypeWithBaseType);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+
+            var providerBaseTypeFieldDocumentation = "provider base type field docs";
+            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithBaseType>(nameof(TypeWithoutBaseType), providerBaseTypeFieldDocumentation);
+
+            var extractorBaseTypeFieldDocumentation = "extractor base type field docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetBaseTypeFieldDocumentation(typeof(TypeWithBaseType), typeof(TypeWithoutBaseType), out extractorBaseTypeFieldDocumentation))
+                                               .Returns(true);
+
+            var baseMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
+            };
+
+            var allMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
+            };
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(TypeWithoutBaseType), nameof(TypeWithoutBaseType), type, documentation: providerBaseTypeFieldDocumentation),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
+            };
+
+            // Mock the base type.
+            mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                                 .Returns(baseMembers);
+
+            // Mock the rest of the types.
+            mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => !type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                                 .Returns(allMembers);
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers, mockDocumentationExtractionStrategy.Object);
+        }
+
+        [TestMethod]
+        public void ExtractFieldsAndProperties_BaseTypeHasDocumentationFromExtractor_ReturnBaseTypeAndUniqueMembersFromFlattenedStrategy()
+        {
+            // Arrange
+            var type = typeof(TypeWithBaseType);
+            var analysisOptions = CreateAnalysisOptions(false, false, false);
+
+            var extractorBaseTypeFieldDocumentation = "extractor base type field docs";
+            mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetBaseTypeFieldDocumentation(typeof(TypeWithBaseType), typeof(TypeWithoutBaseType), out extractorBaseTypeFieldDocumentation))
+                                               .Returns(true);
+
+            var baseMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
+            };
+
+            var allMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(int), "a", type),
+                CreateFieldMetadata(typeof(bool), "b", type),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
+            };
+
+            var expectedMembers = new List<IFieldMetadata>
+            {
+                CreateFieldMetadata(typeof(TypeWithoutBaseType), nameof(TypeWithoutBaseType), type, documentation: extractorBaseTypeFieldDocumentation),
+                CreateFieldMetadata(typeof(int), "c", type),
+                CreateFieldMetadata(typeof(bool), "d", type),
+            };
+
+            // Mock the base type.
+            mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                                 .Returns(baseMembers);
+
+            // Mock the rest of the types.
+            mockFlattenedStrategy.Setup(flattenStrategy => flattenStrategy.ExtractFieldsAndProperties(It.Is<Type>(type => !type.Equals(typeof(TypeWithoutBaseType))), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                                 .Returns(allMembers);
+
+            // Act + Assert
+            ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(type, analysisOptions, expectedMembers, mockDocumentationExtractionStrategy.Object);
+        }
+
+        #endregion Type Contains Documentation Tests
+
         #region Auxiliary Methods
 
-        private void ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(Type type, AnalysisOptions analysisOptions, List<IFieldMetadata> expectedMembers)
+        private void ExtractFieldsAndProperties_ExtractedCorrectFieldsAndProperties(Type type, AnalysisOptions analysisOptions, List<IFieldMetadata> expectedMembers, IDocumentationExtractionStrategy? documentationExtractionStrategy = null)
         {
             // Act
-            var actualMembers = strategy.ExtractFieldsAndProperties(type, analysisOptions).ToList();
+            var actualMembers = strategy.ExtractFieldsAndProperties(type, analysisOptions, documentationExtractionStrategy).ToList();
 
             // Assert
             CollectionAssert.AreEquivalent(expectedMembers, actualMembers);

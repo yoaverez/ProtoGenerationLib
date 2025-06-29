@@ -29,7 +29,13 @@ namespace ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrateg
         }
 
         /// <inheritdoc/>
-        public bool TryGetMethodDocumentation(MethodInfo methodInfo, out string documentation)
+        public bool TryGetMethodDocumentation(MethodBase methodBase, out string documentation)
+        {
+            return TryGetDocumentation(out documentation);
+        }
+
+        /// <inheritdoc/>
+        public bool TryGetMethodParameterDocumentation(MethodBase methodBase, string parameterName, out string documentation)
         {
             return TryGetDocumentation(out documentation);
         }

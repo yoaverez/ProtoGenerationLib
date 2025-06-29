@@ -1,16 +1,17 @@
-﻿using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Customizations.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+using ProtoGenerationLib.Strategies.Abstracts;
+using ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrategies;
+using ProtoGenerationLib.Utilities;
+using ProtoGenerationLib.Utilities.CollectionUtilities;
+using ProtoGenerationLib.Utilities.TypeUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using static ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrategies.FieldsAndPropertiesExtractionStrategiesUtils;
-using ProtoGenerationLib.Utilities;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Strategies.Abstracts;
-using ProtoGenerationLib.Utilities.TypeUtilities;
-using ProtoGenerationLib.Utilities.CollectionUtilities;
-using ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrategies;
 
 namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
 {
@@ -42,7 +43,11 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         {
             documentationExtractionStrategy = documentationExtractionStrategy ?? new NoDocumentationExtractionStrategy();
             var fieldsAndProps = new List<IFieldMetadata>();
-            if (TryGetFieldsAndPropertiesFromConstructor(type, analysisOptions.DataTypeConstructorAttribute, out var constructorFields))
+            if (TryGetFieldsAndPropertiesFromConstructor(type,
+                                                         analysisOptions.DataTypeConstructorAttribute,
+                                                         analysisOptions.DocumentationProvider,
+                                                         documentationExtractionStrategy,
+                                                         out var constructorFields))
             {
                 // There is a constructor tell tells all the
                 // important fields and properties of the given type.
@@ -54,13 +59,21 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 var baseTypes = GetBaseType(type, analysisOptions, out var baseTypeMembersNames);
 
                 // Convert the base types to members i.e. type and name.
-                var baseTypesAsMembers = baseTypes.Select(baseType => new FieldMetadata
-                 (
-                    type: baseType,
-                    name: baseType.Name.ToUpperCamelCase(),
-                    attributes: CustomAttributeExtensions.GetCustomAttributes(baseType, inherit: true),
-                    declaringType: type
-                 )).Cast<IFieldMetadata>().ToList();
+                var baseTypesAsMembers = baseTypes.Select(baseType =>
+                {
+                    var fieldMetadata = new FieldMetadata
+                    (
+                       type: baseType,
+                       name: baseType.Name.ToUpperCamelCase(),
+                       attributes: CustomAttributeExtensions.GetCustomAttributes(baseType, inherit: true),
+                       declaringType: type
+                    );
+
+                    if (TryGetBaseTypeFieldDocumentation(type, baseType, analysisOptions.DocumentationProvider, documentationExtractionStrategy, out var documentation))
+                        fieldMetadata.Documentation = documentation;
+
+                    return fieldMetadata;
+                 }).Cast<IFieldMetadata>().ToList();
 
                 // Ignore all names of members that are contained in the base type.
                 var namesToIgnore = baseTypeMembersNames.SelectMany(GetPotentialDuplicateMemberNames).ToHashSet();
@@ -69,7 +82,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 namesToIgnore.AddRange(baseTypesAsMembers.SelectMany(baseTypeMember => GetPotentialDuplicateMemberNames(baseTypeMember.Name)));
 
                 // Get all the members of this type.
-                var allMembers = flattenedMembersStrategy.ExtractFieldsAndProperties(type, analysisOptions);
+                var allMembers = flattenedMembersStrategy.ExtractFieldsAndProperties(type, analysisOptions, documentationExtractionStrategy);
 
                 // Initialize the fields and properties of
                 // this type with the base type as a field.
@@ -128,6 +141,37 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
 
             baseTypeMembersNames = membersNames;
             return result;
+        }
+
+        /// <summary>
+        /// Try getting the documentation of the given <paramref name="baseType"/>
+        /// as a field.
+        /// </summary>
+        /// <param name="subClassType">The type that declare the given <paramref name="prop"/>.</param>
+        /// <param name="baseType">The property whose documentation is requested.</param>
+        /// <param name="documentationProvider">A provider for user defined documentation.</param>
+        /// <param name="documentationExtractionStrategy">An extractor for csharp entities documentation.</param>
+        /// <param name="documentation">The documentation if found.</param>
+        /// <returns>
+        /// <see langword="true"/> if the documentation of the given <paramref name="baseType"/>
+        /// as a field was found otherwise <see langword="false"/>.
+        /// </returns>
+        private bool TryGetBaseTypeFieldDocumentation(Type subClassType,
+                                                      Type baseType,
+                                                      IDocumentationProvider documentationProvider,
+                                                      IDocumentationExtractionStrategy documentationExtractionStrategy,
+                                                      out string documentation)
+        {
+            if (!documentationProvider.TryGetFieldDocumentation(subClassType, baseType.Name, out documentation))
+            {
+                if (!documentationExtractionStrategy.TryGetBaseTypeFieldDocumentation(subClassType, baseType, out documentation))
+                {
+                    documentation = string.Empty;
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

@@ -85,7 +85,8 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
                                          imports,
                                          fields,
                                          nestedMessages,
-                                         nestedEnums);
+                                         nestedEnums,
+                                         intermediateType.Documentation);
         }
 
         /// <summary>
@@ -159,7 +160,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
 
                 neededImports.Add(protoTypesMetadatas[fieldMetadata.Type].FilePath!);
             }
-            return new FieldDefinition(fieldName, typeName, fieldNumber, fieldRule);
+            return new FieldDefinition(fieldName, typeName, fieldNumber, fieldMetadata.Documentation, fieldRule);
         }
 
         /// <summary>

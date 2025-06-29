@@ -50,7 +50,6 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
         /// <see langword="true"/> if the documentation of the given <paramref name="type"/>
         /// was found otherwise <see langword="false"/>.
         /// </returns>
-        /// <returns></returns>
         public static bool TryGetTypeDocumentation(Type type, IDocumentationProvider documentationProvider , IDocumentationExtractionStrategy documentationExtractionStrategy, out string documentation)
         {
             if(!documentationProvider.TryGetTypeDocumentation(type, out documentation))

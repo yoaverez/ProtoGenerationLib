@@ -54,6 +54,21 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
             NestedEnums = nestedEnums.ToList();
         }
 
+        /// <inheritdoc cref="MessageDefinition(string, string, IEnumerable{string}, IEnumerable{IFieldDefinition}, IEnumerable{IMessageDefinition}, IEnumerable{IEnumDefinition})"/>
+        /// <inheritdoc cref="ProtoObject(string, string, IEnumerable{string}, string)" path="/param"/>
+        public MessageDefinition(string name,
+                                 string package,
+                                 IEnumerable<string> imports,
+                                 IEnumerable<IFieldDefinition> fields,
+                                 IEnumerable<IMessageDefinition> nestedMessages,
+                                 IEnumerable<IEnumDefinition> nestedEnums,
+                                 string documentation) : base(name, package, imports, documentation)
+        {
+            Fields = fields.ToList();
+            NestedMessages = nestedMessages.ToList();
+            NestedEnums = nestedEnums.ToList();
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="MessageDefinition"/> class
         /// which is a copy of the given <paramref name="other"/>.

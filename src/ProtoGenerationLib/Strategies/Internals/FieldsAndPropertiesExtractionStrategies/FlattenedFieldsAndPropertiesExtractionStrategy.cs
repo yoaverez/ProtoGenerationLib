@@ -1,17 +1,17 @@
-﻿using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Constants;
+using ProtoGenerationLib.Customizations.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+using ProtoGenerationLib.Strategies.Abstracts;
+using ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrategies;
+using ProtoGenerationLib.Utilities.CollectionUtilities;
+using ProtoGenerationLib.Utilities.TypeUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using static ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrategies.FieldsAndPropertiesExtractionStrategiesUtils;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.Strategies.Abstracts;
-using ProtoGenerationLib.Utilities.TypeUtilities;
-using ProtoGenerationLib.Utilities.CollectionUtilities;
-using ProtoGenerationLib.Constants;
-using ProtoGenerationLib.Customizations.Abstracts;
-using ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrategies;
 
 namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
 {
@@ -35,10 +35,17 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         /// This is used to insure that recursive types won't loop forever.
         /// </param>
         /// <inheritdoc cref="ExtractFieldsAndProperties(Type, IAnalysisOptions, IDocumentationExtractionStrategy)"/>
-        private IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions, IDocumentationExtractionStrategy documentationExtractionStrategy, Dictionary<Type, bool> alreadyCheckedIsEmpty)
+        private IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type,
+                                                                       IAnalysisOptions analysisOptions,
+                                                                       IDocumentationExtractionStrategy documentationExtractionStrategy,
+                                                                       Dictionary<Type, bool> alreadyCheckedIsEmpty)
         {
             var fieldsAndProps = new List<IFieldMetadata>();
-            if (TryGetFieldsAndPropertiesFromConstructor(type, analysisOptions.DataTypeConstructorAttribute, out var constructorFields))
+            if (TryGetFieldsAndPropertiesFromConstructor(type,
+                                                         analysisOptions.DataTypeConstructorAttribute,
+                                                         analysisOptions.DocumentationProvider,
+                                                         documentationExtractionStrategy,
+                                                         out var constructorFields))
             {
                 // There is a constructor tell tells all the
                 // important fields and properties of the given type.
@@ -48,11 +55,11 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
             {
                 var bindingFlags = CreateBindingFlags(analysisOptions);
                 var namesToIgnore = new HashSet<string>();
-                var props = ExtractProperties(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions.DocumentationProvider, namesToIgnore);
+                var props = ExtractProperties(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions.DocumentationProvider, documentationExtractionStrategy, namesToIgnore);
                 IEnumerable<IFieldMetadata> fields = new List<IFieldMetadata>();
                 if (analysisOptions.IncludeFields)
                 {
-                    fields = ExtractFields(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions.DocumentationProvider, namesToIgnore);
+                    fields = ExtractFields(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions.DocumentationProvider, documentationExtractionStrategy, namesToIgnore);
                 }
 
                 // Combine the fields and properties.
@@ -77,7 +84,12 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         /// <param name="documentationProvider">A provider for documentation.</param>
         /// <param name="namesToIgnore">Names of properties to ignore.</param>
         /// <returns>An enumerable of fields meta datas.</returns>
-        private IEnumerable<IFieldMetadata> ExtractProperties(Type type, BindingFlags bindingFlags, Type ignoreAttribute, IDocumentationProvider documentationProvider, HashSet<string> namesToIgnore)
+        private IEnumerable<IFieldMetadata> ExtractProperties(Type type,
+                                                              BindingFlags bindingFlags,
+                                                              Type ignoreAttribute,
+                                                              IDocumentationProvider documentationProvider,
+                                                              IDocumentationExtractionStrategy documentationExtractionStrategy,
+                                                              HashSet<string> namesToIgnore)
         {
             bindingFlags |= BindingFlags.DeclaredOnly;
             var properties = new List<IFieldMetadata>();
@@ -92,22 +104,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                     {
                         if (!namesToIgnore.Contains(prop.Name))
                         {
-                            string documentation = null;
-                            if (!documentationProvider.TryGetFieldDocumentation(type, prop.Name, out documentation))
-                            {
-                                if (!documentationProvider.TryGetFieldDocumentation(implementedInterface, prop.Name, out documentation))
-                                {
-                                    documentation = "";
-                                }
-                            }
-                            properties.Add(new FieldMetadata
-                            (
-                                type: prop.PropertyType,
-                                name: prop.Name,
-                                attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
-                                declaringType: type,
-                                documentation: documentation
-                            ));
+                            properties.Add(CreateFieldMetaDataFromPropertyInfo(type, prop, documentationProvider, documentationExtractionStrategy));
                             namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(prop.Name));
                         }
                     }
@@ -126,19 +123,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 {
                     if (!namesToIgnore.Contains(prop.Name))
                     {
-                        string documentation = null;
-                        if (!documentationProvider.TryGetFieldDocumentation(type, prop.Name, out documentation))
-                        {
-                            documentation = "";
-                        }
-                        properties.Add(new FieldMetadata
-                        (
-                            type: prop.PropertyType,
-                            name: prop.Name,
-                            attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
-                            declaringType: type,
-                            documentation: documentation
-                        ));
+                        properties.Add(CreateFieldMetaDataFromPropertyInfo(type, prop, documentationProvider, documentationExtractionStrategy));
                         namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(prop.Name));
                     }
                 }
@@ -151,7 +136,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
 
             if (type.TryGetBase(out var baseType))
             {
-                var baseProps = ExtractProperties(baseType, bindingFlags, ignoreAttribute, documentationProvider, namesToIgnore);
+                var baseProps = ExtractProperties(baseType, bindingFlags, ignoreAttribute, documentationProvider, documentationExtractionStrategy, namesToIgnore);
                 properties.AddRange(baseProps.Select(baseProp => new FieldMetadata(baseProp) { DeclaringType = type }).Cast<IFieldMetadata>().ToList());
             }
             return properties;
@@ -167,7 +152,12 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         /// <param name="documentationProvider">A provider for documentation.</param>
         /// <param name="namesToIgnore">Names of fields to ignore.</param>
         /// <returns>An enumerable fields meta datas.</returns>
-        private IEnumerable<IFieldMetadata> ExtractFields(Type type, BindingFlags bindingFlags, Type ignoreAttribute, IDocumentationProvider documentationProvider, HashSet<string> namesToIgnore)
+        private IEnumerable<IFieldMetadata> ExtractFields(Type type,
+                                                          BindingFlags bindingFlags,
+                                                          Type ignoreAttribute,
+                                                          IDocumentationProvider documentationProvider,
+                                                          IDocumentationExtractionStrategy documentationExtractionStrategy,
+                                                          HashSet<string> namesToIgnore)
         {
             bindingFlags |= BindingFlags.DeclaredOnly;
             var fields = new List<IFieldMetadata>();
@@ -179,19 +169,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 {
                     if (!namesToIgnore.Contains(field.Name))
                     {
-                        string documentation = null;
-                        if (!documentationProvider.TryGetFieldDocumentation(type, field.Name, out documentation))
-                        {
-                            documentation = "";
-                        }
-                        fields.Add(new FieldMetadata
-                            (
-                                type: field.FieldType,
-                                name: field.Name,
-                                attributes: CustomAttributeExtensions.GetCustomAttributes(field, true).ToList(),
-                                declaringType: type,
-                                documentation: documentation
-                            ));
+                        fields.Add(CreateFieldMetaDataFromFieldInfo(type, field, documentationProvider, documentationExtractionStrategy));
                         namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(field.Name));
                     }
                 }
@@ -199,7 +177,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
 
             if (type.TryGetBase(out var baseType))
             {
-                var baseFields = ExtractFields(baseType, bindingFlags, ignoreAttribute, documentationProvider, namesToIgnore);
+                var baseFields = ExtractFields(baseType, bindingFlags, ignoreAttribute, documentationProvider, documentationExtractionStrategy, namesToIgnore);
                 fields.AddRange(baseFields.Select(baseField => new FieldMetadata(baseField) { DeclaringType = type }).Cast<IFieldMetadata>().ToList());
             }
 
@@ -265,36 +243,122 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 && !ExtractFieldsAndProperties(type, analysisOptions, documentationExtractionStrategy, alreadyCheckedIsEmpty).Any();
         }
 
-        private IFieldMetadata CreateFieldMetaDataFromPropertyInfo(Type type, PropertyInfo prop, IDocumentationProvider documentationProvider)
+        /// <summary>
+        /// Create a <see cref="FieldMetadata"/> from the given <paramref name="prop"/>.
+        /// </summary>
+        /// <param name="type">The type that declare the given <paramref name="prop"/>.</param>
+        /// <param name="prop">The property to convert to <see cref="FieldMetadata"/>.</param>
+        /// <param name="documentationProvider">A provider for user defined documentation.</param>
+        /// <param name="documentationExtractionStrategy">An extractor for csharp entities documentation.</param>
+        /// <returns>
+        /// A new <see cref="IFieldMetadata"/> that represent the given <paramref name="prop"/>.
+        /// </returns>
+        private IFieldMetadata CreateFieldMetaDataFromPropertyInfo(Type type,
+                                                                   PropertyInfo prop,
+                                                                   IDocumentationProvider documentationProvider,
+                                                                   IDocumentationExtractionStrategy documentationExtractionStrategy)
         {
-            string documentation = null;
-            if (!documentationProvider.TryGetFieldDocumentation(type, prop.Name, out documentation))
-            {
-                if (!documentationProvider.TryGetFieldDocumentation(prop.ReflectedType, prop.Name, out documentation))
-                {
-                    return new FieldMetadata
-                    (
-                        type: prop.PropertyType,
-                        name: prop.Name,
-                        attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
-                        declaringType: type
-                    );
-                }
-            }
-
-            return new FieldMetadata
+            var fieldMetadata = new FieldMetadata
             (
                 type: prop.PropertyType,
                 name: prop.Name,
                 attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
-                declaringType: type,
-                documentation: documentation
+                declaringType: type
             );
+
+            if(TryGetPropertyDocumentation(type, prop, documentationProvider, documentationExtractionStrategy, out var documentation))
+                fieldMetadata.Documentation = documentation;
+
+            return fieldMetadata;
         }
 
-        private IFieldMetadata CreateFieldMetaDataFromMemberInfo(MemberInfo memberInfo)
+        /// <summary>
+        /// Create a <see cref="FieldMetadata"/> from the given <paramref name="fieldInfo"/>.
+        /// </summary>
+        /// <param name="type">The type that declare the given <paramref name="fieldInfo"/>.</param>
+        /// <param name="fieldInfo">The field to convert to <see cref="FieldMetadata"/>.</param>
+        /// <param name="documentationProvider">A provider for user defined documentation.</param>
+        /// <param name="documentationExtractionStrategy">An extractor for csharp entities documentation.</param>
+        /// <returns>
+        /// A new <see cref="IFieldMetadata"/> that represent the given <paramref name="fieldInfo"/>.
+        /// </returns>
+        private IFieldMetadata CreateFieldMetaDataFromFieldInfo(Type type,
+                                                                FieldInfo fieldInfo,
+                                                                IDocumentationProvider documentationProvider,
+                                                                IDocumentationExtractionStrategy documentationExtractionStrategy)
         {
-            throw new NotImplementedException();
+            var fieldMetadata = new FieldMetadata
+            (
+                type: fieldInfo.FieldType,
+                name: fieldInfo.Name,
+                attributes: CustomAttributeExtensions.GetCustomAttributes(fieldInfo, true).ToList(),
+                declaringType: type
+            );
+
+            if (TryGetFieldDocumentation(type, fieldInfo, documentationProvider, documentationExtractionStrategy, out var documentation))
+                fieldMetadata.Documentation = documentation;
+
+            return fieldMetadata;
+        }
+
+        /// <summary>
+        /// Try getting the documentation of the given <paramref name="prop"/>.
+        /// </summary>
+        /// <param name="type">The type that declare the given <paramref name="prop"/>.</param>
+        /// <param name="prop">The property whose documentation is requested.</param>
+        /// <param name="documentationProvider">A provider for user defined documentation.</param>
+        /// <param name="documentationExtractionStrategy">An extractor for csharp entities documentation.</param>
+        /// <param name="documentation">The documentation if found.</param>
+        /// <returns>
+        /// <see langword="true"/> if the documentation of the given <paramref name="prop"/>
+        /// was found otherwise <see langword="false"/>.
+        /// </returns>
+        private bool TryGetPropertyDocumentation(Type type,
+                                                 PropertyInfo prop,
+                                                 IDocumentationProvider documentationProvider,
+                                                 IDocumentationExtractionStrategy documentationExtractionStrategy,
+                                                 out string documentation)
+        {
+            if (!documentationProvider.TryGetFieldDocumentation(type, prop.Name, out documentation))
+            {
+                if (!documentationExtractionStrategy.TryGetPropertyDocumentation(prop, out documentation))
+                {
+                    documentation = string.Empty;
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Try getting the documentation of the given <paramref name="fieldInfo"/>.
+        /// </summary>
+        /// <param name="type">The type that declare the given <paramref name="fieldInfo"/>.</param>
+        /// <param name="fieldInfo">The field whose documentation is requested.</param>
+        /// <param name="documentationProvider">A provider for user defined documentation.</param>
+        /// <param name="documentationExtractionStrategy">An extractor for csharp entities documentation.</param>
+        /// <param name="documentation">The documentation if found.</param>
+        /// <returns>
+        /// <see langword="true"/> if the documentation of the given <paramref name="fieldInfo"/>
+        /// was found otherwise <see langword="false"/>.
+        /// </returns>
+        private bool TryGetFieldDocumentation(Type type,
+                                              FieldInfo fieldInfo,
+                                              IDocumentationProvider documentationProvider,
+                                              IDocumentationExtractionStrategy documentationExtractionStrategy,
+                                              out string documentation)
+        {
+            if (!documentationProvider.TryGetFieldDocumentation(type, fieldInfo.Name, out documentation))
+            {
+                if (!documentationExtractionStrategy.TryGetFieldDocumentation(fieldInfo, out documentation))
+                {
+                    documentation = string.Empty;
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

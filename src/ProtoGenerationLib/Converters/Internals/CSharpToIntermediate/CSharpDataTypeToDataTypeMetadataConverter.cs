@@ -1,10 +1,10 @@
-﻿using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Converters.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using System;
 using static ProtoGenerationLib.Converters.Internals.CSharpToIntermediate.CSharpToIntermediateUtils;
-using ProtoGenerationLib.Configurations.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Converters.Abstracts;
 
 namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
 {
@@ -48,9 +48,13 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
                 var metadata = new DataTypeMetadata();
                 metadata.Type = type;
 
+                var documentationExtractionStrategy = componentsProvider.GetDocumentationExtractionStrategy(generationOptions.AnalysisOptions.DocumentationExtractionStrategy);
+                if(TryGetTypeDocumentation(type, generationOptions.AnalysisOptions.DocumentationProvider, documentationExtractionStrategy, out var documentation))
+                    metadata.Documentation = documentation;
+
                 // Extract the fields.
                 var fieldsAndPropertiesExtractor = componentsProvider.GetFieldsAndPropertiesExtractionStrategy(generationOptions.AnalysisOptions.FieldsAndPropertiesExtractionStrategy);
-                var fields = fieldsAndPropertiesExtractor.ExtractFieldsAndProperties(type, generationOptions.AnalysisOptions);
+                var fields = fieldsAndPropertiesExtractor.ExtractFieldsAndProperties(type, generationOptions.AnalysisOptions, documentationExtractionStrategy);
                 metadata.Fields.AddRange(fields);
 
                 // Extract the nested types.
