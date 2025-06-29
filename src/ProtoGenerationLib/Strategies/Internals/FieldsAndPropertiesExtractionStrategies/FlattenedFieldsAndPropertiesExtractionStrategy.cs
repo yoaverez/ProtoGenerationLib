@@ -10,6 +10,8 @@ using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Utilities.TypeUtilities;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using ProtoGenerationLib.Constants;
+using ProtoGenerationLib.Customizations.Abstracts;
+using ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrategies;
 
 namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
 {
@@ -20,17 +22,20 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
     public class FlattenedFieldsAndPropertiesExtractionStrategy : IFieldsAndPropertiesExtractionStrategy
     {
         /// <inheritdoc/>
-        public IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions)
+        public IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type,
+                                                                      IAnalysisOptions analysisOptions,
+                                                                      IDocumentationExtractionStrategy? documentationExtractionStrategy = null)
         {
-            return ExtractFieldsAndProperties(type, analysisOptions, new Dictionary<Type, bool> { [type] = false });
+            documentationExtractionStrategy = documentationExtractionStrategy ?? new NoDocumentationExtractionStrategy();
+            return ExtractFieldsAndProperties(type, analysisOptions, documentationExtractionStrategy, new Dictionary<Type, bool> { [type] = false });
         }
 
         /// <param name="alreadyCheckedIsEmpty">
         /// Types that was already checked if they are empty.
         /// This is used to insure that recursive types won't loop forever.
         /// </param>
-        /// <inheritdoc cref="ExtractFieldsAndProperties(Type, IAnalysisOptions)"/>
-        private IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions, Dictionary<Type, bool> alreadyCheckedIsEmpty)
+        /// <inheritdoc cref="ExtractFieldsAndProperties(Type, IAnalysisOptions, IDocumentationExtractionStrategy)"/>
+        private IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions, IDocumentationExtractionStrategy documentationExtractionStrategy, Dictionary<Type, bool> alreadyCheckedIsEmpty)
         {
             var fieldsAndProps = new List<IFieldMetadata>();
             if (TryGetFieldsAndPropertiesFromConstructor(type, analysisOptions.DataTypeConstructorAttribute, out var constructorFields))
@@ -43,11 +48,11 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
             {
                 var bindingFlags = CreateBindingFlags(analysisOptions);
                 var namesToIgnore = new HashSet<string>();
-                var props = ExtractProperties(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, namesToIgnore);
+                var props = ExtractProperties(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions, namesToIgnore);
                 IEnumerable<IFieldMetadata> fields = new List<IFieldMetadata>();
                 if (analysisOptions.IncludeFields)
                 {
-                    fields = ExtractFields(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, namesToIgnore);
+                    fields = ExtractFields(type, bindingFlags, analysisOptions.IgnoreFieldOrPropertyAttribute, analysisOptions, namesToIgnore);
                 }
 
                 // Combine the fields and properties.
@@ -57,7 +62,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
             if (analysisOptions.RemoveEmptyMembers)
                 // Remove all empty members that was not already analyzed
                 // in order to prevent endless recursion.
-                RemoveAllEmptyMembers(fieldsAndProps, analysisOptions, alreadyCheckedIsEmpty);
+                RemoveAllEmptyMembers(fieldsAndProps, analysisOptions, documentationExtractionStrategy, alreadyCheckedIsEmpty);
 
             return fieldsAndProps;
         }
@@ -69,9 +74,10 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         /// <param name="type">The type whose properties to extract.</param>
         /// <param name="bindingFlags">Binding flags to extract the wanted properties.</param>
         /// <param name="ignoreAttribute">The type of the attribute that says to ignore properties.</param>
+        /// <param name="documentationProvider">A provider for documentation.</param>
         /// <param name="namesToIgnore">Names of properties to ignore.</param>
         /// <returns>An enumerable of fields meta datas.</returns>
-        private IEnumerable<IFieldMetadata> ExtractProperties(Type type, BindingFlags bindingFlags, Type ignoreAttribute, HashSet<string> namesToIgnore)
+        private IEnumerable<IFieldMetadata> ExtractProperties(Type type, BindingFlags bindingFlags, Type ignoreAttribute, IDocumentationProvider documentationProvider, HashSet<string> namesToIgnore)
         {
             bindingFlags |= BindingFlags.DeclaredOnly;
             var properties = new List<IFieldMetadata>();
@@ -86,12 +92,21 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                     {
                         if (!namesToIgnore.Contains(prop.Name))
                         {
+                            string documentation = null;
+                            if (!documentationProvider.TryGetFieldDocumentation(type, prop.Name, out documentation))
+                            {
+                                if (!documentationProvider.TryGetFieldDocumentation(implementedInterface, prop.Name, out documentation))
+                                {
+                                    documentation = "";
+                                }
+                            }
                             properties.Add(new FieldMetadata
                             (
                                 type: prop.PropertyType,
                                 name: prop.Name,
                                 attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
-                                declaringType: type
+                                declaringType: type,
+                                documentation: documentation
                             ));
                             namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(prop.Name));
                         }
@@ -111,12 +126,18 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 {
                     if (!namesToIgnore.Contains(prop.Name))
                     {
+                        string documentation = null;
+                        if (!documentationProvider.TryGetFieldDocumentation(type, prop.Name, out documentation))
+                        {
+                            documentation = "";
+                        }
                         properties.Add(new FieldMetadata
                         (
                             type: prop.PropertyType,
                             name: prop.Name,
                             attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
-                            declaringType: type
+                            declaringType: type,
+                            documentation: documentation
                         ));
                         namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(prop.Name));
                     }
@@ -130,7 +151,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
 
             if (type.TryGetBase(out var baseType))
             {
-                var baseProps = ExtractProperties(baseType, bindingFlags, ignoreAttribute, namesToIgnore);
+                var baseProps = ExtractProperties(baseType, bindingFlags, ignoreAttribute, documentationProvider, namesToIgnore);
                 properties.AddRange(baseProps.Select(baseProp => new FieldMetadata(baseProp) { DeclaringType = type }).Cast<IFieldMetadata>().ToList());
             }
             return properties;
@@ -143,9 +164,10 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         /// <param name="type">The type whose fields to extract.</param>
         /// <param name="bindingFlags">Binding flags to extract the wanted fields.</param>
         /// <param name="ignoreAttribute">The type of the attribute that says to ignore fields.</param>
+        /// <param name="documentationProvider">A provider for documentation.</param>
         /// <param name="namesToIgnore">Names of fields to ignore.</param>
         /// <returns>An enumerable fields meta datas.</returns>
-        private IEnumerable<IFieldMetadata> ExtractFields(Type type, BindingFlags bindingFlags, Type ignoreAttribute, HashSet<string> namesToIgnore)
+        private IEnumerable<IFieldMetadata> ExtractFields(Type type, BindingFlags bindingFlags, Type ignoreAttribute, IDocumentationProvider documentationProvider, HashSet<string> namesToIgnore)
         {
             bindingFlags |= BindingFlags.DeclaredOnly;
             var fields = new List<IFieldMetadata>();
@@ -157,12 +179,18 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 {
                     if (!namesToIgnore.Contains(field.Name))
                     {
+                        string documentation = null;
+                        if (!documentationProvider.TryGetFieldDocumentation(type, field.Name, out documentation))
+                        {
+                            documentation = "";
+                        }
                         fields.Add(new FieldMetadata
                             (
                                 type: field.FieldType,
                                 name: field.Name,
                                 attributes: CustomAttributeExtensions.GetCustomAttributes(field, true).ToList(),
-                                declaringType: type
+                                declaringType: type,
+                                documentation: documentation
                             ));
                         namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(field.Name));
                     }
@@ -171,7 +199,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
 
             if (type.TryGetBase(out var baseType))
             {
-                var baseFields = ExtractFields(baseType, bindingFlags, ignoreAttribute, namesToIgnore);
+                var baseFields = ExtractFields(baseType, bindingFlags, ignoreAttribute, documentationProvider, namesToIgnore);
                 fields.AddRange(baseFields.Select(baseField => new FieldMetadata(baseField) { DeclaringType = type }).Cast<IFieldMetadata>().ToList());
             }
 
@@ -185,7 +213,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         /// <param name="fieldsAndProps">The fields and properties to remove items from.</param>
         /// <param name="analysisOptions">The analysis options.</param>
         /// <param name="alreadyCheckedIsEmpty">Types that was already checked if they are empty.</param>
-        private void RemoveAllEmptyMembers(List<IFieldMetadata> fieldsAndProps, IAnalysisOptions analysisOptions, Dictionary<Type, bool> alreadyCheckedIsEmpty)
+        private void RemoveAllEmptyMembers(List<IFieldMetadata> fieldsAndProps, IAnalysisOptions analysisOptions, IDocumentationExtractionStrategy documentationExtractionStrategy, Dictionary<Type, bool> alreadyCheckedIsEmpty)
         {
             var typesToCheck = fieldsAndProps.Select(memberMetadata => memberMetadata.Type)
                                              .Where(memberType => !alreadyCheckedIsEmpty.ContainsKey(memberType))
@@ -203,7 +231,7 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
                 if (!alreadyCheckedIsEmpty.TryGetValue(typeToCheck, out isEmpty))
                 {
                     alreadyCheckedIsEmpty.Add(typeToCheck, false);
-                    if (IsTypeEmpty(typeToCheck, analysisOptions, alreadyCheckedIsEmpty))
+                    if (IsTypeEmpty(typeToCheck, analysisOptions, documentationExtractionStrategy, alreadyCheckedIsEmpty))
                     {
                         alreadyCheckedIsEmpty[typeToCheck] = true;
                         isEmpty = true;
@@ -228,13 +256,45 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         /// <see langword="true"/> if the given <paramref name="type"/> is empty,
         /// otherwise <see langword="false"/>.
         /// </returns>
-        private bool IsTypeEmpty(Type type, IAnalysisOptions analysisOptions, Dictionary<Type, bool> alreadyCheckedIsEmpty)
+        private bool IsTypeEmpty(Type type, IAnalysisOptions analysisOptions, IDocumentationExtractionStrategy documentationExtractionStrategy, Dictionary<Type, bool> alreadyCheckedIsEmpty)
         {
             // Not a well known type and also does not have fields or properties.
             return !WellKnownTypesConstants.WellKnownTypes.ContainsKey(type)
                 && !type.IsEnum
                 && !type.IsEnumerableType()
-                && !ExtractFieldsAndProperties(type, analysisOptions, alreadyCheckedIsEmpty).Any();
+                && !ExtractFieldsAndProperties(type, analysisOptions, documentationExtractionStrategy, alreadyCheckedIsEmpty).Any();
+        }
+
+        private IFieldMetadata CreateFieldMetaDataFromPropertyInfo(Type type, PropertyInfo prop, IDocumentationProvider documentationProvider)
+        {
+            string documentation = null;
+            if (!documentationProvider.TryGetFieldDocumentation(type, prop.Name, out documentation))
+            {
+                if (!documentationProvider.TryGetFieldDocumentation(prop.ReflectedType, prop.Name, out documentation))
+                {
+                    return new FieldMetadata
+                    (
+                        type: prop.PropertyType,
+                        name: prop.Name,
+                        attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
+                        declaringType: type
+                    );
+                }
+            }
+
+            return new FieldMetadata
+            (
+                type: prop.PropertyType,
+                name: prop.Name,
+                attributes: CustomAttributeExtensions.GetCustomAttributes(prop, true).ToList(),
+                declaringType: type,
+                documentation: documentation
+            );
+        }
+
+        private IFieldMetadata CreateFieldMetaDataFromMemberInfo(MemberInfo memberInfo)
+        {
+            throw new NotImplementedException();
         }
     }
 }

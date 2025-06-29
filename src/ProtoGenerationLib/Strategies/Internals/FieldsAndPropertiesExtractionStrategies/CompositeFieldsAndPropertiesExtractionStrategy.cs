@@ -10,6 +10,7 @@ using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Utilities.TypeUtilities;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
+using ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrategies;
 
 namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
 {
@@ -35,8 +36,11 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
         }
 
         /// <inheritdoc/>
-        public IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type, IAnalysisOptions analysisOptions)
+        public IEnumerable<IFieldMetadata> ExtractFieldsAndProperties(Type type,
+                                                                      IAnalysisOptions analysisOptions,
+                                                                      IDocumentationExtractionStrategy? documentationExtractionStrategy = null)
         {
+            documentationExtractionStrategy = documentationExtractionStrategy ?? new NoDocumentationExtractionStrategy();
             var fieldsAndProps = new List<IFieldMetadata>();
             if (TryGetFieldsAndPropertiesFromConstructor(type, analysisOptions.DataTypeConstructorAttribute, out var constructorFields))
             {

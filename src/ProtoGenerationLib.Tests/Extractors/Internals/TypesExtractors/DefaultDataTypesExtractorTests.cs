@@ -31,8 +31,8 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             };
 
             mockIFieldsAndPropertiesExtractionStrategy = new Mock<IFieldsAndPropertiesExtractionStrategy>();
-            mockIFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(It.IsAny<Type>(), It.IsAny<IAnalysisOptions>()))
-                                                      .Returns((Type type, IAnalysisOptions analysisOptions) => new List<IFieldMetadata>
+            mockIFieldsAndPropertiesExtractionStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(It.IsAny<Type>(), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
+                                                      .Returns((Type type, IAnalysisOptions analysisOptions, IDocumentationExtractionStrategy strategy) => new List<IFieldMetadata>
                                                       {
                                                           CreateFieldMetadata(type, "a", type),
                                                       });

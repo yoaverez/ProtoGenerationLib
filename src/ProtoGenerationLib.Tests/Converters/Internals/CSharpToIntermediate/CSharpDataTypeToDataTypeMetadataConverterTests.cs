@@ -103,13 +103,13 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                 enumTypeMetadata, enumTypeMetadata,
             });
 
-            mockStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1), It.IsAny<IAnalysisOptions>()))
+            mockStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
                         .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "a", typeof(int)) });
 
-            mockStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType2), It.IsAny<IAnalysisOptions>()))
+            mockStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType2), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
                         .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "b", typeof(int)) });
 
-            mockStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType3), It.IsAny<IAnalysisOptions>()))
+            mockStrategy.Setup(strategy => strategy.ExtractFieldsAndProperties(typeof(DataType1.DataType3), It.IsAny<IAnalysisOptions>(), It.IsAny<IDocumentationExtractionStrategy>()))
                         .Returns(new List<IFieldMetadata> { CreateFieldMetadata(typeof(int), "c", typeof(int)) });
 
             // Act
