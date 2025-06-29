@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package add_custom_documentation_sample_pack;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+/**
+ * The is a contract for the depiction of the proto generator
+ * documentation customization.
+ */
+service IContractType {
+  // Method1 documentation.
+  rpc Method1(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+  // A second method that shows how the documentation customization works.
+  rpc Method2(google.protobuf.BoolValue) returns (google.protobuf.StringValue);
+}

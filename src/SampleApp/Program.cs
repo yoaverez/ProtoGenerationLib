@@ -26,6 +26,7 @@ namespace SampleApp
             new AddFieldSuffixesSample().RunSample();
             new FlattenExtractionStrategySample().RunSample();
             new IncludeFieldsAndPrivatesSample().RunSample();
+            new AddCustomDocumentationSample().RunSample();
 
             // Multi files samples.
             new FilePerTypeNameSample().RunSample();
