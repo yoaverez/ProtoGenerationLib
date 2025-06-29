@@ -5,6 +5,7 @@ using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
 using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
+using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Tests.Converters.Internals.DummyTypes;
 using System.Reflection;
 using static ProtoGenerationLib.Tests.Converters.Internals.ConvertersTestsUtils;
@@ -20,6 +21,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
         private IList<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> customConverters;
 
+        private Mock<IDocumentationExtractionStrategy> mockIDocumentationExtractionStrategy;
+
         [TestInitialize]
         public void TestInitialize()
         {
@@ -31,12 +34,17 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                     IsProtoServiceDelegate = (type) => false,
                     ProtoRpcAttribute = typeof(ProtoRpcAttribute),
                     TryGetRpcTypeDelegate = (Type declaringType, MethodInfo method, out ProtoRpcType rpcType) => { rpcType = ProtoRpcType.Unary; return false; },
+                    DocumentationExtractionStrategy = "1",
                 },
             };
 
             customConverters = generationOptions.ContractTypeCustomConverters;
 
+            mockIDocumentationExtractionStrategy = new Mock<IDocumentationExtractionStrategy>();
+
             var mockIProvider = new Mock<IProvider>();
+            mockIProvider.Setup(provider => provider.GetDocumentationExtractionStrategy("1"))
+                         .Returns(mockIDocumentationExtractionStrategy.Object);
 
             converter = new CSharpContractTypeToContractTypeMetadataConverter(mockIProvider.Object);
         }
@@ -196,6 +204,124 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
             // Assert
             Assert.AreSame(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_TypeHasDocumentationFromProvider_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(IContractType1);
+
+            var providerTypeDocumentation = "type docs";
+            var providerMethodDocumentation = "method docs";
+            generationOptions.AddDocumentation<IContractType1>(providerTypeDocumentation);
+            generationOptions.AddDocumentation<IContractType1>(nameof(IContractType1.Method1), 1, providerMethodDocumentation);
+
+            var extractorTypeDocumentation = "";
+            var extractorMethodDocumentation = "";
+            mockIDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorTypeDocumentation))
+                                                .Returns(false);
+
+            var methodInfo = type.GetMethod(nameof(IContractType1.Method1))!;
+            mockIDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetMethodDocumentation(methodInfo, out extractorMethodDocumentation))
+                                                .Returns(false);
+
+            var expectedMetadata = CreateContractTypeMetadata(type, new List<IMethodMetadata>
+            {
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType1.Method1)), typeof(void), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                }, providerMethodDocumentation),
+
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType1.Method2)), typeof(double), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                    CreateMethodParameterMetadata(typeof(bool), "b"),
+                }),
+            }, providerTypeDocumentation);
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_TypeHasDocumentationFromProviderAndExtractor_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(IContractType1);
+
+            var providerTypeDocumentation = "provider type docs";
+            var providerMethodDocumentation = "provider method docs";
+            generationOptions.AddDocumentation<IContractType1>(providerTypeDocumentation);
+            generationOptions.AddDocumentation<IContractType1>(nameof(IContractType1.Method1), 1, providerMethodDocumentation);
+
+            var extractorTypeDocumentation = "extractor type docs";
+            var extractorMethodDocumentation = "extractor method docs";
+            mockIDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorTypeDocumentation))
+                                                .Returns(true);
+
+            var methodInfo = type.GetMethod(nameof(IContractType1.Method1))!;
+            mockIDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetMethodDocumentation(methodInfo, out extractorMethodDocumentation))
+                                                .Returns(true);
+
+            var expectedMetadata = CreateContractTypeMetadata(type, new List<IMethodMetadata>
+            {
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType1.Method1)), typeof(void), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                }, providerMethodDocumentation),
+
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType1.Method2)), typeof(double), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                    CreateMethodParameterMetadata(typeof(bool), "b"),
+                }),
+            }, providerTypeDocumentation);
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
+        }
+
+        [TestMethod]
+        public void ConvertTypeToIntermediateRepresentation_TypeHasDocumentationFromExtractor_MetadataIsCorrect()
+        {
+            // Arrange
+            var type = typeof(IContractType1);
+
+            var extractorTypeDocumentation = "extractor type docs";
+            var extractorMethodDocumentation = "extractor method docs";
+            mockIDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorTypeDocumentation))
+                                                .Returns(true);
+
+            var methodInfo = type.GetMethod(nameof(IContractType1.Method1))!;
+            mockIDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetMethodDocumentation(methodInfo, out extractorMethodDocumentation))
+                                                .Returns(true);
+
+            var expectedMetadata = CreateContractTypeMetadata(type, new List<IMethodMetadata>
+            {
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType1.Method1)), typeof(void), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                }, extractorMethodDocumentation),
+
+                CreateMethodMetadata(type.GetMethod(nameof(IContractType1.Method2)), typeof(double), new List<IMethodParameterMetadata>
+                {
+                    CreateMethodParameterMetadata(typeof(int), "a"),
+                    CreateMethodParameterMetadata(typeof(bool), "b"),
+                }),
+            }, extractorTypeDocumentation);
+
+            // Act
+            var actualMetadata = converter.ConvertTypeToIntermediateRepresentation(type, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedMetadata, actualMetadata);
         }
     }
 }

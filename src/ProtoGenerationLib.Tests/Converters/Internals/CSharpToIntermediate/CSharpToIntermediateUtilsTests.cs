@@ -1,12 +1,15 @@
 ﻿using Moq;
 using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
 using ProtoGenerationLib.Customizations.Abstracts;
+using ProtoGenerationLib.Strategies.Abstracts;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 {
     [TestClass]
     public class CSharpToIntermediateUtilsTests
     {
+        #region TryConvertWithCustomConverters Tests
+
         [TestMethod]
         public void TryConvertWithCustomConverters_ZeroConverters_ReturnFalse()
         {
@@ -79,5 +82,114 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
             Assert.IsTrue(actualResult);
             Assert.AreEqual(expectedConvertedObject, actualConvertedObject);
         }
+
+        #endregion TryConvertWithCustomConverters Tests
+
+        #region TryGetTypeDocumentation Tests
+
+        [TestMethod]
+        public void TryGetTypeDocumentation_TypeDoesNotHaveDocumentation_ReturnFalse()
+        {
+            // Arrange
+            var type = typeof(int);
+            var providerDocumentation = "";
+            var mockDocumentationProvider = new Mock<IDocumentationProvider>();
+            mockDocumentationProvider.Setup(provider => provider.TryGetTypeDocumentation(type, out providerDocumentation))
+                                     .Returns(false);
+
+            var extractorDocumentation = "";
+            var mockDocumentationExtractor = new Mock<IDocumentationExtractionStrategy>();
+            mockDocumentationExtractor.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorDocumentation))
+                                      .Returns(false);
+
+            // Act
+            var result = CSharpToIntermediateUtils.TryGetTypeDocumentation(type,
+                                                                           mockDocumentationProvider.Object,
+                                                                           mockDocumentationExtractor.Object,
+                                                                           out var actualDocumentation);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void TryGetTypeDocumentation_TypeHaveDocumentationFromProvider_ReturnTrueAndCorrectDocumentation()
+        {
+            // Arrange
+            var type = typeof(int);
+            var providerDocumentation = "docs";
+            var mockDocumentationProvider = new Mock<IDocumentationProvider>();
+            mockDocumentationProvider.Setup(provider => provider.TryGetTypeDocumentation(type, out providerDocumentation))
+                                     .Returns(true);
+
+            var extractorDocumentation = "";
+            var mockDocumentationExtractor = new Mock<IDocumentationExtractionStrategy>();
+            mockDocumentationExtractor.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorDocumentation))
+                                      .Returns(false);
+
+            // Act
+            var result = CSharpToIntermediateUtils.TryGetTypeDocumentation(type,
+                                                                           mockDocumentationProvider.Object,
+                                                                           mockDocumentationExtractor.Object,
+                                                                           out var actualDocumentation);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(providerDocumentation, actualDocumentation);
+        }
+
+        [TestMethod]
+        public void TryGetTypeDocumentation_TypeHaveDocumentationFromExtractor_ReturnTrueAndCorrectDocumentation()
+        {
+            // Arrange
+            var type = typeof(int);
+            var providerDocumentation = "";
+            var mockDocumentationProvider = new Mock<IDocumentationProvider>();
+            mockDocumentationProvider.Setup(provider => provider.TryGetTypeDocumentation(type, out providerDocumentation))
+                                     .Returns(false);
+
+            var extractorDocumentation = "docs";
+            var mockDocumentationExtractor = new Mock<IDocumentationExtractionStrategy>();
+            mockDocumentationExtractor.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorDocumentation))
+                                      .Returns(true);
+
+            // Act
+            var result = CSharpToIntermediateUtils.TryGetTypeDocumentation(type,
+                                                                           mockDocumentationProvider.Object,
+                                                                           mockDocumentationExtractor.Object,
+                                                                           out var actualDocumentation);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(extractorDocumentation, actualDocumentation);
+        }
+
+        [TestMethod]
+        public void TryGetTypeDocumentation_TypeHaveDocumentationFromProviderExtractor_ReturnTrueAndProviderDocumentation()
+        {
+            // Arrange
+            var type = typeof(int);
+            var providerDocumentation = "docs1";
+            var mockDocumentationProvider = new Mock<IDocumentationProvider>();
+            mockDocumentationProvider.Setup(provider => provider.TryGetTypeDocumentation(type, out providerDocumentation))
+                                     .Returns(true);
+
+            var extractorDocumentation = "docs";
+            var mockDocumentationExtractor = new Mock<IDocumentationExtractionStrategy>();
+            mockDocumentationExtractor.Setup(extractor => extractor.TryGetTypeDocumentation(type, out extractorDocumentation))
+                                      .Returns(true);
+
+            // Act
+            var result = CSharpToIntermediateUtils.TryGetTypeDocumentation(type,
+                                                                           mockDocumentationProvider.Object,
+                                                                           mockDocumentationExtractor.Object,
+                                                                           out var actualDocumentation);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(providerDocumentation, actualDocumentation);
+        }
+
+        #endregion TryGetTypeDocumentation Tests
     }
 }

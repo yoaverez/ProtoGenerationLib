@@ -4,7 +4,6 @@ using ProtoGenerationLib.Constants;
 using ProtoGenerationLib.Converters.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Abstracts.ProtoDefinitions;
-using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
@@ -58,7 +57,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
                 imports.AddRange(rpcNeededImports);
             }
 
-            return new ServiceDefinition(typeProtoMetadata.Name!, typeProtoMetadata.Package!, imports, rpcMethods);
+            return new ServiceDefinition(typeProtoMetadata.Name!, typeProtoMetadata.Package!, imports, rpcMethods, intermediateType.Documentation);
         }
 
         /// <summary>
@@ -119,7 +118,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
 
             var rpcType = methodMetadata.MethodInfo.GetMethodRpcType(declaringType, generationOptions.AnalysisOptions);
 
-            return new RpcDefinition(rpcName, responseTypeName, requestTypeName, rpcType);
+            return new RpcDefinition(rpcName, responseTypeName, requestTypeName, rpcType, methodMetadata.Documentation);
         }
 
         /// <summary>

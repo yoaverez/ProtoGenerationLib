@@ -251,5 +251,41 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             // Noting to do.
             // The ExpectedException attribute will do the assert.
         }
+
+        [TestMethod]
+        public void ConvertIntermediateRepresentationToProtoDefinition_MetaDataContainsDocumentation_ServiceDefinitionIsCorrect()
+        {
+            // Arrange
+            var contractType = typeof(IContractType4);
+            var contractMetadata = new ContractTypeMetadata(contractType,
+                                                            contractType.GetMethods()
+                                                                        .Select(x => new MethodMetadata(x, $"{x.Name} docs"))
+                                                                        .Cast<IMethodMetadata>()
+                                                                        .ToList(),
+                                                            "type docs");
+
+            var protoTypesMetadatas = new Dictionary<Type, IProtoTypeMetadata>
+            {
+                [typeof(int)] = new ProtoTypeMetadata("a", "pac", "pac.a", "path1"),
+                [typeof(void)] = new ProtoTypeMetadata("b", "pac", "pac.b", "path1"),
+                [typeof(IContractType4)] = new ProtoTypeMetadata("contract", "pac.pac2", "pac.pac2.contract", "path3"),
+            };
+
+            var rpcs = new List<IRpcDefinition>
+            {
+                new RpcDefinition(nameof(IContractType4.Method1).ToUpperInvariant(), "b", "a", ProtoRpcType.Unary, $"{nameof(IContractType4.Method1)} docs"),
+            };
+            var imports = new HashSet<string>
+            {
+                "path1",
+            };
+            var expectedDefinition = new ServiceDefinition("contract", "pac.pac2", imports, rpcs, "type docs");
+
+            // Act
+            var actualDefinition = converter.ConvertIntermediateRepresentationToProtoDefinition(contractMetadata, protoTypesMetadatas, generationOptions);
+
+            // Assert
+            Assert.AreEqual(expectedDefinition, actualDefinition);
+        }
     }
 }

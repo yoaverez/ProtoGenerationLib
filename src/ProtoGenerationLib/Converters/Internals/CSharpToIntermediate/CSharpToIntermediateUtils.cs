@@ -1,5 +1,6 @@
 ﻿using ProtoGenerationLib.Configurations.Abstracts;
 using ProtoGenerationLib.Customizations.Abstracts;
+using ProtoGenerationLib.Strategies.Abstracts;
 using System;
 using System.Collections.Generic;
 
@@ -36,6 +37,32 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Try getting the documentation of the given <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type whose documentation is requested.</param>
+        /// <param name="documentationProvider">A provider for user defined documentation.</param>
+        /// <param name="documentationExtractionStrategy">An extractor for csharp entities documentation.</param>
+        /// <param name="documentation">The documentation if found.</param>
+        /// <returns>
+        /// <see langword="true"/> if the documentation of the given <paramref name="type"/>
+        /// was found otherwise <see langword="false"/>.
+        /// </returns>
+        /// <returns></returns>
+        public static bool TryGetTypeDocumentation(Type type, IDocumentationProvider documentationProvider , IDocumentationExtractionStrategy documentationExtractionStrategy, out string documentation)
+        {
+            if(!documentationProvider.TryGetTypeDocumentation(type, out documentation))
+            {
+                if(!documentationExtractionStrategy.TryGetTypeDocumentation(type, out documentation))
+                {
+                    documentation = string.Empty;
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

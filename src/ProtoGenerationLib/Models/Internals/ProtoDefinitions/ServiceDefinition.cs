@@ -34,6 +34,13 @@ namespace ProtoGenerationLib.Models.Internals.ProtoDefinitions
             RpcMethods = rpcMethods.ToList();
         }
 
+        /// <inheritdoc cref="ServiceDefinition(string, string, IEnumerable{string}, IEnumerable{IRpcDefinition})"/>
+        /// <inheritdoc cref="ProtoObject(string, string, IEnumerable{string}, string)" path="/param"/>
+        public ServiceDefinition(string name, string package, IEnumerable<string> imports, IEnumerable<IRpcDefinition> rpcMethods, string documentation) : base(name, package, imports, documentation)
+        {
+            RpcMethods = rpcMethods.ToList();
+        }
+
         /// <summary>
         /// Create new instance of the <see cref="ServiceDefinition"/> class
         /// which is a copy of the given <paramref name="other"/>.

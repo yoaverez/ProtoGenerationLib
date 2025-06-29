@@ -19,14 +19,18 @@ namespace ProtoGenerationLib.Tests.Converters.Internals
         }
 
         /// <inheritdoc cref="ContractTypeMetadata(Type, IEnumerable{IMethodMetadata})"/>
-        public static ContractTypeMetadata CreateContractTypeMetadata(Type type, IEnumerable<IMethodMetadata> methods)
+        public static ContractTypeMetadata CreateContractTypeMetadata(Type type, IEnumerable<IMethodMetadata> methods, string? documentation = null)
         {
+            if(documentation is not null)
+                return new ContractTypeMetadata(type, methods, documentation);
             return new ContractTypeMetadata(type, methods);
         }
 
         /// <inheritdoc cref="MethodMetadata(MethodInfo, Type, IEnumerable{IMethodParameterMetadata})"/>
-        public static MethodMetadata CreateMethodMetadata(MethodInfo methodInfo, Type returnType, IEnumerable<IMethodParameterMetadata> parameters)
+        public static MethodMetadata CreateMethodMetadata(MethodInfo methodInfo, Type returnType, IEnumerable<IMethodParameterMetadata> parameters, string? documentation = null)
         {
+            if(documentation is not null)
+                return new MethodMetadata(methodInfo, returnType, parameters, documentation);
             return new MethodMetadata(methodInfo, returnType, parameters);
         }
 
