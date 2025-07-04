@@ -18,12 +18,12 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToProtoDefinition
         /// <summary>
         /// A converter from csharp enum type to its intermediate representation.
         /// </summary>
-        ICSharpToIntermediateConverter<IEnumTypeMetadata> csharpToIntermediateConverter;
+        private ICSharpToIntermediateConverter<IEnumTypeMetadata> csharpToIntermediateConverter;
 
         /// <summary>
         /// A converter from intermediate enum type to its proto definition.
         /// </summary>
-        IIntermediateToProtoDefinitionConverter<IEnumTypeMetadata, IEnumDefinition> intermediateToProtoConverter;
+        private IIntermediateToProtoDefinitionConverter<IEnumTypeMetadata, IEnumDefinition> intermediateToProtoConverter;
 
         /// <summary>
         /// Create new instance of the <see cref="EnumTypeToEnumDefinitionConverter"/> class.

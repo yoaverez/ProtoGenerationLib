@@ -173,7 +173,7 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
         /// <see langword="true"/> if the given <paramref name="fieldMetadata"/> should
         /// be an optional field in the proto message otherwise <see langword="false"/>.
         /// </returns>
-        public bool IsOptionalField(IFieldMetadata fieldMetadata, Type optionalFieldAttribute)
+        private bool IsOptionalField(IFieldMetadata fieldMetadata, Type optionalFieldAttribute)
         {
             return fieldMetadata.Attributes.Any(attribute => attribute.GetType().Equals(optionalFieldAttribute));
         }

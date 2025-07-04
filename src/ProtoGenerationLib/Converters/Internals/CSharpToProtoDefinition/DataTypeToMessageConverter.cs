@@ -18,12 +18,12 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToProtoDefinition
         /// <summary>
         /// A converter from csharp data type to its intermediate representation.
         /// </summary>
-        ICSharpToIntermediateConverter<IDataTypeMetadata> csharpToIntermediateConverter;
+        private ICSharpToIntermediateConverter<IDataTypeMetadata> csharpToIntermediateConverter;
 
         /// <summary>
         /// A converter from intermediate data type to its proto definition.
         /// </summary>
-        IIntermediateToProtoDefinitionConverter<IDataTypeMetadata, IMessageDefinition> intermediateToProtoConverter;
+        private IIntermediateToProtoDefinitionConverter<IDataTypeMetadata, IMessageDefinition> intermediateToProtoConverter;
 
         /// <summary>
         /// Create new instance of the <see cref="DataTypeToMessageConverter"/> class.

@@ -18,12 +18,12 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToProtoDefinition
         /// <summary>
         /// A converter from csharp contract type to its intermediate representation.
         /// </summary>
-        ICSharpToIntermediateConverter<IContractTypeMetadata> csharpToIntermediateConverter;
+        private ICSharpToIntermediateConverter<IContractTypeMetadata> csharpToIntermediateConverter;
 
         /// <summary>
         /// A converter from intermediate contract type to its proto definition.
         /// </summary>
-        IIntermediateToProtoDefinitionConverter<IContractTypeMetadata, IServiceDefinition> intermediateToProtoConverter;
+        private IIntermediateToProtoDefinitionConverter<IContractTypeMetadata, IServiceDefinition> intermediateToProtoConverter;
 
         /// <summary>
         /// Create new instance of the <see cref="ContractTypeToServiceConverter"/> class.

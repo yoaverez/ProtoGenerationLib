@@ -14,7 +14,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
         /// <summary>
         /// Types extractors for wrapper types.
         /// </summary>
-        public IEnumerable<IWrapperElementTypeExtractor> wrapperElementTypesExtractors => lazyWrapperElementTypesExtractors.Value;
+        private IEnumerable<IWrapperElementTypeExtractor> wrapperElementTypesExtractors => lazyWrapperElementTypesExtractors.Value;
 
         /// <summary>
         /// The lazy initialization of the <see cref="wrapperElementTypesExtractors"/> property.
