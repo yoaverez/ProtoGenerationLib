@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.Extractors.Abstracts
     /// <summary>
     /// A contract for wrapper type element extractors.
     /// </summary>
-    public interface IWrapperElementTypeExtractor
+    internal interface IWrapperElementTypeExtractor
     {
         /// <summary>
         /// Check whether or not the given <paramref name="type"/> can be handled

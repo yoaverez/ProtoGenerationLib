@@ -7,7 +7,7 @@ namespace ProtoGenerationLib.Extractors.Abstracts
     /// <summary>
     /// Abstract class for types extractors.
     /// </summary>
-    public abstract class BaseTypesExtractor : ITypesExtractor
+    internal abstract class BaseTypesExtractor : ITypesExtractor
     {
         /// <inheritdoc/>
         public IEnumerable<Type> ExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)

@@ -6,7 +6,7 @@ namespace ProtoGenerationLib.Extractors.Abstracts
     /// <summary>
     /// Abstract class for wrapper element type extractors.
     /// </summary>
-    public abstract class BaseWrapperElementTypeExtractor : IWrapperElementTypeExtractor
+    internal abstract class BaseWrapperElementTypeExtractor : IWrapperElementTypeExtractor
     {
         /// <inheritdoc/>
         public IEnumerable<Type> ExtractUsedTypes(Type type)
