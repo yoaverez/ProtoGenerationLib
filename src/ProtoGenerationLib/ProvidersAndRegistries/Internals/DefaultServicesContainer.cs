@@ -5,7 +5,7 @@ using ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrat
 using ProtoGenerationLib.Strategies.Internals.FileNamingStrategies;
 using ProtoGenerationLib.Strategies.Internals.NewTypeNamingStrategy;
 using ProtoGenerationLib.Strategies.Internals.PackageNamingStrategies;
-using ProtoGenerationLib.Strategies.Internals.PatameterListNamingStrategies;
+using ProtoGenerationLib.Strategies.Internals.ParameterListNamingStrategies;
 using ProtoGenerationLib.Strategies.Internals.ProtoStylingStrategies;
 using ProtoGenerationLib.Strategies.Internals.TypeNamingStrategies;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts;

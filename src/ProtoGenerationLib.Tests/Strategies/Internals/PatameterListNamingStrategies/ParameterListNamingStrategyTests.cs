@@ -1,4 +1,4 @@
-﻿using ProtoGenerationLib.Strategies.Internals.PatameterListNamingStrategies;
+﻿using ProtoGenerationLib.Strategies.Internals.ParameterListNamingStrategies;
 using System.Reflection;
 
 namespace ProtoGenerationLib.Tests.Strategies.Internals.PatameterListNamingStrategies

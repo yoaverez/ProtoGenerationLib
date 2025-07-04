@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using ProtoGenerationLib.Strategies.Abstracts;
 
-namespace ProtoGenerationLib.Strategies.Internals.PatameterListNamingStrategies
+namespace ProtoGenerationLib.Strategies.Internals.ParameterListNamingStrategies
 {
     /// <summary>
     /// A parameter list naming strategy that names a parameter list
