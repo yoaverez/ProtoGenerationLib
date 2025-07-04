@@ -1,7 +1,8 @@
 # Configuration Guide
  
 ## The Generation Options
-The proto generator configuration is contained inside the `ProtoGenerationOptions` object.
+
+The library configuration is contained inside the `ProtoGenerationOptions` object.
 
 This class contains properties for following configuration groups:
 
@@ -140,9 +141,10 @@ The analysis options composed from the following properties:
 
 | Property Name      | Default Value | Description |
 |--------------------|---------------|-------------|
-| `FieldsAndPropertiesExtractionStrategy`| "Composite" | The name of the strategy for extracting properties (and fields if `IncludeFields` is true) from csharp types. |
+| `FieldsAndPropertiesExtractionStrategy` | "Composite" | The name of the strategy for extracting properties (and fields if `IncludeFields` is true) from csharp types. |
+| `DocumentationExtractionStrategy` | "None" | The name of the strategy for extracting documentation from csharp entities. |
 
-For a list of all the pre defined strategies, check the [Analysis Strategies Section](pre-defined-strategies.md#analysis-strategies) in the [Pre Defined Strategies Guide](pre-defined-strategies.md).
+For a list of all the pre defined strategies, check the [Extraction Strategies Section](pre-defined-strategies.md#extraction-strategies) in the [Pre Defined Strategies Guide](pre-defined-strategies.md).
 
 If you don't want to use any of pre-defined strategies, you can create your on strategies. For more information, check the [User Defined Strategies Section](customization.md#user-defined-strategies) in the [Customization Guide](customization.md).
 
@@ -166,11 +168,59 @@ the user convenience. They can be replace by the [Analysis Options Delegates](#a
 | `IsProtoServiceDelegate` | `(type) => false` | A delegate for checking if a type is a proto service. This delegate comes in addition to the `ProtoServiceAttribute` |
 | `TryGetRpcTypeDelegate` | `(Type serviceType, MethodInfo method, out ProtoRpcType rpcType) => { rpcType = ProtoRpcType.Unary; return false; }` | A delegate for trying to get the `ProtoRpcType` from a service method. This delegate comes in addition to the `ProtoRpcAttribute` |
 
-### 6. Other Properties
+#### Analysis Options Providers
+
+| Property Name      | Description |
+|--------------------|-------------|
+| `DocumentationProvider` | A provider for user documentation customization. |
+
+### 6. Customization Properties
 
 | Property Name      | Default Value | Description |
 |--------------------|---------------|-------------|
-| `ProtoFileSyntax`  | "proto3" | The proto file syntax (The line in the head of a proto file). Should be either "proto2" or "proto3".|
+| `ContractTypeCustomConverters`  | Empty collection | A collection containing all the contract type custom converters. The first converter that can handle a type will be the only converter that will handle the type. |
+| `DataTypeCustomConverters`  | Empty collection | A collection containing all the data type custom converters. The first converter that can handle a type will be the only converter that will handle the type. |
+| `EnumTypeCustomConverters`  | Empty collection | A collection containing all the enum type custom converters. The first converter that can handle a type will be the only converter that will handle the type. |
+| `CustomTypeMappers`  | Empty collection | A collection containing all the custom type mappers. The first mapper that can handle a type will be the only mapper that will handle the type. |
+
+### 7. Other Properties
+
+| Property Name      | Default Value | Description |
+|--------------------|---------------|-------------|
+| `ProtoFileSyntax`  | "proto3" | The proto file syntax (The line in the head of a proto file). Should be either "proto2" or "proto3". |
+
+### 8. Methods
+
+#### Customization Adder Methods
+
+##### Field Suffixes Adder Methods
+
+| Method signature   | Description |
+|--------------------|-------------|
+| `void AddFieldSuffix<TFieldType>(string suffix)` | Add the given suffix to the field suffixes collection. This suffix will be appended to all the fields names of type TFieldType. |
+| `void AddFieldSuffix<TFieldDeclaringType>(string fieldName, string suffix)` | Add the given suffix to the field suffixes collection. This suffix will be appended to the field with the given fieldName in the TFieldDeclaringType. |
+| `void AddFieldSuffix<TFieldDeclaringType, TFieldType>(string suffix)` | Add the given suffix to the field suffixes collection. This suffix will be appended to all the fields names of type TFieldType that are declared in the given TFieldDeclaringType. |
+| `void AddFieldThatShouldNotHaveSuffix<TFieldDeclaringType, TFieldType>(string fieldName)` | Add the given fieldName to a collection excluded fields. i.e fields of type TFieldType that was declared in the given TFieldDeclaringType and should not get a suffix appended to them. |
+
+##### Custom Documentation Adder Methods
+
+| Method signature   | Description |
+|--------------------|-------------|
+| `void AddTypeDocumentation<TType>(string documentation)` | Associate the given documentation with the given TType. |
+| `void AddFieldDocumentation<TFieldDeclaringType>(string fieldName, string documentation)` | Associate the given documentation with the field with the given fieldName that is declared in the given TFieldDeclaringType. |
+| `void AddMethodDocumentation<TMethodDeclaringType>(string methodName, int numOfParameters, string documentation)` | Associate the given documentation with the method with the given methodName that is declared in the given TMethodDeclaringType. |
+| `void AddEnumValueDocumentation<TEnumType>(int enumValue, string documentation)` | Associate the given documentation with the given enumValue. |
+
+#### Customization Getters Methods
+
+| Method signature   | Description |
+|--------------------|-------------|
+| `IEnumerable<ICustomTypesExtractor> GetCustomTypesExtractors()` | Get all the user defined types extractors. |
+| `IEnumerable<ICSharpToIntermediateCustomConverter<IContractTypeMetadata>> GetContractTypeCustomConverters()` | Get all the user defined contract types converters. |
+| `IEnumerable<ICSharpToIntermediateCustomConverter<IDataTypeMetadata>> GetDataTypeCustomConverters()` | Get all the user defined data types converters. |
+| `IEnumerable<ICSharpToIntermediateCustomConverter<IEnumTypeMetadata>> GetEnumTypeCustomConverters()` | Get all the user defined enum types converters. |
+| `IEnumerable<ICustomTypeMapper> GetCustomTypeMappers()` | Get all the user defined type mappers. |
+| `bool TryGetFieldSuffix(Type fieldDeclaringType, Type fieldType, string fieldName, out string suffix)` | Try getting the suffix of the field with the given fieldName of fieldType that was declared in the given fieldDeclaringType. |
 
 ## The Serialization Options
 

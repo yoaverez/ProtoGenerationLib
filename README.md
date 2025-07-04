@@ -1,14 +1,17 @@
-# ProtoGenerator
+# ProtoGenerationLib
 
 ## Table of Contents
 
 1. [Introduction](#1-introduction)
 2. [Installation](#2-installation)
 3. [Getting Started](#3-getting-started)
+4. [Roadmap](#4-roadmap)
+5. [Additional Samples](#5-additional-samples)
+6. [Additional Docs](#6-additional-docs)
 
 ## 1. Introduction
 
-The C# Proto Generator is a flexible and extensible library designed to generate Protocol Buffer (proto) files from C# classes without requiring attribute decoration. It emphasis flexibility, allowing for customization at multiple levels.
+ProtoGenerationLib is a flexible and extensible library designed to generate Protocol Buffer (proto) files from C# classes without requiring attribute decoration. It emphasis flexibility, allowing for customization at multiple levels.
 
 ### 1.1 General Usage of Communication DTOs Generation
 
@@ -19,10 +22,10 @@ Communication DTOs generation is especially valuable when aiming to decouple the
 - Enable shared contracts across microservices or layers, independent of their internal implementation
 - Maintain clean separation of concerns and support for layered or hexagonal architecture styles
 
-It is recommended to use the general proto generation when:
+It is recommended to use the communication DTOs generation when:
 - You want to share data contracts across services without enforcing implementation patterns
 - You plan to use multiple communication methods (e.g., REST, gRPC, message queues) on the same service contracts
-- You wish to generate proto definitions as part of a CI/CD pipeline without impacting source code
+- You wish to generate the communication DTOs definitions as part of a CI/CD pipeline without impacting source code
 
 ### 1.2 Library Purpose
 
@@ -35,21 +38,23 @@ While there are existing libraries that generate proto files from C# classes, th
 - Flexible type mapping system for converting C# types to proto types
 - Customizable naming strategies for packages, messages, fields, and enums
 - Handling of nested types and collections
+- Support custom field names suffixes
+- Support custom documentation of the generated protos
 
 ## 2. Installation
 
 ### 📦 NuGet Package (recommended)
 
-Install the ProtoGenerator via NuGet Package Manager:
+Install the ProtoGenerationLib via NuGet Package Manager:
 
 ```sh
-dotnet add package ProtoGenerator
+dotnet add package ProtoGenerationLib
 ```
 
 Or using the Package Manager Console in Visual Studio:
 
 ```powershell
-Install-Package ProtoGenerator
+Install-Package ProtoGenerationLib
 ```
 
 ### 🛠️ Build from Source
@@ -59,8 +64,8 @@ If you want to build the library from source:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/your-org/ProtoGenerator.git
-   cd ProtoGenerator
+   git clone https://github.com/yoaverez/ProtoGenerationLib.git
+   cd ProtoGenerationLib
    ```
 
 2. Build the project:
@@ -97,16 +102,29 @@ var protoDefinitions = protoGenerator.GenerateProtos(csharpServicesType)
 protoDefinitions.WriteToFiles("<The path to the proto root>", "<The path from the proto root in which to write all the protos>");
 
 // Or you can write them to strings.
-var protos = protoDefinitions.WriteToFiles();
+var protos = protoDefinitions.WriteToStrings();
 ```
 
 This example utilize the default configurations objects.
 
 You can also change the configuration or add specific customizations.
 
-To change the configuration of the generator, just edit the default configuration object `ProtoGenerationOptions.Default` or create new default configuration object by calling the `ProtoGenerationOptions.CreateDefaultProtoGenerationOptions` method and pass it to the `GenerateProtos` method.
+To change the configuration of the generator, just edit the default configuration object `ProtoGenerationOptions.Default` or create new configuration object by calling the `ProtoGenerationOptions` constructor method and pass it to the `GenerateProtos` method.
 
-For more information, see:
+## 4. Roadmap
+
+- [x] v1.0.0 - Core library functionality released
+- [ ] v1.1.0 - Support documentation extraction from C# xml documentation
+
+## 5. Additional Samples
+
+The solution contains a [SampleApp](src/SampleApp/) project that
+contains samples of how this library can be used.
+
+The samples resulted proto files are located inside the [SampleApp.GeneratedProtos](src/SampleApp.GeneratedProtos/Protos/) directory.
+
+## 6. Additional Docs
+
 * [Configuration Guide](docs/configuration.md)
 * [Customization Guide](docs/customization.md)
 * [Pre Defined Strategies Guide](docs/pre-defined-strategies.md)

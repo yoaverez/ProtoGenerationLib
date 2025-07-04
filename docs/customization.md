@@ -21,7 +21,7 @@ The following example illustrate how to register new `Field Numbering Strategy`.
 2. Check which interface do you need to implement - in this case it is the `IFieldNumberingStrategy`.
 3. Create a new class that implements the above interface.
 4. Pick a unique name for that strategy.
-5. Register the new strategy with the chosen name to the [Registry Object](registry.md) using the [Strategies Registry Methods](registry.md#strategies-registry-methods).
+5. Register the new strategy with the chosen name to the [Registry Object](registry.md) using the [Registry Methods](registry.md#registry-methods).
 6. Set the configuration to use the new strategy (see [Configuration Guide](configuration.md)).
 
 ## User Defined Custom Converters
@@ -30,7 +30,7 @@ If you have few C# types that needs special treatment for the way that they will
 
 A custom converter controls over the conversion between one or more C# types to their intermediate representation. A type intermediate representation, contains all the information that is needed in order to convert the C# type to a proto type. For example, a custom converter for data type should contains data such as the fields of the type, the nested data types and the nested enum types.
 
-In addition to the conversion, custom converters should also implement an extraction method for the extraction of used type. The library need this information to know that it may need to generate protos for those types.
+In addition to the conversion, custom converters should also implement an extraction method for the extraction of used types. The library need this information to know that it may need to generate protos for those types.
 
 Fortunately, this library has some abstract classes for you that abstract the implementation of the used types extraction.
 
@@ -41,11 +41,11 @@ Fortunately, this library has some abstract classes for you that abstract the im
 In each of the abstract classes there are two abstract methods:
 
 1. ```csharp
-     bool CanHandle(Type type, IProtoGenerationOptions generationOptions);
+     bool CanHandle(Type type);
     ```
     
 2. ```csharp
-     TIntermediate BaseConvertTypeToIntermediateRepresentation(Type type,  ProtoGenerationOptions generationOptions);
+     TIntermediate BaseConvertTypeToIntermediateRepresentation(Type type);
     ```
     Where the `TIntermediate` will be replace with the correct intermediate type.
 
@@ -55,7 +55,7 @@ In each of the abstract classes there are two abstract methods:
 2. Decide if they are contract types (Services), data types (Messages) or enum types.
 3. Create a new class that inherits from the abstract converter that matches to the types proto structure (contract, data or enum).
 4. Implement the above abstract methods.
-5. Register the custom converter to the [Registry Object](registry.md) using the [Custom Converters Registry Methods](registry.md#custom-converters-registry-methods).
+5. Add the custom converter to the [Configuration Object](configuration.md) using the [Customization Properties](configuration.md#6-customization-properties).
 
 **Note:** The first custom converter that can handle a type, will handle the type. Meaning that if you have more than one custom converter that can handle the same type, you should register the more specific converter first.
 
@@ -77,15 +77,27 @@ A custom type mapper has two methods:
 
 1. Pick a type (or a group of types that behave similarly).
 2. Create a new class that implements the `ITypeMapper` interface.
-3. Register the custom type mapper to the [Registry Object](registry.md) using the [Custom Type Mappers Registry Methods](registry.md#custom-type-mappers-registry-methods).
+3. Add the custom converter to the [Configuration Object](configuration.md) using the [Customization Properties](configuration.md#6-customization-properties).
 
 **Note:** The first custom type mapper that can handle a type, will handle the type. Meaning that if you have more than one custom type mapper that can handle the same type, you should register the more specific mapper first.
 
-## User Defines Custom Field Suffixes
+## User Defined Custom Field Suffixes
 
 Custom field suffixes allow you to describe fields better. A common use of this is for adding unit suffixes to fields names.
 
 For example you can make all `TimeSpan` fields to have the `UTC` suffix or make
 `Velocity` fields have different units like `MetersPerSec`, `KMPerSec`, `SpeedOfLight`, `Knots` and more.
 
-You can add custom field suffixes by using the registry's [Custom Field Suffixes Registry Methods](registry.md#custom-field-suffixes-registry-methods).
+You can add custom field suffixes by using the configurations's [Field Suffixes Adder Methods](configuration.md#field-suffixes-adder-methods).
+
+## User Defined Custom Documentation
+
+Custom documentation allow you to describe your protos better. 
+You can add custom documentation to the following proto elements:
+
+* Types - Messages, Enums, Services
+* Rpcs
+* Message Fields
+* Enum Values
+
+You can add custom documentation by using the configurations's [Custom Documentation Adder Methods](configuration.md#custom-documentation-adder-methods).

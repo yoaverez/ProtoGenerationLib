@@ -64,9 +64,19 @@ ProtoGenerationOptions.Default.EnumValueNumberingStrategy = StrategyNamesLookup.
 | `SequentialEnumValueNumberingStrategy` | `EnumValueNumberingStrategyKind.`<br>`Sequential` |  Enum value numbering strategy that assigns the index of the enum value as the enum value. |
 | `SequentialFieldNumberingStrategy` | `FieldNumberingStrategyKind.`<br>`Sequential` |  Field numbering strategy that assigns the index of the field as the field number. |
 
-## Analysis Strategies
+## Extraction Strategies
+
+### Field and Properties Extraction Strategies
 
 | Strategy Type | Associated Enum Value | Description |
 |---------------|-----------------------|-------------|
 | `CompositeFieldsAndPropertiesExtractionStrategy` | `FieldsAndPropertiesExtractionStrategyKind.`<br>`Composite` |  Field and properties extraction strategy that composite base type to a single field. |
 | `FlattenedFieldsAndPropertiesExtractionStrategy` | `FieldsAndPropertiesExtractionStrategyKind.`<br>`Flatten` |  Field and properties extraction strategy that flattened all the fields and property of the type. i.e. each field or property of base class or implemented interface will be taken as a single member. |
+
+### Documentation Extraction Strategies
+
+| Strategy Type | Associated Enum Value | Description |
+|---------------|-----------------------|-------------|
+| `NoDocumentationExtractionStrategy` | `DocumentationExtractionStrategyKind.`<br>`None` |  A documentation extract strategy that does not extract documentation. |
+
+**Note:** In the future, there will be documentation extraction strategy that extract documentation from your C# DTOs xml documentation.
