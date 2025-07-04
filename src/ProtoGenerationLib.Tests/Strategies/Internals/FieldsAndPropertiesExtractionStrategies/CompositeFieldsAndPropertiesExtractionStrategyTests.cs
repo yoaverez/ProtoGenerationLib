@@ -232,7 +232,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, false);
 
             var providerBaseTypeFieldDocumentation = "provider base type field docs";
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithBaseType>(nameof(TypeWithoutBaseType), providerBaseTypeFieldDocumentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithBaseType>(nameof(TypeWithoutBaseType), providerBaseTypeFieldDocumentation);
 
             var extractorBaseTypeFieldDocumentation = "extractor base type field docs";
             mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetBaseTypeFieldDocumentation(typeof(TypeWithBaseType), typeof(TypeWithoutBaseType), out extractorBaseTypeFieldDocumentation))
@@ -279,7 +279,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var analysisOptions = CreateAnalysisOptions(false, false, false);
 
             var providerBaseTypeFieldDocumentation = "provider base type field docs";
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithBaseType>(nameof(TypeWithoutBaseType), providerBaseTypeFieldDocumentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithBaseType>(nameof(TypeWithoutBaseType), providerBaseTypeFieldDocumentation);
 
             var extractorBaseTypeFieldDocumentation = "extractor base type field docs";
             mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetBaseTypeFieldDocumentation(typeof(TypeWithBaseType), typeof(TypeWithoutBaseType), out extractorBaseTypeFieldDocumentation))

@@ -296,10 +296,10 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         public void AddTypeDocumentation_ThereIsAlreadyDocumentationForType_ThrowsArgumentException()
         {
             // Arrange
-            generationOptions.AddDocumentation<int>("abc");
+            generationOptions.AddTypeDocumentation<int>("abc");
 
             // Act
-            generationOptions.AddDocumentation<int>("");
+            generationOptions.AddTypeDocumentation<int>("");
 
             // Assert
             // Noting to do.
@@ -313,7 +313,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             var expectedDocs = "abc";
 
             // Act
-            generationOptions.AddDocumentation<int>(expectedDocs);
+            generationOptions.AddTypeDocumentation<int>(expectedDocs);
 
             // Assert
             var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetTypeDocumentation(typeof(int), out var actualDocs);
@@ -326,10 +326,10 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         public void AddFieldDocumentation_ThereIsAlreadyDocumentationForField_ThrowsArgumentException()
         {
             // Arrange
-            generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), "abc");
+            generationOptions.AddFieldDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), "abc");
 
             // Act
-            generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), "");
+            generationOptions.AddFieldDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), "");
 
             // Assert
             // Noting to do.
@@ -343,7 +343,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             var expectedDocs = "abc";
 
             // Act
-            generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1) ,expectedDocs);
+            generationOptions.AddFieldDocumentation<DummyDataType>(nameof(DummyDataType.Prop1) ,expectedDocs);
 
             // Assert
             var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out var actualDocs);
@@ -356,10 +356,10 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         public void AddMethodDocumentation_ThereIsAlreadyDocumentationForMethod_ThrowsArgumentException()
         {
             // Arrange
-            generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, "abc");
+            generationOptions.AddMethodDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, "abc");
 
             // Act
-            generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, "");
+            generationOptions.AddMethodDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, "");
 
             // Assert
             // Noting to do.
@@ -373,7 +373,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             var expectedDocs = "abc";
 
             // Act
-            generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, expectedDocs);
+            generationOptions.AddMethodDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, expectedDocs);
 
             // Assert
             var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out var actualDocs);
@@ -386,10 +386,10 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         public void AddEnumValueDocumentation_ThereIsAlreadyDocumentationForEnumValue_ThrowsArgumentException()
         {
             // Arrange
-            generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, "abc");
+            generationOptions.AddEnumValueDocumentation<DummyEnum>((int)DummyEnum.Value1, "abc");
 
             // Act
-            generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, "");
+            generationOptions.AddEnumValueDocumentation<DummyEnum>((int)DummyEnum.Value1, "");
 
             // Assert
             // Noting to do.
@@ -403,7 +403,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
             var expectedDocs = "abc";
 
             // Act
-            generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, expectedDocs);
+            generationOptions.AddEnumValueDocumentation<DummyEnum>((int)DummyEnum.Value1, expectedDocs);
 
             // Assert
             var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out var actualDocs);
@@ -430,7 +430,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         {
             // Arrange
             var expectedDocumentation = "abc";
-            generationOptions.AddDocumentation<int>(expectedDocumentation);
+            generationOptions.AddTypeDocumentation<int>(expectedDocumentation);
 
             // Act
             var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetTypeDocumentation(typeof(int), out var actualDocumentation);
@@ -455,7 +455,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         {
             // Arrange
             var expectedDocumentation = "abc";
-            generationOptions.AddDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), expectedDocumentation);
+            generationOptions.AddFieldDocumentation<DummyDataType>(nameof(DummyDataType.Prop1), expectedDocumentation);
 
             // Act
             var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetFieldDocumentation(typeof(DummyDataType), nameof(DummyDataType.Prop1), out var actualDocumentation);
@@ -480,7 +480,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         {
             // Arrange
             var expectedDocumentation = "abc";
-            generationOptions.AddDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, expectedDocumentation);
+            generationOptions.AddMethodDocumentation<IDummyContractType>(nameof(IDummyContractType.Method), 2, expectedDocumentation);
 
             // Act
             var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetMethodDocumentation(typeof(IDummyContractType), nameof(IDummyContractType.Method), 2, out var actualDocumentation);
@@ -505,7 +505,7 @@ namespace ProtoGenerationLib.Tests.Configurations.Internals
         {
             // Arrange
             var expectedDocumentation = "abc";
-            generationOptions.AddDocumentation<DummyEnum>((int)DummyEnum.Value1, expectedDocumentation);
+            generationOptions.AddEnumValueDocumentation<DummyEnum>((int)DummyEnum.Value1, expectedDocumentation);
 
             // Act
             var result = generationOptions.AnalysisOptions.DocumentationProvider.TryGetEnumValueDocumentation(typeof(DummyEnum), (int)DummyEnum.Value1, out var actualDocumentation);

@@ -214,8 +214,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
             var providerTypeDocumentation = "type docs";
             var providerMethodDocumentation = "method docs";
-            generationOptions.AddDocumentation<IContractType1>(providerTypeDocumentation);
-            generationOptions.AddDocumentation<IContractType1>(nameof(IContractType1.Method1), 1, providerMethodDocumentation);
+            generationOptions.AddTypeDocumentation<IContractType1>(providerTypeDocumentation);
+            generationOptions.AddMethodDocumentation<IContractType1>(nameof(IContractType1.Method1), 1, providerMethodDocumentation);
 
             var extractorTypeDocumentation = "";
             var extractorMethodDocumentation = "";
@@ -255,8 +255,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
             var providerTypeDocumentation = "provider type docs";
             var providerMethodDocumentation = "provider method docs";
-            generationOptions.AddDocumentation<IContractType1>(providerTypeDocumentation);
-            generationOptions.AddDocumentation<IContractType1>(nameof(IContractType1.Method1), 1, providerMethodDocumentation);
+            generationOptions.AddTypeDocumentation<IContractType1>(providerTypeDocumentation);
+            generationOptions.AddMethodDocumentation<IContractType1>(nameof(IContractType1.Method1), 1, providerMethodDocumentation);
 
             var extractorTypeDocumentation = "extractor type docs";
             var extractorMethodDocumentation = "extractor method docs";

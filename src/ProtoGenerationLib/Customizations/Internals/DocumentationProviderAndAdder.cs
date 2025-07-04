@@ -45,7 +45,7 @@ namespace ProtoGenerationLib.Customizations.Internals
         #region IDocumentationAdder Implementation
 
         /// <inheritdoc/>
-        public void AddDocumentation<TType>(string documentation)
+        public void AddTypeDocumentation<TType>(string documentation)
         {
             var type = typeof(TType);
             if (typesDocumentations.ContainsKey(type))
@@ -55,7 +55,7 @@ namespace ProtoGenerationLib.Customizations.Internals
         }
 
         /// <inheritdoc/>
-        public void AddDocumentation<TFieldDeclaringType>(string fieldName, string documentation)
+        public void AddFieldDocumentation<TFieldDeclaringType>(string fieldName, string documentation)
         {
             var fieldDeclaringType = typeof(TFieldDeclaringType);
             if (fieldsDocumentations.ContainsKey((fieldDeclaringType, fieldName)))
@@ -68,7 +68,7 @@ namespace ProtoGenerationLib.Customizations.Internals
         }
 
         /// <inheritdoc/>
-        public void AddDocumentation<TMethodDeclaringType>(string methodName, int numOfParameters, string documentation)
+        public void AddMethodDocumentation<TMethodDeclaringType>(string methodName, int numOfParameters, string documentation)
         {
             var methodDeclaringType = typeof(TMethodDeclaringType);
             if (methodsDocumentations.ContainsKey((methodDeclaringType, methodName, numOfParameters)))
@@ -82,7 +82,7 @@ namespace ProtoGenerationLib.Customizations.Internals
         }
 
         /// <inheritdoc/>
-        public void AddDocumentation<TEnumType>(int enumValue, string documentation) where TEnumType : Enum
+        public void AddEnumValueDocumentation<TEnumType>(int enumValue, string documentation) where TEnumType : Enum
         {
             var enumType = typeof(TEnumType);
             if (enumValuesDocumentations.ContainsKey((enumType, enumValue)))

@@ -17,7 +17,7 @@ namespace ProtoGenerationLib.Customizations.Abstracts
         /// Thrown when there is already a documentation that is associated
         /// with the given <typeparamref name="TType"/>.
         /// </exception>
-        void AddDocumentation<TType>(string documentation);
+        void AddTypeDocumentation<TType>(string documentation);
 
         /// <summary>
         /// Associate the given <paramref name="documentation"/>
@@ -35,7 +35,7 @@ namespace ProtoGenerationLib.Customizations.Abstracts
         /// with the field with the given <paramref name="fieldName"/> that was declared
         /// in the given <typeparamref name="TFieldDeclaringType"/>.
         /// </exception>
-        void AddDocumentation<TFieldDeclaringType>(string fieldName, string documentation);
+        void AddFieldDocumentation<TFieldDeclaringType>(string fieldName, string documentation);
 
         /// <summary>
         /// Associate the given <paramref name="documentation"/>
@@ -54,7 +54,7 @@ namespace ProtoGenerationLib.Customizations.Abstracts
         /// with the method with the given <paramref name="methodName"/> that was declared
         /// in the given <typeparamref name="TMethodDeclaringType"/>.
         /// </exception>
-        void AddDocumentation<TMethodDeclaringType>(string methodName, int numOfParameters, string documentation);
+        void AddMethodDocumentation<TMethodDeclaringType>(string methodName, int numOfParameters, string documentation);
 
         /// <summary>
         /// Associate the given <paramref name="documentation"/>
@@ -67,6 +67,6 @@ namespace ProtoGenerationLib.Customizations.Abstracts
         /// Thrown when there is already a documentation that is associated
         /// with the given <paramref name="enumValue"/>.
         /// </exception>
-        void AddDocumentation<TEnumType>(int enumValue, string documentation) where TEnumType : Enum;
+        void AddEnumValueDocumentation<TEnumType>(int enumValue, string documentation) where TEnumType : Enum;
     }
 }

@@ -171,8 +171,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
             var type = typeof(DataType1);
 
             var providerTypeDocumentation = "provider type docs";
-            generationOptions.AddDocumentation<DataType1>(providerTypeDocumentation);
-            generationOptions.AddDocumentation<DataType1.DataType2>(providerTypeDocumentation);
+            generationOptions.AddTypeDocumentation<DataType1>(providerTypeDocumentation);
+            generationOptions.AddTypeDocumentation<DataType1.DataType2>(providerTypeDocumentation);
 
             var extractorTypeDocumentation = "extractor type docs";
             mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(typeof(DataType1), out extractorTypeDocumentation))
@@ -226,8 +226,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
             var type = typeof(DataType1);
 
             var providerTypeDocumentation = "provider type docs";
-            generationOptions.AddDocumentation<DataType1>(providerTypeDocumentation);
-            generationOptions.AddDocumentation<DataType1.DataType2>(providerTypeDocumentation);
+            generationOptions.AddTypeDocumentation<DataType1>(providerTypeDocumentation);
+            generationOptions.AddTypeDocumentation<DataType1.DataType2>(providerTypeDocumentation);
 
             var extractorTypeDocumentation = "extractor type docs";
             mockDocumentationExtractionStrategy.Setup(extractor => extractor.TryGetTypeDocumentation(typeof(DataType1), out extractorTypeDocumentation))

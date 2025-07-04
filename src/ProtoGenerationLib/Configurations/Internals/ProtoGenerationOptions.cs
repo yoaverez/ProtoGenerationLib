@@ -191,27 +191,27 @@ namespace ProtoGenerationLib.Configurations.Internals
         #region IDocumentationAdder Implementation
 
         /// <inheritdoc/>
-        public void AddDocumentation<TType>(string documentation)
+        public void AddTypeDocumentation<TType>(string documentation)
         {
-            AnalysisOptions.DocumentationProviderAndAdder.AddDocumentation<TType>(documentation);
+            AnalysisOptions.DocumentationProviderAndAdder.AddTypeDocumentation<TType>(documentation);
         }
 
         /// <inheritdoc/>
-        public void AddDocumentation<TFieldDeclaringType>(string fieldName, string documentation)
+        public void AddFieldDocumentation<TFieldDeclaringType>(string fieldName, string documentation)
         {
-            AnalysisOptions.DocumentationProviderAndAdder.AddDocumentation<TFieldDeclaringType>(fieldName, documentation);
+            AnalysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TFieldDeclaringType>(fieldName, documentation);
         }
 
         /// <inheritdoc/>
-        public void AddDocumentation<TMethodDeclaringType>(string methodName, int numOfParameters, string documentation)
+        public void AddMethodDocumentation<TMethodDeclaringType>(string methodName, int numOfParameters, string documentation)
         {
-            AnalysisOptions.DocumentationProviderAndAdder.AddDocumentation<TMethodDeclaringType>(methodName, numOfParameters, documentation);
+            AnalysisOptions.DocumentationProviderAndAdder.AddMethodDocumentation<TMethodDeclaringType>(methodName, numOfParameters, documentation);
         }
 
         /// <inheritdoc/>
-        public void AddDocumentation<TEnumType>(int enumValue, string documentation) where TEnumType : Enum
+        public void AddEnumValueDocumentation<TEnumType>(int enumValue, string documentation) where TEnumType : Enum
         {
-            AnalysisOptions.DocumentationProviderAndAdder.AddDocumentation<TEnumType>(enumValue, documentation);
+            AnalysisOptions.DocumentationProviderAndAdder.AddEnumValueDocumentation<TEnumType>(enumValue, documentation);
         }
 
         #endregion IDocumentationAdder Implementation

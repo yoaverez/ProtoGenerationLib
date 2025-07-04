@@ -120,8 +120,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
             var providerTypeDocs = "provider type docs";
             var providerEnumValueDocs = "provider enum value docs";
-            generationOptions.AddDocumentation<Enum1>(providerTypeDocs);
-            generationOptions.AddDocumentation<Enum1>(2, providerEnumValueDocs);
+            generationOptions.AddTypeDocumentation<Enum1>(providerTypeDocs);
+            generationOptions.AddEnumValueDocumentation<Enum1>(2, providerEnumValueDocs);
 
             var extractorTypeDocs = "extractor type docs";
             var extractorEnumValueDocs = "extractor enum value docs";
@@ -152,8 +152,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
             var providerTypeDocs = "provider type docs";
             var providerEnumValueDocs = "provider enum value docs";
-            generationOptions.AddDocumentation<Enum1>(providerTypeDocs);
-            generationOptions.AddDocumentation<Enum1>(2, providerEnumValueDocs);
+            generationOptions.AddTypeDocumentation<Enum1>(providerTypeDocs);
+            generationOptions.AddEnumValueDocumentation<Enum1>(2, providerEnumValueDocs);
 
             var extractorTypeDocs = "extractor type docs";
             var extractorEnumValueDocs = "extractor enum value docs";

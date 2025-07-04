@@ -377,8 +377,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var providerPropDocumentation = "provider prop docs";
             var providerFieldDocumentation = "provider field docs";
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.Prop), providerPropDocumentation);
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.field), providerFieldDocumentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.Prop), providerPropDocumentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.field), providerFieldDocumentation);
 
             var extractorPropDocumentation = "extractor prop docs";
             var extractorFieldDocumentation = "extractor field docs";
@@ -406,8 +406,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var providerPropDocumentation = "provider prop docs";
             var providerFieldDocumentation = "provider field docs";
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.Prop), providerPropDocumentation);
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.field), providerFieldDocumentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.Prop), providerPropDocumentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithPropertiesAndFields>(nameof(TypeWithPropertiesAndFields.field), providerFieldDocumentation);
 
             var extractorPropDocumentation = "extractor prop docs";
             var extractorFieldDocumentation = "extractor field docs";
@@ -459,8 +459,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var providerParam1Documentation = "provider param1 docs";
             var providerParam2Documentation = "provider param2 docs";
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithConstructorAttribute>("a", providerParam1Documentation);
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithConstructorAttribute>("b", providerParam2Documentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithConstructorAttribute>("a", providerParam1Documentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithConstructorAttribute>("b", providerParam2Documentation);
 
             var extractorParam1Documentation = "extractor param1 docs";
             var extractorParam2Documentation = "extractor param2 docs";
@@ -489,8 +489,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
 
             var providerParam1Documentation = "provider param1 docs";
             var providerParam2Documentation = "provider param2 docs";
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithConstructorAttribute>("a", providerParam1Documentation);
-            analysisOptions.DocumentationProviderAndAdder.AddDocumentation<TypeWithConstructorAttribute>("b", providerParam2Documentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithConstructorAttribute>("a", providerParam1Documentation);
+            analysisOptions.DocumentationProviderAndAdder.AddFieldDocumentation<TypeWithConstructorAttribute>("b", providerParam2Documentation);
 
             var extractorParam1Documentation = "extractor param1 docs";
             var extractorParam2Documentation = "extractor param2 docs";
