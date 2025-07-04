@@ -1,5 +1,4 @@
-﻿using ProtoGenerationLib.Customizations.Abstracts;
-using ProtoGenerationLib.Extractors.Internals.TypesExtractors;
+﻿using ProtoGenerationLib.Extractors.Internals.TypesExtractors;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;

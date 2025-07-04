@@ -1,5 +1,4 @@
-﻿using ProtoGenerationLib.Customizations.Abstracts;
-using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using System;
 using System.Collections.Generic;
 using System.Linq;

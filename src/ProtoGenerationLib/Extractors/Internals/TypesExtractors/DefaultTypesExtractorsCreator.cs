@@ -1,7 +1,6 @@
 ﻿using ProtoGenerationLib.Extractors.Abstracts;
-using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
-using ProtoGenerationLib.Extractors.Internals.TypesExtractors;
 using ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors;
+using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using System.Collections.Generic;
 
 namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors

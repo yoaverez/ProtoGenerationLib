@@ -1,5 +1,4 @@
-﻿using ProtoGenerationLib.Configurations.Abstracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ProtoGenerationLib.Extractors.Abstracts

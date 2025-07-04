@@ -3,7 +3,6 @@ using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Replacers.Abstracts;
 using ProtoGenerationLib.Utilities.TypeUtilities;
 using System;
-using System.Collections.Generic;
 
 namespace ProtoGenerationLib.Replacers.Internals.TypeReplacers
 {
