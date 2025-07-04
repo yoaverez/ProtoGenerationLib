@@ -29,7 +29,7 @@ namespace SampleApp.Samples.CustomizationsSamples
             Common.SetFileName(GetType(), protoGenerator.Registry, generationOptions);
             Common.SetPackageName(GetType(), protoGenerator.Registry, generationOptions);
 
-            // Set the field suffixes.
+            // Add the custom documentation.
             generationOptions.AddTypeDocumentation<IContractType>($"The is a contract for the depiction of the proto generator{Environment.NewLine}" +
                                                               $"documentation customization.");
 
