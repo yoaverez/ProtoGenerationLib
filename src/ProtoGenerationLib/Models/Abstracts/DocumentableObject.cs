@@ -3,7 +3,7 @@
     /// <summary>
     /// A base class for all the documentable objects.
     /// </summary>
-    public class DocumentableObject : IDocumentable
+    public abstract class DocumentableObject : IDocumentable
     {
         /// <inheritdoc/>
         public string Documentation { get; set; }
