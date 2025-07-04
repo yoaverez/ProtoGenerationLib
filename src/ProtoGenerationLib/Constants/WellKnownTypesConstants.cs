@@ -31,7 +31,7 @@ namespace ProtoGenerationLib.Constants
         /// External protos can be google well known types or any proto that is not primitive or
         /// shouldn't be generated using this library like protos from another project.
         /// </remarks>
-        public static string EXTERNAL_FILE_PATH_PREFIX = "~ExternalFilePathPrefix~";
+        public const string EXTERNAL_FILE_PATH_PREFIX = "~ExternalFilePathPrefix~";
 
         /// <summary>
         /// Constant holding the directory in which
