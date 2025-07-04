@@ -22,11 +22,11 @@
         /// in which the file name will be the type name.
         /// </summary>
         TypeName,
+
         /// <summary>
         /// A file path strategy that
         /// in which the file path will be the type namespace and the type name.
         /// </summary>
-
         NameSpaceAndTypeName,
     }
 }
