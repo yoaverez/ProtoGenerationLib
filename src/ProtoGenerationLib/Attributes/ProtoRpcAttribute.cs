@@ -21,16 +21,5 @@ namespace ProtoGenerationLib.Attributes
         {
             RpcType = rpcType;
         }
-
-        public override bool Equals(object obj)
-        {
-            var other = obj as ProtoRpcAttribute;
-            return other != null && RpcType == other.RpcType;
-        }
-
-        public override int GetHashCode()
-        {
-            return RpcType.GetHashCode();
-        }
     }
 }
