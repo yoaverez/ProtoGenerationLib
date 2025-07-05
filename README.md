@@ -86,16 +86,16 @@ var protoGenerator = new ProtoGenerator();
 
 // The most recommended types to give are the types that define the services
 // since from them, the generator will be able to generate the rest of the types.
-var csharpServicesType = new Type[] 
-{ 
-    /* 
-    Add here the types that define the services 
+var csharpServicesType = new Type[]
+{
+    /*
+    Add here the types that define the services
     or any other types that you want to convert to protos.
-    */ 
-}
+    */
+};
 
 // Call the GenerateProtos method.
-var protoDefinitions = protoGenerator.GenerateProtos(csharpServicesType)
+var protoDefinitions = protoGenerator.GenerateProtos(csharpServicesType);
 
 // Chose what to do with the definitions.
 // You can write them to files.
