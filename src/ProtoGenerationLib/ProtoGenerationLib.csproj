@@ -5,7 +5,28 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>1.0.0</Version>
+    <Authors>yoaverez</Authors>
+    <Description>A package for generating proto files from C# DTOs.</Description>
+    <RepositoryUrl>https://github.com/yoaverez/ProtoGenerationLib</RepositoryUrl>
+    <PackageTags>proto;generation;protobuf;dto;generator</PackageTags>
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
+    <Copyright>Copyright (c) 2025 yoaverez</Copyright>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageReleaseNotes>Core library functionality</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\PACKAGE.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
