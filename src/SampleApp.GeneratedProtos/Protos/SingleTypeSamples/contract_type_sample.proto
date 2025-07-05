@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package contract_type_sample_pack;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/empty.proto";
+
+service IContractType {
+  rpc Method1(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+  rpc Method2(EnumTypeWrapper) returns (stream EnumTypeWrapper);
+
+  rpc Method3(stream Method3Int32ObjectGuid) returns (google.protobuf.Duration);
+
+  rpc Method4(stream google.protobuf.Duration) returns (stream google.protobuf.Duration);
+}
+
+message EnumTypeWrapper {
+  EnumType value = 1;
+}
+
+message Method3Int32ObjectGuid {
+  int32 a = 1;
+
+  google.protobuf.Any b = 2;
+
+  string c = 3;
+}
+
+enum EnumType {
+  ENUM_TYPE_VALUE1 = 0;
+
+  ENUM_TYPE_VALUE2 = 1;
+}

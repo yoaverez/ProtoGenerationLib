@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package tuples_sample_pack;
+
+message TupleHolder {
+  ValueTupleOfInt32String pair = 1;
+}
+
+message ValueTupleOfInt32String {
+  int32 item1 = 1;
+
+  string item2 = 2;
+}

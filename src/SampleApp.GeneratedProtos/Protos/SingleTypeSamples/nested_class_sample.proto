@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package nested_class_sample_pack;
+
+message Company {
+  message Address {
+    string street = 1;
+
+    string city = 2;
+  }
+
+  string name = 1;
+
+  Address location = 2;
+}

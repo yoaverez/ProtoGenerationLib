@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package custom_converter_to_chage_data_type_fields_pack;
+
+message Velocity {
+  double value_in_meters_per_sec = 1;
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package enum_sample_pack;
+
+message Task {
+  string title = 1;
+
+  Status current_status = 2;
+}
+
+enum Status {
+  STATUS_UNKNOWN = 0;
+
+  STATUS_ACTIVE = 1;
+
+  STATUS_INACTIVE = 2;
+}

@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package file_per_name_space_and_type_sample_pack;
+
+message GameUpdate {
+  string update = 1;
+}

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package file_per_type_name_sample_pack;
+
+message Tile {
+  int32 x = 1;
+
+  int32 y = 2;
+
+  int32 z = 3;
+}

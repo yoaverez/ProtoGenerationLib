@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package file_per_name_space_and_type_sample_pack;
+
+import "google/protobuf/wrappers.proto";
+import "Protos/MultipleFilesSamples/FilePerNameSpaceAndTypeSample/sample_app/samples/multiple_files_samples/dtos/customer_service/customer_dtos/customer_info.proto";
+import "Protos/MultipleFilesSamples/FilePerNameSpaceAndTypeSample/sample_app/samples/multiple_files_samples/dtos/customer_service/orders_dtos/item.proto";
+
+service ICustomerService {
+  rpc GetCustomerInfo(google.protobuf.Int32Value) returns (CustomerInfo);
+
+  rpc RequestItemsStream(stream google.protobuf.Int32Value) returns (stream Item);
+}

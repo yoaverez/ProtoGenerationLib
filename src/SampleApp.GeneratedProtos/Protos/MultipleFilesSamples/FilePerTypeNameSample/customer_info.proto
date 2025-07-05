@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package file_per_type_name_sample_pack;
+
+import "Protos/MultipleFilesSamples/FilePerTypeNameSample/customer_rating.proto";
+import "Protos/MultipleFilesSamples/FilePerTypeNameSample/item.proto";
+import "Protos/MultipleFilesSamples/FilePerTypeNameSample/node_of_order.proto";
+
+message CustomerInfo {
+  CustomerRating rating = 1;
+
+  NodeOfOrder orders = 2;
+
+  map<int32, Item> shopping_cart = 3;
+}
