@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="XmlDocExtractionLib" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
