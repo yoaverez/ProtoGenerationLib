@@ -94,28 +94,6 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
             bindingFlags |= BindingFlags.DeclaredOnly;
             var properties = new List<IFieldMetadata>();
 
-            var implementedInterfaces = type.GetAllImplementedInterfaces();
-            foreach (var implementedInterface in implementedInterfaces)
-            {
-                foreach (var prop in implementedInterface.GetProperties(bindingFlags))
-                {
-                    // Make sure to deal only with properties that should not be ignored.
-                    if (!prop.IsDefined(ignoreAttribute, ignoreAttribute.IsAttributeInherited()))
-                    {
-                        if (!namesToIgnore.Contains(prop.Name))
-                        {
-                            properties.Add(CreateFieldMetaDataFromPropertyInfo(type, prop, documentationProvider, documentationExtractionStrategy));
-                            namesToIgnore.AddRange(GetPotentialDuplicateMemberNames(prop.Name));
-                        }
-                    }
-                    else
-                    {
-                        // Make sure to ignore any back fields of the current field.
-                        namesToIgnore.Add(GetBackFieldName(prop.Name));
-                    }
-                }
-            }
-
             foreach (var prop in type.GetProperties(bindingFlags).OrderBy(prop => !prop.GetGetMethod(true).IsPublic))
             {
                 // Make sure to deal only with properties that should not be ignored.
@@ -240,6 +218,8 @@ namespace ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionS
             return !WellKnownTypesConstants.WellKnownTypes.ContainsKey(type)
                 && !type.IsEnum
                 && !type.IsEnumerableType()
+                && !type.IsTuple()
+                && !type.IsValueTuple()
                 && !ExtractFieldsAndProperties(type, analysisOptions, documentationExtractionStrategy, alreadyCheckedIsEmpty).Any();
         }
 
