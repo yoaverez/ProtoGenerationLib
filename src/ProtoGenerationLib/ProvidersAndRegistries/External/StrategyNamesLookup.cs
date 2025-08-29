@@ -93,6 +93,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.External
             DocumentationExtractionStrategiesLookup = new Dictionary<DocumentationExtractionStrategyKind, string>
             {
                 [DocumentationExtractionStrategyKind.None] = "None",
+                [DocumentationExtractionStrategyKind.FromXmlFiles] = "FromXmlFiles",
             };
 
             FilePathStrategiesLookup = new Dictionary<FilePathStrategyKind, string>
