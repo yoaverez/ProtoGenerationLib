@@ -101,3 +101,19 @@ You can add custom documentation to the following proto elements:
 * Enum Values
 
 You can add custom documentation by using the configurations's [Custom Documentation Adder Methods](configuration.md#custom-documentation-adder-methods).
+
+## How to Use the Auto Documentation Strategy
+
+First, in order to generate your data types xml files, you should add the 
+```cs
+<GenerateDocumentationFile>true</GenerateDocumentationFile>
+```
+property to the csproj files that defines your data types.
+If you have multiple project you can use `Directory.Build.props` file to add this
+xml elements to all your csproj files.
+
+Second, you need to decide how you are going to let the library know which dll corresponds to which xml documentation file. The predefined strategy, searches inside the assembly executing directory for match xml files and dll files (files with the same name). This predefined strategy should be sufficient but you can alway create a custom strategy base on a pre-defined strategy of your own.
+
+After those steps, all you need to do is to follow the [Adding New Strategy Step by Step](#adding-new-strategy-step-by-step) section.
+
+For a full example see [Xml File Documentation Extraction Strategy Sample](../src/SampleApp/Samples/CustomizationsSamples/XmlFileDocumentationExtractionStrategySample.cs) and the resulted proto [Xml File Documentation Extraction Strategy Proto Result](../src/SampleApp.GeneratedProtos/Protos/CustomizationsSamples/xml_file_documentation_extraction_strategy_sample.proto).

@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package xml_file_documentation_extraction_strategy_sample_pack;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+/**
+ * A contract for representing an animal service.
+ */
+service IAnimalService {
+  // Gets all the available Dogs.
+  // Returns:
+  // All the available Dogs.
+  rpc GetAllDogs(google.protobuf.Empty) returns (ArrayOfDog);
+
+  // Gets the id of the given animal owner.
+  // Returns:
+  // A string representing this animal's owner id.
+  rpc GetOwnerId(Animal) returns (google.protobuf.StringValue);
+
+  // Gets the name of the given animal owner.
+  // Returns:
+  // A string representing this animal's owner id.
+  rpc GetOwnerName(Animal) returns (google.protobuf.StringValue);
+}
+
+message Animal {
+  // The name of the animal.
+  string name = 1;
+
+  // The age of the animal.
+  double age = 2;
+
+  // The age of the animal in human years.
+  double age_in_human_years = 3;
+}
+
+message ArrayOfDog {
+  repeated Dog elements = 1;
+}
+
+/**
+ * The best friend of a human.
+ */
+message Dog {
+  // A field containing all the data of the Dog base class.
+  Animal animal = 1;
+
+  // The type of the Dog e.g Bulldog or Golden Retriever etc.
+  string breed = 2;
+
+  // The name of the animal. This name is used
+  // by close family.
+  string nick_name = 3;
+}

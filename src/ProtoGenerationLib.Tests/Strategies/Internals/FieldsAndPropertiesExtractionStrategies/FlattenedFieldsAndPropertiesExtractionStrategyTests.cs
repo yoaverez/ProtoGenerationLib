@@ -5,6 +5,7 @@ using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Strategies.Internals.FieldsAndPropertiesExtractionStrategies;
 using ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies.DummyTypes;
+using System.Runtime.CompilerServices;
 using static ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.TypesExtractorsUtils;
 
 namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtractionStrategies
@@ -92,8 +93,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var expectedMembers = new List<IFieldMetadata>
             {
                 CreateFieldMetadata(typeof(bool), "A", type),
-                CreateFieldMetadata(typeof(string), "Str", type),
-                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(string), "Str", type, attributes: [new NullableAttribute(1)]),
+                CreateFieldMetadata(typeof(string), "Name", type, attributes: [new NullableAttribute(1)]),
             };
 
             // Act + Assert
@@ -109,8 +110,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var expectedMembers = new List<IFieldMetadata>
             {
                 CreateFieldMetadata(typeof(bool), "A", type),
-                CreateFieldMetadata(typeof(string), "Str", type),
-                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(string), "Str", type, attributes: [new NullableAttribute(1)]),
+                CreateFieldMetadata(typeof(string), "Name", type, attributes: [new NullableAttribute(1)]),
                 CreateFieldMetadata(typeof(int), "publicField", type),
             };
 
@@ -127,8 +128,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var expectedMembers = new List<IFieldMetadata>
             {
                 CreateFieldMetadata(typeof(bool), "A", type),
-                CreateFieldMetadata(typeof(string), "Str", type),
-                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(string), "Str", type, attributes: [new NullableAttribute(1)]),
+                CreateFieldMetadata(typeof(string), "Name", type, attributes: [new NullableAttribute(1)]),
                 CreateFieldMetadata(typeof(int), "PublicStaticProp", type),
             };
 
@@ -145,8 +146,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var expectedMembers = new List<IFieldMetadata>
             {
                 CreateFieldMetadata(typeof(bool), "A", type),
-                CreateFieldMetadata(typeof(string), "Str", type),
-                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(string), "Str", type, attributes: [new NullableAttribute(1)]),
+                CreateFieldMetadata(typeof(string), "Name", type, attributes: [new NullableAttribute(1)]),
                 CreateFieldMetadata(typeof(int), "PrivateProp", type),
             };
 
@@ -163,8 +164,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var expectedMembers = new List<IFieldMetadata>
             {
                 CreateFieldMetadata(typeof(bool), "A", type),
-                CreateFieldMetadata(typeof(string), "Str", type),
-                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(string), "Str", type, attributes: [new NullableAttribute(1)]),
+                CreateFieldMetadata(typeof(string), "Name", type, attributes: [new NullableAttribute(1)]),
                 CreateFieldMetadata(typeof(int), "publicField", type),
                 CreateFieldMetadata(typeof(int), "PublicStaticProp", type),
             };
@@ -182,8 +183,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var expectedMembers = new List<IFieldMetadata>
             {
                 CreateFieldMetadata(typeof(bool), "A", type),
-                CreateFieldMetadata(typeof(string), "Str", type),
-                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(string), "Str", type, attributes: [new NullableAttribute(1)]),
+                CreateFieldMetadata(typeof(string), "Name", type, attributes: [new NullableAttribute(1)]),
                 CreateFieldMetadata(typeof(int), "publicField", type),
                 CreateFieldMetadata(typeof(int), "PrivateProp", type),
                 CreateFieldMetadata(typeof(int), "privateField", type),
@@ -204,8 +205,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var expectedMembers = new List<IFieldMetadata>
             {
                 CreateFieldMetadata(typeof(bool), "A", type),
-                CreateFieldMetadata(typeof(string), "Str", type),
-                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(string), "Str", type, attributes: [new NullableAttribute(1)]),
+                CreateFieldMetadata(typeof(string), "Name", type, attributes: [new NullableAttribute(1)]),
                 CreateFieldMetadata(typeof(int), "PrivateProp", type),
                 CreateFieldMetadata(typeof(int), "PublicStaticProp", type),
                 CreateFieldMetadata(typeof(int), "PrivateStaticProp", type),
@@ -224,8 +225,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.FieldsAndPropertiesExtra
             var expectedMembers = new List<IFieldMetadata>
             {
                 CreateFieldMetadata(typeof(bool), "A", type),
-                CreateFieldMetadata(typeof(string), "Str", type),
-                CreateFieldMetadata(typeof(string), "Name", type),
+                CreateFieldMetadata(typeof(string), "Str", type, attributes: [new NullableAttribute(1)]),
+                CreateFieldMetadata(typeof(string), "Name", type, attributes: [new NullableAttribute(1)]),
                 CreateFieldMetadata(typeof(int), "PrivateProp", type),
                 CreateFieldMetadata(typeof(int), "PublicStaticProp", type),
                 CreateFieldMetadata(typeof(int), "PrivateStaticProp", type),
