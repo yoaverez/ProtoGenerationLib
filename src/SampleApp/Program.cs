@@ -27,6 +27,7 @@ namespace SampleApp
             new FlattenExtractionStrategySample().RunSample();
             new IncludeFieldsAndPrivatesSample().RunSample();
             new AddCustomDocumentationSample().RunSample();
+            new XmlFileDocumentationExtractionStrategySample().RunSample();
 
             // Multi files samples.
             new FilePerTypeNameSample().RunSample();
