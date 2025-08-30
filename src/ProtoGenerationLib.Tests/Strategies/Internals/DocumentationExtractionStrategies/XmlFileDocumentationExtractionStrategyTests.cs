@@ -162,7 +162,8 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.DocumentationExtractionS
             var testedType = typeof(ClassWithDocs);
             var testedMemberName = nameof(ClassWithDocs);
             var testedMember = testedType;
-            var expectedDocumentation = $"{testedMemberName} summary";
+            var expectedDocumentation = $"{testedMemberName} summary {nameof(XmlFileDocumentationExtractionStrategyTests)} " +
+                                        $"true.";
 
             // Act
             var actualResult = documentationExtractionStrategy.TryGetTypeDocumentation(testedMember, out var actualDocumentation);
@@ -174,7 +175,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.DocumentationExtractionS
     }
 
     /// <summary>
-    /// ClassWithDocs summary
+    /// ClassWithDocs summary <see cref="XmlFileDocumentationExtractionStrategyTests"/> <see langword="true"/>.
     /// </summary>
     internal class ClassWithDocs
     {

@@ -224,6 +224,7 @@ namespace ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrateg
         {
             if (element != null)
             {
+                ReplaceRefTags(element);
                 var elementContents = element.Value;
                 if (elementContents is not null)
                 {
@@ -241,6 +242,37 @@ namespace ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrateg
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Replace all the ref tags like see or paramref
+        /// with their refs.
+        /// </summary>
+        /// <param name="element">The element in which to replace ref tags.</param>
+        private void ReplaceRefTags(XElement element)
+        {
+            var refElementsNames = new string[]
+            {
+                "paramref", "see", "seealso", "typeparamref"
+            };
+
+            foreach (var refElementName in refElementsNames)
+            {
+                foreach(var refElement in element.Descendants(refElementName).ToArray())
+                {
+                    var refAttribute = refElement.Attributes().FirstOrDefault(att => att.Value != null);
+                    if (refAttribute != null)
+                    {
+                        var replacement = refAttribute.Value;
+                        if (refAttribute.Name.LocalName.Equals("cref"))
+                        {
+                            // Take only the member name.
+                            replacement = refAttribute.Value.Split('.').Last();
+                        }
+                        refElement.ReplaceWith(replacement);
+                    }
+                }
+            }
         }
     }
 }
