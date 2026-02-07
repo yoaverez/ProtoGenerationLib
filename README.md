@@ -116,6 +116,7 @@ To change the configuration of the generator, just edit the default configuratio
 
 - [x] v1.0.0 - Core library functionality released
 - [x] v1.1.0 - Support documentation extraction from C# xml documentation
+- [x] v1.2.0 - Support method signature extraction strategies.
 
 ## 5. Additional Samples
 
