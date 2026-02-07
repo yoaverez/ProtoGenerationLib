@@ -8,7 +8,7 @@
         /// <summary>
         /// Method signature extraction strategy that
         /// ignore method parameters that have an ignore attribute,
-        /// and replaces types that do not make any since in rpc
+        /// and replaces types that do not make any sense in rpc
         /// like the Task type.
         /// </summary>
         Default,
