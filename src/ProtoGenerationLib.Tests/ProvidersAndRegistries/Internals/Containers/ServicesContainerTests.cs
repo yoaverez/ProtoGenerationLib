@@ -350,6 +350,52 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
 
         #endregion GetDocumentationExtractionStrategy Tests
 
+        #region GetMethodSignatureExtractionStrategy Tests
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetMethodSignatureExtractionStrategy_NoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Act
+            container.GetMethodSignatureExtractionStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetMethodSignatureExtractionStrategy_StrategiesExistsButNoStrategyWithWantedName_ThrowsArgumentException()
+        {
+            // Arrange
+            var strategy = new Mock<IMethodSignatureExtractionStrategy>();
+            container.RegisterMethodSignatureExtractionStrategy("a", strategy.Object);
+
+            // Act
+            container.GetMethodSignatureExtractionStrategy("sdfsdf");
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        [TestMethod]
+        public void GetMethodSignatureExtractionStrategy_StrategyWithWantedNameExists_ReturnWantedStrategy()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IMethodSignatureExtractionStrategy>().Object;
+            container.RegisterMethodSignatureExtractionStrategy("a", expectedStrategy);
+
+            // Act
+            var actualStrategy = container.GetMethodSignatureExtractionStrategy("a");
+
+            // Assert
+            Assert.AreSame(expectedStrategy, actualStrategy);
+        }
+
+        #endregion GetMethodSignatureExtractionStrategy Tests
+
         #endregion IExtractionStrategiesProvider Tests
 
         #region IProtoNamingStrategiesProvider Tests
@@ -864,6 +910,43 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals.Containers
         }
 
         #endregion RegisterDocumentationExtractionStrategy Tests
+
+        #region RegisterMethodSignatureExtractionStrategy Tests
+
+        [TestMethod]
+        public void RegisterMethodSignatureExtractionStrategy_NoStrategyWithNewNameExists_TheNewStrategyIsRegistered()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IMethodSignatureExtractionStrategy>().Object;
+            var strategyName = "a";
+
+            // Act
+            var registry = container.RegisterMethodSignatureExtractionStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            var actualStrategy = container.GetMethodSignatureExtractionStrategy(strategyName);
+            Assert.AreSame(expectedStrategy, actualStrategy);
+            Assert.AreSame(container, registry);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterMethodSignatureExtractionStrategy_ThereExistsStrategyWithNewName_ThrowsArgumentException()
+        {
+            // Arrange
+            var expectedStrategy = new Mock<IMethodSignatureExtractionStrategy>().Object;
+            var strategyName = "a";
+            container.RegisterMethodSignatureExtractionStrategy(strategyName, expectedStrategy);
+
+            // Act
+            container.RegisterMethodSignatureExtractionStrategy(strategyName, expectedStrategy);
+
+            // Assert
+            // Noting to do.
+            // The ExpectedException attribute will do the assert.
+        }
+
+        #endregion RegisterMethodSignatureExtractionStrategy Tests
 
         #endregion IExtractionStrategiesRegistry Tests
 

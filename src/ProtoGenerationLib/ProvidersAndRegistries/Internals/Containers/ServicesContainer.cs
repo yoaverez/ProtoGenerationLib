@@ -91,6 +91,12 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
             return extractionStrategiesContainer.GetDocumentationExtractionStrategy(strategyName);
         }
 
+        /// <inheritdoc/>
+        public IMethodSignatureExtractionStrategy GetMethodSignatureExtractionStrategy(string strategyName)
+        {
+            return extractionStrategiesContainer.GetMethodSignatureExtractionStrategy(strategyName);
+        }
+
         #endregion IExtractionStrategiesProvider Implementation
 
         #region IProtoNamingStrategiesProvider Implementation
@@ -191,6 +197,13 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals.Containers
         public IRegistry RegisterDocumentationExtractionStrategy(string strategyName, IDocumentationExtractionStrategy strategy)
         {
             extractionStrategiesContainer.RegisterDocumentationExtractionStrategy(strategyName, strategy);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IRegistry RegisterMethodSignatureExtractionStrategy(string strategyName, IMethodSignatureExtractionStrategy strategy)
+        {
+            extractionStrategiesContainer.RegisterMethodSignatureExtractionStrategy(strategyName, strategy);
             return this;
         }
 
