@@ -52,12 +52,14 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
                     contractTypeMetadata.Documentation = documentation;
                 }
 
+                var methodSignatureExtractionStrategy = componentsProvider.GetMethodSignatureExtractionStrategy(generationOptions.AnalysisOptions.MethodSignatureExtractionStrategy);
                 var methods = type.ExtractRpcMethods(generationOptions.AnalysisOptions);
                 contractTypeMetadata.Methods.AddRange(methods.Select(method =>
                 {
+                    var (returnType, methodParameters) = methodSignatureExtractionStrategy.ExtractMethodSignature(method, generationOptions.AnalysisOptions.IgnoreMethodParametersAttribute);
                     if (TryGetMethodDocumentation(type, method, generationOptions.AnalysisOptions.DocumentationProvider, documentationExtractionStrategy, out var documentation))
-                        return new MethodMetadata(method, documentation);
-                    return new MethodMetadata(method);
+                        return new MethodMetadata(method, returnType, methodParameters, documentation);
+                    return new MethodMetadata(method, returnType, methodParameters);
                 }));
                 contractMetadata = contractTypeMetadata;
             }

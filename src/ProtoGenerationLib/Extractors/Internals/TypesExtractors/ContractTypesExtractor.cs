@@ -6,7 +6,6 @@ using ProtoGenerationLib.Utilities.TypeUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
 {
@@ -16,17 +15,17 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
     internal class ContractTypesExtractor : BaseTypesExtractor
     {
         /// <summary>
-        /// A provider of new type naming strategies.
+        /// A provider of all the proto generator customizations.
         /// </summary>
-        private INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider;
+        private IProvider componentsProvider;
 
         /// <summary>
         /// Create new instance of the <see cref="ContractTypesExtractor"/> class.
         /// </summary>
-        /// <param name="newTypeNamingStrategiesProvider"><inheritdoc cref="newTypeNamingStrategiesProvider" path="/node()"/></param>
-        public ContractTypesExtractor(INewTypeNamingStrategiesProvider newTypeNamingStrategiesProvider)
+        /// <param name="componentsProvider"><inheritdoc cref="componentsProvider" path="/node()"/></param>
+        public ContractTypesExtractor(IProvider componentsProvider)
         {
-            this.newTypeNamingStrategiesProvider = newTypeNamingStrategiesProvider;
+            this.componentsProvider = componentsProvider;
         }
 
         /// <inheritdoc/>
@@ -38,28 +37,30 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
         /// <inheritdoc/>
         protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
         {
-            var parameterListNamingStrategy = newTypeNamingStrategiesProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
+            var ignoreAttribute = generationOptions.AnalysisOptions.IgnoreMethodParametersAttribute;
+            var parameterListNamingStrategy = componentsProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
+            var methodSignatureExtractionStrategy = componentsProvider.GetMethodSignatureExtractionStrategy(generationOptions.AnalysisOptions.MethodSignatureExtractionStrategy);
             var types = new HashSet<Type>();
             var methods = type.ExtractRpcMethods(generationOptions.AnalysisOptions);
 
             foreach (var method in methods)
             {
-                var returnType = WrapIfNonePrimitiveMessageType(method.ReturnType, generationOptions.NewTypeNamingStrategiesOptions);
+                var (returnType, methodParameters) = methodSignatureExtractionStrategy.ExtractMethodSignature(method, ignoreAttribute);
 
+                returnType = WrapIfNonePrimitiveMessageType(returnType, generationOptions.NewTypeNamingStrategiesOptions);
                 types.Add(returnType);
-                var methodParameters = method.GetParameters();
 
                 // Need to create a special type for the parameters list.
-                if (methodParameters.Length > 1)
+                if (methodParameters.Count() > 1)
                 {
-                    var parameters = methodParameters.Select(parameterInfo => (parameterInfo.ParameterType, parameterInfo.Name));
+                    var parameters = methodParameters.Select(parameterInfo => (parameterInfo.Type, parameterInfo.Name));
                     var newTypeName = parameterListNamingStrategy.GetNewParametersListTypeName(method);
                     var newType = TypeCreator.CreateDataType(newTypeName, parameters, nameSpace: type.Namespace);
                     types.Add(newType);
                 }
-                else if (methodParameters.Length == 1)
+                else if (methodParameters.Count() == 1)
                 {
-                    var parameterType = WrapIfNonePrimitiveMessageType(methodParameters[0].ParameterType, generationOptions.NewTypeNamingStrategiesOptions);
+                    var parameterType = WrapIfNonePrimitiveMessageType(methodParameters.First().Type, generationOptions.NewTypeNamingStrategiesOptions);
 
                     types.Add(parameterType);
                 }
@@ -88,7 +89,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
             if (!type.IsEnum)
                 return type;
 
-            var newTypeNamingStrategy = newTypeNamingStrategiesProvider.GetNewTypeNamingStrategy(newTypeNamingStrategiesOptions.NewTypeNamingStrategy);
+            var newTypeNamingStrategy = componentsProvider.GetNewTypeNamingStrategy(newTypeNamingStrategiesOptions.NewTypeNamingStrategy);
             var enumWrapperName = newTypeNamingStrategy.GetNewTypeName(type);
             var props = new List<(Type, string)> { (type, "Value") };
             var enumWrapper = TypeCreator.CreateDataType(enumWrapperName, props, type.Namespace);
