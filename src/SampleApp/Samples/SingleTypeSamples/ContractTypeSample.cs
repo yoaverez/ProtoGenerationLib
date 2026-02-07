@@ -1,7 +1,6 @@
 ﻿using ProtoGenerationLib;
 using ProtoGenerationLib.Attributes;
 using ProtoGenerationLib.Configurations.Internals;
-using ProtoGenerationLib.Strategies.Internals.FileNamingStrategies;
 
 namespace SampleApp.Samples.SingleTypeSamples
 {
@@ -17,7 +16,7 @@ namespace SampleApp.Samples.SingleTypeSamples
             public EnumType Method2(EnumType enumType);
 
             [ProtoRpc(ProtoRpcType.ClientStreaming)]
-            public TimeSpan Method3(int a, object b, Guid c);
+            public TimeSpan Method3(int a, [ProtoIgnore] object b, Guid c, object d);
 
             [ProtoRpc(ProtoRpcType.BidirectionalStreaming)]
             public TimeSpan Method4(TimeSpan timeSpan);
