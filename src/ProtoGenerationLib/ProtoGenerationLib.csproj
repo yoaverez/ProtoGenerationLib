@@ -5,7 +5,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>yoaverez</Authors>
     <Description>A package for generating proto files from C# DTOs.</Description>
     <RepositoryUrl>https://github.com/yoaverez/ProtoGenerationLib</RepositoryUrl>
@@ -13,7 +13,7 @@
     <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
     <Copyright>Copyright (c) 2025 yoaverez</Copyright>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Support the extraction of xml documentation</PackageReleaseNotes>
+    <PackageReleaseNotes>Support the method signature extraction strategies.</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
