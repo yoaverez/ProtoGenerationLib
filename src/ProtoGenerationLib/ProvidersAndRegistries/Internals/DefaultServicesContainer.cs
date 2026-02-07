@@ -14,6 +14,7 @@ using ProtoGenerationLib.ProvidersAndRegistries.External.StrategiesNamesEnums;
 using ProtoGenerationLib.Strategies.Internals.DocumentationExtractionStrategies;
 using System.IO;
 using System.Reflection;
+using ProtoGenerationLib.Strategies.Internals.MethodSignatureExtractionStrategies;
 
 namespace ProtoGenerationLib.ProvidersAndRegistries.Internals
 {
@@ -62,6 +63,10 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals
             // Register documentation extraction strategies.
             container.RegisterDocumentationExtractionStrategy(StrategyNamesLookup.DocumentationExtractionStrategiesLookup[DocumentationExtractionStrategyKind.None], new NoDocumentationExtractionStrategy());
             container.RegisterDocumentationExtractionStrategy(StrategyNamesLookup.DocumentationExtractionStrategiesLookup[DocumentationExtractionStrategyKind.FromXmlFiles], new XmlFileDocumentationExtractionStrategy(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)));
+
+            // Register method signature extraction strategies.
+            container.RegisterMethodSignatureExtractionStrategy(StrategyNamesLookup.MethodSignatureExtractionStrategiesLookup[MethodSignatureExtractionStrategyKind.Default], new DefaultMethodSignatureExtractionStrategy());
+            container.RegisterMethodSignatureExtractionStrategy(StrategyNamesLookup.MethodSignatureExtractionStrategiesLookup[MethodSignatureExtractionStrategyKind.ResembleProtoClientMethod], new ResembleProtoClientMethodsStrategy());
 
             // Register file naming strategies.
             container.RegisterFileNamingStrategy(StrategyNamesLookup.FilePathStrategiesLookup[FilePathStrategyKind.NameSpace], new NameSpaceAsFileNameStrategy());

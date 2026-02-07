@@ -1,6 +1,7 @@
 ﻿using SampleApp.Samples.CustomizationsSamples;
 using SampleApp.Samples.MultipleFilesSamples;
 using SampleApp.Samples.SingleTypeSamples;
+using SampleApp.Samples.StrategiesSamples;
 
 namespace SampleApp
 {
@@ -33,6 +34,9 @@ namespace SampleApp
             new FilePerTypeNameSample().RunSample();
             new FilePerNameSpaceSample().RunSample();
             new FilePerNameSpaceAndTypeSample().RunSample();
+
+            // Strategies samples.
+            new ResembleProtoClientMethodStrategySample().RunSample();
         }
     }
 }

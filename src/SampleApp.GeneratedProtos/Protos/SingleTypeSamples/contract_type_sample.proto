@@ -11,7 +11,7 @@ service IContractType {
 
   rpc Method2(EnumTypeWrapper) returns (stream EnumTypeWrapper);
 
-  rpc Method3(stream Method3Int32ObjectGuid) returns (google.protobuf.Duration);
+  rpc Method3(stream Method3Int32ObjectGuidObject) returns (google.protobuf.Duration);
 
   rpc Method4(stream google.protobuf.Duration) returns (stream google.protobuf.Duration);
 }
@@ -20,12 +20,12 @@ message EnumTypeWrapper {
   EnumType value = 1;
 }
 
-message Method3Int32ObjectGuid {
+message Method3Int32ObjectGuidObject {
   int32 a = 1;
 
-  google.protobuf.Any b = 2;
+  string c = 2;
 
-  string c = 3;
+  google.protobuf.Any d = 3;
 }
 
 enum EnumType {

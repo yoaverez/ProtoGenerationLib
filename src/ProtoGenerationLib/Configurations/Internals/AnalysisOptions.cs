@@ -32,7 +32,13 @@ namespace ProtoGenerationLib.Configurations.Internals
         public string DocumentationExtractionStrategy { get; set; }
 
         /// <inheritdoc/>
+        public string MethodSignatureExtractionStrategy { get; set; }
+
+        /// <inheritdoc/>
         public Type IgnoreFieldOrPropertyAttribute { get; set; }
+
+        /// <inheritdoc/>
+        public Type IgnoreMethodParametersAttribute { get; set; }
 
         /// <inheritdoc/>
         public Type DataTypeConstructorAttribute { get; set; }
@@ -73,6 +79,8 @@ namespace ProtoGenerationLib.Configurations.Internals
         /// <param name="optionalFieldAttribute"><inheritdoc cref="OptionalFieldAttribute" path="/node()"/><br/> Default to null converted to the type of <see cref="OptionalDataMemberAttribute"/>.</param>
         /// <param name="isProtoServiceDelegate"><inheritdoc cref="IsProtoServiceDelegate" path="/node()"/><br/> Default to null converted to a delegate that always return <see langword="false"/>.</param>
         /// <param name="tryGetRpcTypeDelegate"><inheritdoc cref="TryGetRpcTypeDelegate" path="/node()"/><br/> Default to null converted to a delegate that always return <see langword="false"/>.</param>
+        /// <param name="methodSignatureExtractionStrategy"><inheritdoc cref="MethodSignatureExtractionStrategy" path="/node()"/><br/> Default to null converted to "None".</param>
+        /// <param name="ignoreMethodParameterAttribute"><inheritdoc cref="IgnoreMethodParametersAttribute" path="/node()"/><br/> Default to null converted to "None".</param>
         public AnalysisOptions(bool includeFields = false,
                                bool includePrivates = false,
                                bool includeStatics = false,
@@ -85,17 +93,25 @@ namespace ProtoGenerationLib.Configurations.Internals
                                Type? protoRpcAttribute = null,
                                Type? optionalFieldAttribute = null,
                                IsProtoService? isProtoServiceDelegate = null,
-                               TryGetRpcType? tryGetRpcTypeDelegate = null)
+                               TryGetRpcType? tryGetRpcTypeDelegate = null,
+                               string? methodSignatureExtractionStrategy = null,
+                               Type? ignoreMethodParameterAttribute = null)
         {
             IncludeFields = includeFields;
             IncludePrivates = includePrivates;
             IncludeStatics = includeStatics;
             RemoveEmptyMembers = removeEmptyMembers;
+
             FieldsAndPropertiesExtractionStrategy = fieldsAndPropertiesExtractionStrategy ??
                 StrategyNamesLookup.FieldsAndPropertiesExtractionStrategiesLookup[FieldsAndPropertiesExtractionStrategyKind.Composite];
             DocumentationExtractionStrategy = documentationExtractionStrategy ??
                 StrategyNamesLookup.DocumentationExtractionStrategiesLookup[DocumentationExtractionStrategyKind.None];
+            MethodSignatureExtractionStrategy = methodSignatureExtractionStrategy ??
+                StrategyNamesLookup.MethodSignatureExtractionStrategiesLookup[MethodSignatureExtractionStrategyKind.Default];
+
             IgnoreFieldOrPropertyAttribute = ignoreFieldOrPropertyAttribute ?? typeof(ProtoIgnoreAttribute);
+            IgnoreMethodParametersAttribute = ignoreMethodParameterAttribute ?? typeof(ProtoIgnoreAttribute);
+
             DataTypeConstructorAttribute = dataTypeConstructorAttribute ?? typeof(ProtoMessageConstructorAttribute);
             ProtoServiceAttribute = protoServiceAttribute ?? typeof(ProtoServiceAttribute);
             ProtoRpcAttribute = protoRpcAttribute ?? typeof(ProtoRpcAttribute);

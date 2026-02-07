@@ -4,6 +4,7 @@ using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Converters.Internals.CSharpToIntermediate;
 using ProtoGenerationLib.Customizations.Abstracts;
 using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Tests.Converters.Internals.DummyTypes;
@@ -23,6 +24,8 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
         private Mock<IDocumentationExtractionStrategy> mockIDocumentationExtractionStrategy;
 
+        private Mock<IMethodSignatureExtractionStrategy> mockIMethodSignatureExtractionStrategy;
+
         [TestInitialize]
         public void TestInitialize()
         {
@@ -35,6 +38,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
                     ProtoRpcAttribute = typeof(ProtoRpcAttribute),
                     TryGetRpcTypeDelegate = (Type declaringType, MethodInfo method, out ProtoRpcType rpcType) => { rpcType = ProtoRpcType.Unary; return false; },
                     DocumentationExtractionStrategy = "1",
+                    MethodSignatureExtractionStrategy = "2",
                 },
             };
 
@@ -42,9 +46,16 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
 
             mockIDocumentationExtractionStrategy = new Mock<IDocumentationExtractionStrategy>();
 
+            mockIMethodSignatureExtractionStrategy = new Mock<IMethodSignatureExtractionStrategy>();
+            mockIMethodSignatureExtractionStrategy.Setup(strategy => strategy.ExtractMethodSignature(It.IsAny<MethodInfo>(), It.IsAny<Type>()))
+                                                  .Returns<MethodInfo, Type>((method, ignoreAttribute) => (method.ReturnType, method.GetParameters().Select(x => new MethodParameterMetadata(x.ParameterType, x.Name))));
+
             var mockIProvider = new Mock<IProvider>();
             mockIProvider.Setup(provider => provider.GetDocumentationExtractionStrategy("1"))
                          .Returns(mockIDocumentationExtractionStrategy.Object);
+
+            mockIProvider.Setup(provider => provider.GetMethodSignatureExtractionStrategy("2"))
+                         .Returns(mockIMethodSignatureExtractionStrategy.Object);
 
             converter = new CSharpContractTypeToContractTypeMetadataConverter(mockIProvider.Object);
         }

@@ -2,6 +2,7 @@
 using ProtoGenerationLib.Attributes;
 using ProtoGenerationLib.Configurations.Internals;
 using ProtoGenerationLib.Extractors.Internals.TypesExtractors;
+using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Strategies.Abstracts;
 using ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.DummyTypes;
@@ -17,7 +18,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
 
         private static ProtoGenerationOptions generationOptions;
 
-        private static Mock<INewTypeNamingStrategiesProvider> mockINewTypeNamingStrategiesProvider;
+        private static Mock<IProvider> mockIProvider;
 
         private static Type newParameterListType;
 
@@ -52,13 +53,19 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
             mockNewTypeNamingStrategy.Setup(strategy => strategy.GetNewTypeName(It.IsAny<Type>()))
                                      .Returns(NEW_TYPE_NAME);
 
-            mockINewTypeNamingStrategiesProvider = new Mock<INewTypeNamingStrategiesProvider>();
-            mockINewTypeNamingStrategiesProvider.Setup(provider => provider.GetParameterListNamingStrategy(It.IsAny<string>()))
-                                                .Returns(mockParameterListStrategy.Object);
-            mockINewTypeNamingStrategiesProvider.Setup(provider => provider.GetNewTypeNamingStrategy(It.IsAny<string>()))
-                                                .Returns(mockNewTypeNamingStrategy.Object);
+            var mockMethodSignatureExtractionStrategy = new Mock<IMethodSignatureExtractionStrategy>();
+            mockMethodSignatureExtractionStrategy.Setup(strategy => strategy.ExtractMethodSignature(It.IsAny<MethodInfo>(), It.IsAny<Type>()))
+                                                 .Returns<MethodInfo, Type>((method, ignoreAttribute) => (method.ReturnType, method.GetParameters().Select(x => new MethodParameterMetadata(x.ParameterType, x.Name))));
 
-            extractor = new ContractTypesExtractor(mockINewTypeNamingStrategiesProvider.Object);
+            mockIProvider = new Mock<IProvider>();
+            mockIProvider.Setup(provider => provider.GetParameterListNamingStrategy(It.IsAny<string>()))
+                         .Returns(mockParameterListStrategy.Object);
+            mockIProvider.Setup(provider => provider.GetNewTypeNamingStrategy(It.IsAny<string>()))
+                         .Returns(mockNewTypeNamingStrategy.Object);
+            mockIProvider.Setup(provider => provider.GetMethodSignatureExtractionStrategy(It.IsAny<string>()))
+                         .Returns(mockMethodSignatureExtractionStrategy.Object);
+
+            extractor = new ContractTypesExtractor(mockIProvider.Object);
 
             generationOptions = new ProtoGenerationOptions
             {

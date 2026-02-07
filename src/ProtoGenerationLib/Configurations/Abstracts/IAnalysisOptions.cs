@@ -48,10 +48,22 @@ namespace ProtoGenerationLib.Configurations.Abstracts
         string DocumentationExtractionStrategy { get; }
 
         /// <summary>
+        /// The name of the strategy for extracting method signature from
+        /// csharp entities.
+        /// </summary>
+        string MethodSignatureExtractionStrategy { get; }
+
+        /// <summary>
         /// The type of the attribute that ask to ignore some
         /// fields or properties.
         /// </summary>
         Type IgnoreFieldOrPropertyAttribute { get; }
+
+        /// <summary>
+        /// The type of the attribute that ask to ignore some
+        /// method parameters.
+        /// </summary>
+        Type IgnoreMethodParametersAttribute { get; }
 
         /// <summary>
         /// The type of the constructor attribute that tells that

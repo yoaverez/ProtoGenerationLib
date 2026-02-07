@@ -49,6 +49,10 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Registries
         /// <inheritdoc cref="IExtractionStrategiesRegistry.RegisterDocumentationExtractionStrategy(string, IDocumentationExtractionStrategy)"/>
         IRegistry RegisterDocumentationExtractionStrategy(string strategyName, IDocumentationExtractionStrategy strategy);
 
+        /// <returns>This instance of the <see cref="IRegistry"/> in order to allow method chaining.</returns>
+        /// <inheritdoc cref="IExtractionStrategiesRegistry.RegisterMethodSignatureExtractionStrategy(string, IMethodSignatureExtractionStrategy)"/>
+        IRegistry RegisterMethodSignatureExtractionStrategy(string strategyName, IMethodSignatureExtractionStrategy strategy);
+
         #endregion Extraction Strategies Registry
 
         #region Numbering Strategies Registry

@@ -29,6 +29,11 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.External
         public static IReadOnlyDictionary<DocumentationExtractionStrategyKind, string> DocumentationExtractionStrategiesLookup { get; private set; }
 
         /// <summary>
+        /// A lookup table for method signature extraction strategies names.
+        /// </summary>
+        public static IReadOnlyDictionary<MethodSignatureExtractionStrategyKind, string> MethodSignatureExtractionStrategiesLookup { get; private set; }
+
+        /// <summary>
         /// A lookup table for file path strategies names.
         /// </summary>
         public static IReadOnlyDictionary<FilePathStrategyKind, string> FilePathStrategiesLookup { get; private set; }
@@ -94,6 +99,12 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.External
             {
                 [DocumentationExtractionStrategyKind.None] = "None",
                 [DocumentationExtractionStrategyKind.FromXmlFiles] = "FromXmlFiles",
+            };
+
+            MethodSignatureExtractionStrategiesLookup = new Dictionary<MethodSignatureExtractionStrategyKind, string>
+            {
+                [MethodSignatureExtractionStrategyKind.Default] = "Default",
+                [MethodSignatureExtractionStrategyKind.ResembleProtoClientMethod] = "ResembleProtoClientMethod",
             };
 
             FilePathStrategiesLookup = new Dictionary<FilePathStrategyKind, string>

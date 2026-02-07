@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package resemble_proto_client_method_strategy_sample_pack;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+service IContractType {
+  rpc Method1(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+  rpc Method2(google.protobuf.BoolValue) returns (stream google.protobuf.Int32Value);
+}

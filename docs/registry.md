@@ -31,6 +31,7 @@ In most cases, you only need to generate protos once. If this is not the case fo
 |-------------|-------------|
 | `RegisterFieldsAndPropertiesExtractionStrategy` | Register the given fields and properties extraction strategy with it's associated name to the registry. |
 | `RegisterDocumentationExtractionStrategy` | Register the given documentation extraction strategy with it's associated name to the registry. |
+| `RegisterMethodSignatureExtractionStrategy` | Register the given method signature extraction strategy with it's associated name to the registry. |
 
 ### Numbering Strategies Registry Methods
 

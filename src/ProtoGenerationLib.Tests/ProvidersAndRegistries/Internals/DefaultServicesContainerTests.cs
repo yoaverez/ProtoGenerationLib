@@ -69,6 +69,7 @@ namespace ProtoGenerationLib.Tests.ProvidersAndRegistries.Internals
                 new object[] { typeof(IFieldNumberingStrategy), StrategyNamesLookup.FieldNumberingStrategiesLookup.Values },
                 new object[] { typeof(IFieldsAndPropertiesExtractionStrategy), StrategyNamesLookup.FieldsAndPropertiesExtractionStrategiesLookup.Values },
                 new object[] { typeof(IDocumentationExtractionStrategy), StrategyNamesLookup.DocumentationExtractionStrategiesLookup.Values },
+                new object[] { typeof(IMethodSignatureExtractionStrategy), StrategyNamesLookup.MethodSignatureExtractionStrategiesLookup.Values },
                 new object[] { typeof(IFileNamingStrategy), StrategyNamesLookup.FilePathStrategiesLookup.Values },
                 new object[] { typeof(INewTypeNamingStrategy), StrategyNamesLookup.NewTypeNamingStrategiesLookup.Values },
                 new object[] { typeof(IPackageNamingStrategy), StrategyNamesLookup.PackageNamingStrategiesLookup.Values },

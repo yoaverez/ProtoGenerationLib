@@ -143,6 +143,7 @@ The analysis options composed from the following properties:
 |--------------------|---------------|-------------|
 | `FieldsAndPropertiesExtractionStrategy` | "Composite" | The name of the strategy for extracting properties (and fields if `IncludeFields` is true) from csharp types. |
 | `DocumentationExtractionStrategy` | "None" | The name of the strategy for extracting documentation from csharp entities. |
+| `MethodSignatureExtractionStrategy` | "Default" | The name of the strategy for extracting method signature from csharp methods. |
 
 For a list of all the pre defined strategies, check the [Extraction Strategies Section](pre-defined-strategies.md#extraction-strategies) in the [Pre Defined Strategies Guide](pre-defined-strategies.md).
 
@@ -153,6 +154,7 @@ If you don't want to use any of pre-defined strategies, you can create your on s
 | Property Name      | Default Value | Description |
 |--------------------|---------------|-------------|
 | `IgnoreFieldOrPropertyAttribute` | `typeof(ProtoIgnoreAttribute)` | The type of the attribute that if used means that the analysis should ignore the specific field or property. |
+| `IgnoreMethodParametersAttribute` | `typeof(ProtoIgnoreAttribute)` | The type of the attribute that if used means that the analysis should ignore the specific method parameter. |
 | `DataTypeConstructorAttribute` | `typeof(ProtoMessageConstructorAttribute)` | The type of the constructor attribute that tells that the constructor contains all the wanted fields and properties of the type. |
 | `ProtoServiceAttribute` | `typeof(ProtoServiceAttribute)` | The type of the attribute that tells that the class/interface/struct represents a proto service. |
 | `ProtoRpcAttribute` | `typeof(ProtoRpcAttribute)` | The type of the attribute that tells that the method represents a proto rpc method. |
