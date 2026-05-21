@@ -1,7 +1,7 @@
-﻿using SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService.Generics;
-using SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService.OrdersDtos;
+﻿using Dtos.CustomerService.Generics;
+using Dtos.CustomerService.OrdersDtos;
 
-namespace SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService.CustomerDtos
+namespace Dtos.CustomerService.CustomerDtos
 {
     public class CustomerInfo : Person
     {

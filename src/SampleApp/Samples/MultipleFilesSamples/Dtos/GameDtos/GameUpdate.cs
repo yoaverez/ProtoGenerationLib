@@ -1,4 +1,4 @@
-﻿namespace SampleApp.Samples.MultipleFilesSamples.Dtos.GameDtos
+﻿namespace Dtos.GameDtos
 {
     public class GameUpdate
     {

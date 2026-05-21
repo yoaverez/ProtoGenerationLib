@@ -2,8 +2,8 @@
 using ProtoGenerationLib.ProvidersAndRegistries.External.StrategiesNamesEnums;
 using ProtoGenerationLib.ProvidersAndRegistries.External;
 using ProtoGenerationLib;
-using SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService;
-using SampleApp.Samples.MultipleFilesSamples.Dtos.GameDtos;
+using Dtos.CustomerService;
+using Dtos.GameDtos;
 
 namespace SampleApp.Samples.MultipleFilesSamples
 {

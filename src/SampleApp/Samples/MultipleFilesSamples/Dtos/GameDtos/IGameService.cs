@@ -1,6 +1,6 @@
 ﻿using ProtoGenerationLib.Attributes;
 
-namespace SampleApp.Samples.MultipleFilesSamples.Dtos.GameDtos
+namespace Dtos.GameDtos
 {
     [ProtoService]
     public interface IGameService
@@ -15,6 +15,6 @@ namespace SampleApp.Samples.MultipleFilesSamples.Dtos.GameDtos
         public GameUpdate GetGameLiveUpdates();
 
         [ProtoRpc(ProtoRpcType.Unary)]
-        public Tile GetTile((int X, int Y, int Z) wantedTile);
+        public Tile GetTile((int X, int Y) wantedTile);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService.Generics
+﻿namespace Dtos.CustomerService.Generics
 {
     public class Node<T>
     {

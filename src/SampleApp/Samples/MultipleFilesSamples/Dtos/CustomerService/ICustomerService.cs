@@ -1,8 +1,8 @@
 ﻿using ProtoGenerationLib.Attributes;
-using SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService.CustomerDtos;
-using SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService.OrdersDtos;
+using Dtos.CustomerService.CustomerDtos;
+using Dtos.CustomerService.OrdersDtos;
 
-namespace SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService
+namespace Dtos.CustomerService
 {
     [ProtoService]
     public interface ICustomerService
