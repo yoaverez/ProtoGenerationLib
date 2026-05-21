@@ -582,5 +582,46 @@ namespace ProtoGenerationLib.Tests.Utilities.TypeUtilities
         }
 
         #endregion GetTypeNameWithoutGenerics Tests
+
+        #region IsValidMappingKeyType Tests
+
+        [DataRow(typeof(double), DisplayName = "NotInteger1")]
+        [DataRow(typeof(float), DisplayName = "NotInteger2")]
+        [DataRow(typeof(decimal), DisplayName = "NotInteger3")]
+        [DataRow(typeof(object), DisplayName = "ComplexObject")]
+        [DataRow(typeof(byte[]), DisplayName = "Array")]
+        [DataRow(typeof(Dictionary<int, string>), DisplayName = "Dictionary")]
+        [DataTestMethod]
+        public void IsValidMappingKeyType_TypeIsNotAValidKeyType_ReturnFalse(Type type)
+        {
+            // Act
+            var actualResult = type.IsValidMappingKeyType();
+
+            // Assert
+            Assert.IsFalse(actualResult);
+        }
+
+        [DataRow(typeof(string))]
+        [DataRow(typeof(bool))]
+        [DataRow(typeof(sbyte))]
+        [DataRow(typeof(byte))]
+        [DataRow(typeof(short))]
+        [DataRow(typeof(ushort))]
+        [DataRow(typeof(char))]
+        [DataRow(typeof(int))]
+        [DataRow(typeof(uint))]
+        [DataRow(typeof(long))]
+        [DataRow(typeof(ulong))]
+        [DataTestMethod]
+        public void IsValidMappingKeyType_TypeIsAValidKeyType_ReturnTrue(Type type)
+        {
+            // Act
+            var actualResult = type.IsValidMappingKeyType();
+
+            // Assert
+            Assert.IsTrue(actualResult);
+        }
+
+        #endregion IsValidMappingKeyType Tests
     }
 }

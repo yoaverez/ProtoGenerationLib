@@ -363,5 +363,28 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
             }
             return false;
         }
+
+        /// <summary>
+        /// Checks whether or not the given <paramref name="type"/> can act as a key in a protobuf map.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        /// <see langword="true"/> if the given <paramref name="type"/> can act as a key in a protobuf map
+        /// otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool IsValidMappingKeyType(this Type type)
+        {
+            return type.Equals(typeof(string))
+                || type.Equals(typeof(bool))
+                || type.Equals(typeof(sbyte))
+                || type.Equals(typeof(byte))
+                || type.Equals(typeof(short))
+                || type.Equals(typeof(ushort))
+                || type.Equals(typeof(char))
+                || type.Equals(typeof(int))
+                || type.Equals(typeof(uint))
+                || type.Equals(typeof(long))
+                || type.Equals(typeof(ulong));
+        }
     }
 }
