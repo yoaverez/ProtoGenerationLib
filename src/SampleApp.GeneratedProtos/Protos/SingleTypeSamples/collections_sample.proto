@@ -22,6 +22,32 @@ message ArrayOfString {
   repeated string elements = 1;
 }
 
+message DictionaryOfStringInt32 {
+  map<string, int32> mapping = 1;
+}
+
+message Item {
+  int32 id = 1;
+}
+
+message KeyValuePairOfIEnumerableOfItemDictionaryOfStringInt32 {
+  repeated Item key = 1;
+
+  map<string, int32> value = 2;
+}
+
+message KeyValuePairOfItemInt32 {
+  Item key = 1;
+
+  int32 value = 2;
+}
+
+message KeyValuePairOfLettersString {
+  Letters key = 1;
+
+  string value = 2;
+}
+
 message MultiDimensionalArrayOfArrayOfByte {
   repeated ArrayOfByte elements = 1;
 
@@ -43,13 +69,29 @@ message MultiDimensionalArrayOfInt32 {
 message Order {
   repeated string items = 1;
 
-  map<string, int32> item_quantities = 2;
+  repeated KeyValuePairOfItemInt32 item_quantities1 = 2;
 
-  ArrayOfArrayOfArrayOfString string_jagged_array = 3;
+  map<string, DictionaryOfStringInt32> item_quantities2 = 3;
 
-  MultiDimensionalArrayOfInt32 int_multidimensional_array = 4;
+  repeated KeyValuePairOfIEnumerableOfItemDictionaryOfStringInt32 item_quantities3 = 4;
 
-  MultiDimensionalArrayOfArrayOfByte byte_multidimensional_array_of_arrays = 5;
+  map<uint32, string> item_quantities4 = 5;
 
-  ArrayOfMultiDimensionalArrayOfByte byte_array_of_multidimensional_arrays = 6;
+  map<uint64, string> item_quantities5 = 6;
+
+  repeated KeyValuePairOfLettersString item_quantities6 = 7;
+
+  ArrayOfArrayOfArrayOfString string_jagged_array = 8;
+
+  MultiDimensionalArrayOfInt32 int_multidimensional_array = 9;
+
+  MultiDimensionalArrayOfArrayOfByte byte_multidimensional_array_of_arrays = 10;
+
+  ArrayOfMultiDimensionalArrayOfByte byte_array_of_multidimensional_arrays = 11;
+}
+
+enum Letters {
+  LETTERS_A = 0;
+
+  LETTERS_B = 1;
 }
