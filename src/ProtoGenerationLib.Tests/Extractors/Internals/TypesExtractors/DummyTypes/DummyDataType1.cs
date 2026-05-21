@@ -2,6 +2,6 @@
 {
     public class DummyDataType1
     {
-        int A {  get; set; }
+        public int A {  get; set; }
     }
 }
