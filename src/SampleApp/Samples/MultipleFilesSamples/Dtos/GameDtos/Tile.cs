@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SampleApp.Samples.MultipleFilesSamples.Dtos.GameDtos
+namespace Dtos.GameDtos
 {
     public class Tile
     {

@@ -1,4 +1,5 @@
 ﻿using ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors;
+using ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.DummyTypes;
 
 namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.WrapperElementTypesExtractors
 {
@@ -71,8 +72,15 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors.WrapperE
             return new List<object[]>
             {
                 new object[] { typeof(Dictionary<int, string>), new List<Type> { typeof(int), typeof(string) } },
+                new object[] { typeof(Dictionary<char, string>), new List<Type> { typeof(char), typeof(string) } },
+                new object[] { typeof(Dictionary<bool, string>), new List<Type> { typeof(bool), typeof(string) } },
+                new object[] { typeof(Dictionary<byte, string>), new List<Type> { typeof(byte), typeof(string) } },
+                new object[] { typeof(Dictionary<short, string>), new List<Type> { typeof(short), typeof(string) } },
                 new object[] { typeof(IDictionary<char, bool>), new List<Type> { typeof(char), typeof(bool) } },
-                new object[] { typeof(IEnumerable<KeyValuePair<double, object>>), new List<Type> { typeof(double), typeof(object) } },
+                new object[] { typeof(IEnumerable<KeyValuePair<double, object>>), new List<Type> { typeof(KeyValuePair<double, object>) } },
+                new object[] { typeof(Dictionary<DummyEnum1, Dictionary<int, string>>), new List<Type> { typeof(KeyValuePair<DummyEnum1, Dictionary<int, string>>) } },
+                new object[] { typeof(Dictionary<DummyDataType1, string>), new List<Type> { typeof(KeyValuePair<DummyDataType1, string>) } },
+                new object[] { typeof(Dictionary<IEnumerable<DummyDataType1>, string>), new List<Type> { typeof(KeyValuePair<IEnumerable<DummyDataType1>, string>) } },
             };
         }
 

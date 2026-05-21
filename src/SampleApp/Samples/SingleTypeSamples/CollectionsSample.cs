@@ -9,11 +9,27 @@ namespace SampleApp.Samples.SingleTypeSamples
         public class Order
         {
             public List<string> Items { get; set; }
-            public Dictionary<string, int> ItemQuantities { get; set; }
+            public Dictionary<Item, int> ItemQuantities1 { get; set; }
+            public Dictionary<string, Dictionary<string, int>> ItemQuantities2 { get; set; }
+            public Dictionary<IEnumerable<Item>, Dictionary<string, int>> ItemQuantities3 { get; set; }
+            public Dictionary<char, string> ItemQuantities4 { get; set; }
+            public Dictionary<ulong, string> ItemQuantities5 { get; set; }
+            public Dictionary<Letters, string> ItemQuantities6 { get; set; }
             public string[][][] StringJaggedArray {get; set;}
             public int[,,,,] IntMultidimensionalArray {get; set;}
             public byte[,][] ByteMultidimensionalArrayOfArrays {get; set;}
             public byte[][,] ByteArrayOfMultidimensionalArrays { get; set;}
+        }
+
+        public class Item
+        {
+            public int Id { get; set; }
+        }
+
+        public enum Letters
+        {
+            A,
+            B
         }
 
         public void RunSample()

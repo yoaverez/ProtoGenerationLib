@@ -11,6 +11,7 @@ using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Internals.ProtoDefinitions;
 using ProtoGenerationLib.ProvidersAndRegistries.Abstracts.Providers;
 using ProtoGenerationLib.Strategies.Abstracts;
+using ProtoGenerationLib.Tests.Converters.Internals.DummyTypes;
 using ProtoGenerationLib.Utilities.TypeUtilities;
 
 namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefinition
@@ -90,7 +91,9 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             {
                 new FieldMetadata(typeof(IDictionary<string, bool>), "a", Array.Empty<Attribute>(), type),
                 new FieldMetadata(typeof(int), "b", Array.Empty<Attribute>(), type),
-                new FieldMetadata(typeof(IDictionary<string, bool>), "c", new Attribute[] { new ProtoServiceAttribute() }, type),
+                new FieldMetadata(typeof(IDictionary<double, bool>), "c", new Attribute[] { new ProtoServiceAttribute() }, type),
+                new FieldMetadata(typeof(IDictionary<DataType1, bool>), "d", new Attribute[] { new ProtoServiceAttribute() }, type),
+                new FieldMetadata(typeof(IDictionary<Enum1, bool>), "e", new Attribute[] { new ProtoServiceAttribute() }, type),
             };
             var dataTypeMetadata = new DataTypeMetadata(type, fields, Array.Empty<IDataTypeMetadata>(), Array.Empty<IEnumTypeMetadata>());
 
@@ -100,6 +103,9 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
                 [typeof(string)] = new ProtoTypeMetadata("string", "pac.pac2", "pac.pac2.string", "path1"),
                 [typeof(bool)] = new ProtoTypeMetadata("bool", "pac", "pac.bool", "path2"),
                 [typeof(int)] = new ProtoTypeMetadata("int", "pac", "pac.int", "path2"),
+                [typeof(KeyValuePair<double, bool>)] = new ProtoTypeMetadata("KeyValuePairOfDoubleBool", "pac", "pac.KeyValuePairOfDoubleBool", "path2"),
+                [typeof(KeyValuePair<DataType1, bool>)] = new ProtoTypeMetadata("KeyValuePairOfDataType1Bool", "pac", "pac.KeyValuePairOfDataType1Bool", "path2"),
+                [typeof(KeyValuePair<Enum1, bool>)] = new ProtoTypeMetadata("KeyValuePairOfEnum1Bool", "pac", "pac.KeyValuePairOfEnum1Bool", "path2"),
             };
 
             var expectedImports = new HashSet<string>
@@ -111,7 +117,9 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.IntermediateToProtoDefin
             {
                 new FieldDefinition("a".ToUpperInvariant(), "map<pac2.string, bool>", 1, FieldRule.None),
                 new FieldDefinition("b".ToUpperInvariant(), "int", 2, FieldRule.None),
-                new FieldDefinition("c".ToUpperInvariant(), "map<pac2.string, bool>", 3, FieldRule.None),
+                new FieldDefinition("c".ToUpperInvariant(), "KeyValuePairOfDoubleBool", 3, FieldRule.Repeated),
+                new FieldDefinition("d".ToUpperInvariant(), "KeyValuePairOfDataType1Bool", 4, FieldRule.Repeated),
+                new FieldDefinition("e".ToUpperInvariant(), "KeyValuePairOfEnum1Bool", 5, FieldRule.Repeated),
             };
             var expectedDefinition = new MessageDefinition(type.Name, "pac", expectedImports, expectedFields, Array.Empty<IMessageDefinition>(), Array.Empty<IEnumDefinition>());
 

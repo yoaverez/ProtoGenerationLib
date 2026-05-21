@@ -1,9 +1,9 @@
-﻿namespace SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService.CustomerDtos
+﻿namespace Dtos.CustomerService.CustomerDtos
 {
     public class Person
     {
-        //public int Id { get; set; }
+        public int Id { get; set; }
 
-        //public string Name { get; set; }
+        public string Name { get; set; }
     }
 }

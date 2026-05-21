@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package file_per_name_space_sample_pack;
+
+import "Protos/MultipleFilesSamples/FilePerNameSpaceSample/dtos/customer_service/generics.proto";
+import "Protos/MultipleFilesSamples/FilePerNameSpaceSample/dtos/customer_service/orders_dtos.proto";
+
+message CustomerInfo {
+  enum CustomerRating {
+    CUSTOMER_RATING_BAD_CUSTOMER = 0;
+
+    CUSTOMER_RATING_GOOD_CUSTOMER = 1;
+  }
+
+  Person person = 1;
+
+  CustomerRating rating = 2;
+
+  NodeOfOrder orders = 3;
+
+  map<int32, Item> shopping_cart = 4;
+}
+
+message Person {
+  int32 id = 1;
+
+  string name = 2;
+}

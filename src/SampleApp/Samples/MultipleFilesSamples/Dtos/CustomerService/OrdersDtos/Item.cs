@@ -1,4 +1,4 @@
-﻿namespace SampleApp.Samples.MultipleFilesSamples.Dtos.CustomerService.OrdersDtos
+﻿namespace Dtos.CustomerService.OrdersDtos
 {
     public class Item
     {

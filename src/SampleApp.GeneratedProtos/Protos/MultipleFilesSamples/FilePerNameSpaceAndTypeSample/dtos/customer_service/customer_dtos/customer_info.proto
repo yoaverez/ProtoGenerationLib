@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package file_per_name_space_and_type_sample_pack;
+
+import "Protos/MultipleFilesSamples/FilePerNameSpaceAndTypeSample/dtos/customer_service/customer_dtos/customer_rating.proto";
+import "Protos/MultipleFilesSamples/FilePerNameSpaceAndTypeSample/dtos/customer_service/customer_dtos/person.proto";
+import "Protos/MultipleFilesSamples/FilePerNameSpaceAndTypeSample/dtos/customer_service/generics/node_of_order.proto";
+import "Protos/MultipleFilesSamples/FilePerNameSpaceAndTypeSample/dtos/customer_service/orders_dtos/item.proto";
+
+message CustomerInfo {
+  Person person = 1;
+
+  CustomerRating rating = 2;
+
+  NodeOfOrder orders = 3;
+
+  map<int32, Item> shopping_cart = 4;
+}

@@ -22,7 +22,11 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors.WrapperElement
         protected override IEnumerable<Type> BaseExtractUsedTypes(Type type)
         {
             type.TryGetElementsOfKeyValuePairEnumerableType(out var keyType, out var valueType);
-            return new Type[] { keyType, valueType };
+            if (keyType.IsValidMappingKeyType())
+                return new Type[] { keyType, valueType };
+
+            else
+                return new Type[] { typeof(KeyValuePair<,>).MakeGenericType(keyType, valueType) };
         }
     }
 }

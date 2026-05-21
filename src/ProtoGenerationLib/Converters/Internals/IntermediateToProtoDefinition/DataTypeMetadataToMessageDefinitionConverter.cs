@@ -128,12 +128,26 @@ namespace ProtoGenerationLib.Converters.Internals.IntermediateToProtoDefinition
             var fieldRule = FieldRule.None;
             if (fieldMetadata.Type.TryGetElementsOfKeyValuePairEnumerableType(out var keyType, out var valueType))
             {
-                var keyTypeShortName = GetTypeShortName(protoTypesMetadatas[keyType].FullName, messageFullName, packageComponentsSeparator);
-                var valueTypeShortName = GetTypeShortName(protoTypesMetadatas[valueType].FullName, messageFullName, packageComponentsSeparator);
-                typeName = $"map<{keyTypeShortName}, {valueTypeShortName}>";
+                // Regard the dictionary as a regular protobuf map.
+                if (keyType.IsValidMappingKeyType())
+                {
+                    var keyTypeShortName = GetTypeShortName(protoTypesMetadatas[keyType].FullName, messageFullName, packageComponentsSeparator);
+                    var valueTypeShortName = GetTypeShortName(protoTypesMetadatas[valueType].FullName, messageFullName, packageComponentsSeparator);
+                    typeName = $"map<{keyTypeShortName}, {valueTypeShortName}>";
 
-                neededImports.Add(protoTypesMetadatas[keyType].FilePath!);
-                neededImports.Add(protoTypesMetadatas[valueType].FilePath!);
+                    neededImports.Add(protoTypesMetadatas[keyType].FilePath!);
+                    neededImports.Add(protoTypesMetadatas[valueType].FilePath!);
+                }
+
+                // Regard the dictionary as a repeated field of key value pairs.
+                else
+                {
+                    fieldRule = FieldRule.Repeated;
+                    var elementType = typeof(KeyValuePair<,>).MakeGenericType(keyType, valueType);
+                    typeName = GetTypeShortName(protoTypesMetadatas[elementType].FullName, messageFullName, packageComponentsSeparator);
+
+                    neededImports.Add(protoTypesMetadatas[elementType].FilePath!);
+                }
             }
             else if (!fieldMetadata.Type.IsMultiDimensionalOrJaggedArray() && fieldMetadata.Type.TryGetElementOfEnumerableType(out var elementType))
             {
