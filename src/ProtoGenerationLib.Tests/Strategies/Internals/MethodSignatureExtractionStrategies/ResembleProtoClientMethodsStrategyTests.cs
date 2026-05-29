@@ -8,7 +8,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.MethodSignatureExtractio
     [TestClass]
     public class ResembleProtoClientMethodsStrategyTests
     {
-        private ResembleProtoClientMethodsStrategy strategy;
+        private IgnoreGeneralRpcParametersDecorator strategy;
 
         [TestInitialize]
         public void TestInitialize()
@@ -24,7 +24,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.MethodSignatureExtractio
             var method = GetType().GetMethod(methodName);
 
             // Act
-            var actualSignature = strategy.ExtractMethodSignature(method, typeof(ProtoIgnoreAttribute));
+            var actualSignature = strategy.ExtractMethodSignature(method, generationOptions.AnalysisOptions);
 
             // Assert
             Assert.AreEqual(expectedReturnType, actualSignature.ReturnType);

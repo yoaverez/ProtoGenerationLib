@@ -47,7 +47,7 @@ namespace ProtoGenerationLib.Tests.Converters.Internals.CSharpToIntermediate
             mockIDocumentationExtractionStrategy = new Mock<IDocumentationExtractionStrategy>();
 
             mockIMethodSignatureExtractionStrategy = new Mock<IMethodSignatureExtractionStrategy>();
-            mockIMethodSignatureExtractionStrategy.Setup(strategy => strategy.ExtractMethodSignature(It.IsAny<MethodInfo>(), It.IsAny<Type>()))
+            mockIMethodSignatureExtractionStrategy.Setup(strategy => strategy.ExtractMethodSignature(It.IsAny<MethodInfo>(), generationOptions.AnalysisOptions))
                                                   .Returns<MethodInfo, Type>((method, ignoreAttribute) => (method.ReturnType, method.GetParameters().Select(x => new MethodParameterMetadata(x.ParameterType, x.Name))));
 
             var mockIProvider = new Mock<IProvider>();

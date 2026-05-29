@@ -56,7 +56,7 @@ namespace ProtoGenerationLib.Converters.Internals.CSharpToIntermediate
                 var methods = type.ExtractRpcMethods(generationOptions.AnalysisOptions);
                 contractTypeMetadata.Methods.AddRange(methods.Select(method =>
                 {
-                    var (returnType, methodParameters) = methodSignatureExtractionStrategy.ExtractMethodSignature(method, generationOptions.AnalysisOptions.IgnoreMethodParametersAttribute);
+                    var (returnType, methodParameters) = methodSignatureExtractionStrategy.ExtractMethodSignature(method, generationOptions.AnalysisOptions);
                     if (TryGetMethodDocumentation(type, method, generationOptions.AnalysisOptions.DocumentationProvider, documentationExtractionStrategy, out var documentation))
                         return new MethodMetadata(method, returnType, methodParameters, documentation);
                     return new MethodMetadata(method, returnType, methodParameters);

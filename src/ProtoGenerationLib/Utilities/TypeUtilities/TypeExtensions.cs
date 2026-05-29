@@ -1,8 +1,10 @@
-﻿using ProtoGenerationLib.Utilities.CollectionUtilities;
+﻿using ProtoGenerationLib.Replacers.Internals.MethodSignatureTypeReplacers;
+using ProtoGenerationLib.Utilities.CollectionUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace ProtoGenerationLib.Utilities.TypeUtilities
 {
@@ -385,6 +387,163 @@ namespace ProtoGenerationLib.Utilities.TypeUtilities
                 || type.Equals(typeof(uint))
                 || type.Equals(typeof(long))
                 || type.Equals(typeof(ulong));
+        }
+
+        /// <summary>
+        /// Cache for <see cref="IsDescendantOf(Type, Type)"/> results.
+        /// </summary>
+        private static Dictionary<Type, Dictionary<Type, bool>> isTypeDescendantCache = new Dictionary<Type, Dictionary<Type, bool>>();
+
+        /// <summary>
+        /// Checks whether or not the given <paramref name="type"/> is a descendant of
+        /// the given <paramref name="root"/>.
+        /// A descendant must satisfy any of the following:
+        /// <list type="bullet">
+        /// <item><paramref name="type"/> is equal to <paramref name="root"/>.</item>
+        /// <item><paramref name="type"/> is a constructed (closed) generic type and its open generic type is a descendant of <paramref name="root"/>.</item>
+        /// <item><paramref name="type"/> implements an interface which is a descendant of <paramref name="root"/>.</item>
+        /// <item><paramref name="type"/> inherits from a descendant of <paramref name="root"/>.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <param name="root">The type to check whether the given <paramref name="type"/> was descended from it.</param>
+        /// <returns>
+        /// <see langword="true"/> if the given type is a descendant of the given <paramref name="root"/>
+        /// otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool IsDescendantOf(this Type type, Type root)
+        {
+            if (isTypeDescendantCache.TryGetValue(type, out var cachedResults))
+            {
+                if (cachedResults.TryGetValue(root, out var cachedResult))
+                {
+                    return cachedResult;
+                }
+
+                else
+                {
+                    // Add an entry to the cached results.
+                    cachedResults.Add(root, false);
+                }
+            }
+
+            else
+            {
+                isTypeDescendantCache.Add(type, new Dictionary<Type, bool>());
+                cachedResults.Add(root, false);
+            }
+
+            var canonicalType = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
+
+            // Check if the type equals root.
+            var result = type.Equals(root);
+
+            // If type is a constructed generic type check if
+            // its open generic type is a descendant of root.
+            if (type.IsGenericType && !canonicalType.Equals(type))
+                result = result || canonicalType.IsDescendantOf(root);
+
+            // Check if one of the types implemented interfaces is a representation of root.
+            result = result || type.GetInterfaces().Any(implementedInterface => implementedInterface.IsDescendantOf(root));
+
+            // Its base type is a descendant of root.
+            if (type.BaseType is not null)
+                result = result || type.BaseType.IsDescendantOf(root);
+
+            isTypeDescendantCache[type][root] = result;
+            return result;
+        }
+
+        private static Dictionary<Type, Dictionary<Type, (bool, Type?)>> tryGetClosestAncestorToCache = new Dictionary<Type, Dictionary<Type, (bool, Type?)>>();
+        public static bool TryGetClosestAncestorTo(this Type type, Type root, out Type? closestAncestor)
+        {
+            if (tryGetClosestAncestorToCache.TryGetValue(type, out var cachedResults))
+            {
+                if (cachedResults.TryGetValue(root, out var cachedResult))
+                {
+                    closestAncestor = cachedResult.Item2;
+                    return cachedResult.Item1;
+                }
+
+                else
+                {
+                    // Add an entry to the cached results.
+                    cachedResults.Add(root, (false, null));
+                }
+            }
+
+            else
+            {
+                isTypeDescendantCache.Add(type, new Dictionary<Type, bool>());
+                cachedResults.Add(root, (false, null));
+            }
+
+            var canonicalType = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
+            closestAncestor = null;
+
+            // Check if the type equals root.
+            var result = type.Equals(root);
+
+            // If type is a constructed generic type check if
+            // its open generic type is a descendant of root.
+            if (type.IsGenericType && !canonicalType.Equals(type))
+                result = result || canonicalType.TryGetClosestAncestorTo(root, out closestAncestor);
+
+            // Check if one of the types implemented interfaces is a representation of root.
+            if (!result)
+            {
+                foreach (var implementedInterface in type.GetInterfaces())
+                {
+                    if(implementedInterface.TryGetClosestAncestorTo(root, out closestAncestor))
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+
+            // Its base type is a descendant of root.
+            if (type.BaseType is not null)
+                result = result || type.BaseType.TryGetClosestAncestorTo(root, out closestAncestor);
+
+            tryGetClosestAncestorToCache[type][root] = (result, closestAncestor);
+            return result;
+        }
+
+        public static bool IsTask(this Type type)
+        {
+            return typeof(Task).IsAssignableFrom(type);
+        }
+
+        public static bool TryGetTaskElementType(this Type type, out Type? taskElementType)
+        {
+            taskElementType = null;
+            if (!IsTask(type))
+                return false;
+
+            var currentType = type;
+            while (currentType != null)
+            {
+                // There is no reason to module a generic task in a proto.
+                // It is equivalent to its result type.
+                if (currentType.IsGenericType && currentType.GetGenericTypeDefinition().Equals(typeof(Task<>)))
+                {
+                    taskElementType = currentType.GetGenericArguments().Single();
+                    break;
+                }
+
+                // There is no reason to module task in a proto.
+                // It is equivalent to void.
+                if (currentType.Equals(typeof(Task)))
+                {
+                    taskElementType = typeof(void);
+                    break;
+                }
+
+                currentType = currentType.BaseType;
+            }
+
+            return true;
         }
     }
 }

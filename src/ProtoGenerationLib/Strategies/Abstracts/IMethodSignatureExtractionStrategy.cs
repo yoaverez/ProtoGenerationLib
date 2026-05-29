@@ -1,4 +1,5 @@
-﻿using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -15,10 +16,10 @@ namespace ProtoGenerationLib.Strategies.Abstracts
         /// i.e. it return type and parameters.
         /// </summary>
         /// <param name="method">The method whose signature is requested.</param>
-        /// <param name="parameterIgnoreAttribute">The type of the attribute that tells which parameters to ignore.</param>
+        /// <param name="analysisOptions">The analysis options.</param>
         /// <returns>
         /// The given <paramref name="method"/> return type and parameters.
         /// </returns>
-        (Type ReturnType, IEnumerable<IMethodParameterMetadata> Parameters) ExtractMethodSignature(MethodInfo method, Type parameterIgnoreAttribute);
+        (Type ReturnType, IEnumerable<IMethodParameterMetadata> Parameters) ExtractMethodSignature(MethodInfo method, IAnalysisOptions analysisOptions);
     }
 }

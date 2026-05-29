@@ -1,4 +1,5 @@
 ﻿using ProtoGenerationLib.Replacers.Abstracts;
+using ProtoGenerationLib.Utilities.TypeUtilities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace ProtoGenerationLib.Replacers.Internals.MethodSignatureTypeReplacers
         /// <inheritdoc/>
         public bool CanReplace(Type type, bool isReturnType)
         {
-            return typeof(Task).IsAssignableFrom(type);
+            return type.IsTask();
         }
 
         /// <inheritdoc/>
@@ -23,23 +24,10 @@ namespace ProtoGenerationLib.Replacers.Internals.MethodSignatureTypeReplacers
             if (!CanReplace(type, isReturnType))
                 throw new ArgumentException($"The given {nameof(type)}: {type.Name} can not be replaced by the {nameof(TaskMethodSignatureTypeReplacer)}.");
 
-            var currentType = type;
-            while (currentType != null)
-            {
-                // There is no reason to module a generic task in a proto.
-                // It is equivalent to its result type.
-                if (currentType.IsGenericType && currentType.GetGenericTypeDefinition().Equals(typeof(Task<>)))
-                    return currentType.GetGenericArguments().Single();
+            if (!type.TryGetTaskElementType(out var taskType))
+                throw new ArgumentException($"Fatal Error: The given {nameof(type)}: {type.Name} is not a {nameof(Task)}.");
 
-                // There is no reason to module task in a proto.
-                // It is equivalent to void.
-                if (currentType.Equals(typeof(Task)))
-                    return typeof(void);
-
-                currentType = currentType.BaseType;
-            }
-
-            throw new ArgumentException($"Fatal Error: The given {nameof(type)}: {type.Name} is not a {nameof(Task)}.");
+            return taskType!;
         }
     }
 }

@@ -54,7 +54,7 @@ namespace ProtoGenerationLib.Tests.Extractors.Internals.TypesExtractors
                                      .Returns(NEW_TYPE_NAME);
 
             var mockMethodSignatureExtractionStrategy = new Mock<IMethodSignatureExtractionStrategy>();
-            mockMethodSignatureExtractionStrategy.Setup(strategy => strategy.ExtractMethodSignature(It.IsAny<MethodInfo>(), It.IsAny<Type>()))
+            mockMethodSignatureExtractionStrategy.Setup(strategy => strategy.ExtractMethodSignature(It.IsAny<MethodInfo>(), generationOptions.AnalysisOptions))
                                                  .Returns<MethodInfo, Type>((method, ignoreAttribute) => (method.ReturnType, method.GetParameters().Select(x => new MethodParameterMetadata(x.ParameterType, x.Name))));
 
             mockIProvider = new Mock<IProvider>();

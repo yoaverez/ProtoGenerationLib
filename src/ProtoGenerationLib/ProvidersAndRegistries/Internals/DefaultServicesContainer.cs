@@ -66,7 +66,7 @@ namespace ProtoGenerationLib.ProvidersAndRegistries.Internals
 
             // Register method signature extraction strategies.
             container.RegisterMethodSignatureExtractionStrategy(StrategyNamesLookup.MethodSignatureExtractionStrategiesLookup[MethodSignatureExtractionStrategyKind.Default], new DefaultMethodSignatureExtractionStrategy());
-            container.RegisterMethodSignatureExtractionStrategy(StrategyNamesLookup.MethodSignatureExtractionStrategiesLookup[MethodSignatureExtractionStrategyKind.ResembleProtoClientMethod], new ResembleProtoClientMethodsStrategy());
+            container.RegisterMethodSignatureExtractionStrategy(StrategyNamesLookup.MethodSignatureExtractionStrategiesLookup[MethodSignatureExtractionStrategyKind.ResembleProtoClientMethod], new IgnoreGeneralRpcParametersDecorator(new DefaultMethodSignatureExtractionStrategy()));
 
             // Register file naming strategies.
             container.RegisterFileNamingStrategy(StrategyNamesLookup.FilePathStrategiesLookup[FilePathStrategyKind.NameSpace], new NameSpaceAsFileNameStrategy());

@@ -29,7 +29,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.MethodSignatureExtractio
             (Type, IEnumerable<IMethodParameterMetadata>) expectedSignature = (typeof(int), [new MethodParameterMetadata(typeof(bool), "b")]);
 
             // Act
-            var actualSignature = strategy.ExtractMethodSignature(method, typeof(ProtoIgnoreAttribute));
+            var actualSignature = strategy.ExtractMethodSignature(method, generationOptions.AnalysisOptions);
 
             // Assert
             Assert.AreEqual(expectedSignature.Item1, actualSignature.ReturnType);
@@ -58,7 +58,7 @@ namespace ProtoGenerationLib.Tests.Strategies.Internals.MethodSignatureExtractio
             (Type, IEnumerable<IMethodParameterMetadata>) expectedSignature = (typeof(long), [new MethodParameterMetadata(typeof(bool), "a"), new MethodParameterMetadata(typeof(DateTime), "b")]);
 
             // Act
-            var actualSignature = strategy.ExtractMethodSignature(method, typeof(ProtoIgnoreAttribute));
+            var actualSignature = strategy.ExtractMethodSignature(method, generationOptions.AnalysisOptions);
 
             // Assert
             Assert.AreEqual(expectedSignature.Item1, actualSignature.ReturnType);

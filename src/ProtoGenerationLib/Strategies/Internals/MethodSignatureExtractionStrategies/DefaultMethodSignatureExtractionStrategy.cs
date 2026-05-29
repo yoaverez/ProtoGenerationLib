@@ -1,4 +1,5 @@
-﻿using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
+﻿using ProtoGenerationLib.Configurations.Abstracts;
+using ProtoGenerationLib.Models.Abstracts.IntermediateRepresentations;
 using ProtoGenerationLib.Models.Internals.IntermediateRepresentations;
 using ProtoGenerationLib.Replacers.Abstracts;
 using ProtoGenerationLib.Replacers.Internals;
@@ -31,8 +32,9 @@ namespace ProtoGenerationLib.Strategies.Internals.MethodSignatureExtractionStrat
         }
 
         /// <inheritdoc/>
-        public (Type ReturnType, IEnumerable<IMethodParameterMetadata> Parameters) ExtractMethodSignature(MethodInfo method, Type parameterIgnoreAttribute)
+        public (Type ReturnType, IEnumerable<IMethodParameterMetadata> Parameters) ExtractMethodSignature(MethodInfo method, IAnalysisOptions analysisOptions)
         {
+            var parameterIgnoreAttribute = analysisOptions.IgnoreMethodParametersAttribute;
             var methodReturnType = GetEffectiveType(method.ReturnType, isReturnType: true);
             var methodParameters = method.GetParameters()
                                          // Take all the parameters excepts for the ones to ignore.

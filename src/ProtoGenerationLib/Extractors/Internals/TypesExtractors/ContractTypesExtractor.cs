@@ -37,7 +37,6 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
         /// <inheritdoc/>
         protected override IEnumerable<Type> BaseExtractUsedTypes(Type type, IProtoGenerationOptions generationOptions)
         {
-            var ignoreAttribute = generationOptions.AnalysisOptions.IgnoreMethodParametersAttribute;
             var parameterListNamingStrategy = componentsProvider.GetParameterListNamingStrategy(generationOptions.NewTypeNamingStrategiesOptions.ParameterListNamingStrategy);
             var methodSignatureExtractionStrategy = componentsProvider.GetMethodSignatureExtractionStrategy(generationOptions.AnalysisOptions.MethodSignatureExtractionStrategy);
             var types = new HashSet<Type>();
@@ -45,7 +44,7 @@ namespace ProtoGenerationLib.Extractors.Internals.TypesExtractors
 
             foreach (var method in methods)
             {
-                var (returnType, methodParameters) = methodSignatureExtractionStrategy.ExtractMethodSignature(method, ignoreAttribute);
+                var (returnType, methodParameters) = methodSignatureExtractionStrategy.ExtractMethodSignature(method, generationOptions.AnalysisOptions);
 
                 returnType = WrapIfNonePrimitiveMessageType(returnType, generationOptions.NewTypeNamingStrategiesOptions);
                 types.Add(returnType);
