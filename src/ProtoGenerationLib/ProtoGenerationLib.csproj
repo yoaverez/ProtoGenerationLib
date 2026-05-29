@@ -33,4 +33,8 @@
     <PackageReference Include="XmlDocExtractionLib" Version="1.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProtoGenerationLib.Abstractions\ProtoGenerationLib.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>
